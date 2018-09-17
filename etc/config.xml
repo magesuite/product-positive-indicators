@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <positive_indicators>
+            <only_x_available>
+                <active>0</active>
+                <quantity>0</quantity>
+            </only_x_available>
+            <popular_icon>
+                <active>0</active>
+                <sort_by>price</sort_by>
+                <sort_direction>desc</sort_direction>
+                <number_of_products>3</number_of_products>
+            </popular_icon>
+            <recently_bought>
+                <active>0</active>
+                <period>0</period>
+                <minimal>0</minimal>
+            </recently_bought>
+            <fast_shipping>
+                <active>0</active>
+                <working_days>1,2,3,4,5</working_days>
+                <delivery_today_time>0</delivery_today_time>
+                <working_hours>0</working_hours>
+                <order_queue_length>0</order_queue_length>
+            </fast_shipping>
+            <free_shipping>
+                <show_in_product_tiles>1</show_in_product_tiles>
+                <show_text_note_on_products_detailpage>1</show_text_note_on_products_detailpage>
+                <show_badge_on_products_detailpage>1</show_badge_on_products_detailpage>
+                <show_in_search_autosuggest>1</show_in_search_autosuggest>
+            </free_shipping>
+        </positive_indicators>
+    </default>
+</config>

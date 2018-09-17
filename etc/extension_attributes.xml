@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Catalog\Api\Data\ProductAttributeInterface">
+        <attribute code="top_attribute_enabled" type="integer"/>
+        <attribute code="top_attribute_sign" type="string"/>
+        <attribute code="top_attribute_value" type="string"/>
+        <attribute code="top_attribute_min_value" type="string"/>
+    </extension_attributes>
+</config>

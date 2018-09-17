@@ -1,0 +1,14 @@
+<?php
+$recentlyBought = $block->getRecentlyBoughtInfo();
+if ($recentlyBought['active']) {
+    $customersWording = $recentlyBought['sum'] > 1 ? 'customers' : 'customer';
+    $daysWording = $recentlyBought['order_period'] > 1 ? 'days' : 'day';
+    ?>
+    <div class="cs-indicators__recently-bought cs-indicators__recently-bought--pdp">
+        <svg class="cs-indicators__recently-bought-icon">
+            <use xlink:href="#popular"></use>
+        </svg>
+        <span
+            class="cs-indicators__recently-bought-text"><?php echo __("<strong>%1 $customersWording</strong> bought this product in last %2 $daysWording", $recentlyBought['sum'], $recentlyBought['order_period']); ?></span>
+    </div>
+<?php } ?>

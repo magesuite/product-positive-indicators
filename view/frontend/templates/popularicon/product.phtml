@@ -1,0 +1,10 @@
+<?php
+    $popularIconFlag = $block->getPopularIconFlag();
+
+    if($popularIconFlag){ ?>
+        <span class="cs-badge cs-badge--positive cs-badge--round">
+            <svg class="cs-badge__icon"><use xlink:href="#popular"></use></svg>
+            <span class="cs-badge__span"><?php echo __('Popular'); ?></span>
+        </span>
+    <?php }
+?>

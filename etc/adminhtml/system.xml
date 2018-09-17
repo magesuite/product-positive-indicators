@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="magesuite" translate="label" sortOrder="300">
+            <label>MageSuite</label>
+        </tab>
+        <section id="positive_indicators" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Positive indicators</label>
+            <tab>magesuite</tab>
+            <resource>MageSuite_ProductPositiveIndicators::config_positive_indicators</resource>
+            <group id="only_x_available" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Only X available, buy now</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="quantity" translate="label" type="text" sortOrder="10" showInDefault="1" >
+                    <label>Quantity</label>
+                    <comment>Display info on PDP if product qty is less than this value. This setting can be overwritten in category and product.</comment>
+                </field>
+            </group>
+            <group id="popular_icon" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Popular icon</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sort_by" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Product Listing Sort by</label>
+                    <source_model>Magento\Catalog\Model\Config\Source\ListSort</source_model>
+                    <comment></comment>
+                </field>
+                <field id="sort_direction" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Product Listing Sort Direction</label>
+                    <source_model>MageSuite\Frontend\Model\Config\Source\SortingDestination</source_model>
+                </field>
+                <field id="number_of_products" translate="label" type="text" sortOrder="10" showInDefault="1" >
+                    <label>Number of products</label>
+                    <comment>The number of products that will be marked as popular in the category.</comment>
+                </field>
+            </group>
+            <group id="recently_bought" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Recently bought</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="period" translate="label comment" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Order Period</label>
+                    <comment>Specify the time from which orders should be taken, in days. E.g. set 7 if you want use orders from last 7 days. Can be overwritten in the product.</comment>
+                </field>
+                <field id="minimal" translate="label comment" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Minimal Value</label>
+                    <comment>Specify the minimal amount of orders to show Recently Bought badge. Can be overwritten in the product.</comment>
+                </field>
+            </group>
+            <group id="fast_shipping" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Fast shipping</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="working_days" translate="label" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Working days</label>
+                    <source_model>Magento\Config\Model\Config\Source\Locale\Weekdays</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="holidays" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Holidays</label>
+                    <comment>Set holidays. E.g. 01.01.2018,25.12.2018</comment>
+                </field>
+                <field id="delivery_today_time" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Time to delivery today</label>
+                    <comment>Time to which the orders will be ship on the same day. E.g. 15:00</comment>
+                </field>
+                <field id="working_hours" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Logistics working hours</label>
+                    <comment>Set how long logistics works per day (in hours). E.g. 10</comment>
+                </field>
+                <field id="order_queue_length" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Order queue length</label>
+                    <comment>Set how many hours is already reserved. E.g. 5</comment>
+                </field>
+            </group>
+            <group id="free_shipping" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Free shipping</label>
+                <field id="free_shipping_method" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Default shipping method</label>
+                    <source_model>MageSuite\ProductPositiveIndicators\Model\Config\Source\FreeShipping</source_model>
+                    <comment>Choose the default shipping method for the free shipping threshold. If there are no options, set the free delivery threshold in the shipping methods configuration (Stores > Configuration > Sales > Shipping methods).</comment>
+                </field>
+                <field id="show_in_product_tiles" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show in product tiles</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_text_note_on_products_detailpage" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show text note on product's detailpage</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_badge_on_products_detailpage" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show badge on Product's detailpage</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_in_search_autosuggest" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show in search autosuggest</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

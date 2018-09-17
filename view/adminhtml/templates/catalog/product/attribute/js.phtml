@@ -1,0 +1,44 @@
+<?php
+
+// @codingStandardsIgnoreFile
+
+?>
+<script>
+    require([
+        "prototype"
+    ], function () {
+        function bindTopAttributeSign() {
+            if ($('top_attribute_sign').value == '%') {
+                displayTopAttributeFieldByClass($$('.top_attribute_min_value'), true);
+            } else {
+                displayTopAttributeFieldByClass($$('.top_attribute_min_value'), false);
+            }
+        }
+
+        function displayTopAttributeFieldByClass(nodes, show) {
+            for(var i=0;i<nodes.length; i++) {
+                displayTopAttributeField(nodes[i], show);
+            }
+        }
+
+        function displayTopAttributeField(node, show){
+            var td = node.parentNode;
+            var tr = $(td.parentNode);
+
+            if (show) {
+                tr.show();
+            } else {
+                tr.blur();
+                tr.hide();
+            }
+        }
+
+        if ($('top_attribute_sign') && $$('.top_attribute_min_value')) {
+            bindTopAttributeSign();
+            Event.observe($('top_attribute_sign'), 'change', bindTopAttributeSign);
+        }
+
+        window.bindTopAttributeSign = bindTopAttributeSign;
+
+    });
+</script>
