@@ -20,7 +20,7 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface
         $setup->startSetup();
         $table = $setup->getTable('catalog_eav_attribute');
         $connection = $setup->getConnection();
-        if($connection->tableColumnExists($table, 'top_attribute_enabled')) {
+        if(!$connection->tableColumnExists($table, 'top_attribute_enabled')) {
             $connection->addColumn(
                 $table,
                 'top_attribute_enabled',
@@ -31,7 +31,7 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface
                 ]
             );
         }
-        if($connection->tableColumnExists($table, 'top_attribute_sign')) {
+        if(!$connection->tableColumnExists($table, 'top_attribute_sign')) {
             $connection->addColumn(
                 $table,
                 'top_attribute_sign',
@@ -42,7 +42,7 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface
                 ]
             );
         }
-        if($connection->tableColumnExists($table, 'top_attribute_value')) {
+        if(!$connection->tableColumnExists($table, 'top_attribute_value')) {
             $connection->addColumn(
                 $table,
                 'top_attribute_value',
@@ -53,7 +53,7 @@ class UpgradeSchema implements \Magento\Framework\Setup\UpgradeSchemaInterface
                 ]
             );
         }
-        if($connection->tableColumnExists($table, 'top_attribute_min_value')) {
+        if(!$connection->tableColumnExists($table, 'top_attribute_min_value')) {
             $connection->addColumn(
                 $table,
                 'top_attribute_min_value',
