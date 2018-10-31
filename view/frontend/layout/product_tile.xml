@@ -1,0 +1,43 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <body>
+        <referenceBlock name="product.tile.container.badges">
+            <block class="MageSuite\ProductTile\Block\Tile\Container"
+                   name="product.tile.container.badge.el.freeshipping"
+                   after="product.tile.container.badge.el.new">
+                <arguments>
+                    <argument xsi:type="string" name="html_tag">li</argument>
+                    <argument xsi:type="string" name="css_class">cs-grid-product__badge</argument>
+                </arguments>
+                <block class="MageSuite\ProductTile\Block\Tile\Fragment"
+                       name="product.tile.badge.positive_indicators.free_shipping"
+                       template="MageSuite_ProductTile::fragments/indicator-badge.phtml"
+                >
+                    <arguments>
+                        <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\FreeShipping</argument>
+                        <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
+                        <argument translate="true" xsi:type="string" name="label">Free shipping</argument>
+                    </arguments>
+                </block>
+            </block>
+
+            <block class="MageSuite\ProductTile\Block\Tile\Container"
+                   name="product.tile.container.badge.el.popular"
+                   after="product.tile.container.badge.el.freeshipping">
+                <arguments>
+                    <argument xsi:type="string" name="html_tag">li</argument>
+                    <argument xsi:type="string" name="css_class">cs-grid-product__badge</argument>
+                </arguments>
+                <block class="MageSuite\ProductTile\Block\Tile\Fragment"
+                       name="product.tile.badge.positive_indicators.popular"
+                       template="MageSuite_ProductTile::fragments/indicator-badge.phtml"
+                >
+                    <arguments>
+                        <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\Popular</argument>
+                        <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
+                        <argument translate="true" xsi:type="string" name="label">Popular</argument>
+                    </arguments>
+                </block>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
