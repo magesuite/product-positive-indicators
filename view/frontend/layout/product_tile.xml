@@ -9,10 +9,10 @@
                 <arguments>
                     <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\FreeShipping</argument>
                     <argument xsi:type="string" name="wrapper_tag">li</argument>
-                    <argument xsi:type="string" name="wrapper_css_class">cs-grid-product__badge cs-grid-product__badge--free-shipping</argument>
+                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge cs-product-tile__badge--free-shipping</argument>
                     <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
                     <argument translate="true" xsi:type="string" name="label">Free shipping</argument>
-                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-grid-product__badge-text</argument>
+                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-product-tile__badge-text</argument>
                 </arguments>
             </block>
 
@@ -24,10 +24,10 @@
                 <arguments>
                     <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\Popular</argument>
                     <argument xsi:type="string" name="wrapper_tag">li</argument>
-                    <argument xsi:type="string" name="wrapper_css_class">cs-grid-product__badge cs-grid-product__badge--popular</argument>
+                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge cs-product-tile__badge--popular</argument>
                     <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
                     <argument translate="true" xsi:type="string" name="label">Popular</argument>
-                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-grid-product__badge-text</argument>
+                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-product-tile__badge-text</argument>
                 </arguments>
             </block>
         </referenceBlock>
