@@ -80,6 +80,10 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         if (version_compare($context->getVersion(), '0.0.9', '<')) {
             $this->upgradeToVersion009();
         }
+        if (version_compare($context->getVersion(), '1.0.1', '<')) {
+            $this->updateRecentlyAndPopularIndicatorsScope();
+        }
+
     }
 
     protected function upgradeToVersion002()
@@ -337,4 +341,22 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         $entityType = $this->eavSetup->getEntityTypeId(\Magento\Catalog\Model\Product::ENTITY);
         $this->eavSetup->updateAttribute($entityType, 'popular_icon', 'used_in_product_listing', true);
     }
+
+    public function updateRecentlyAndPopularIndicatorsScope()
+    {
+        $entityType = $this->eavSetup->getEntityTypeId(\Magento\Catalog\Model\Product::ENTITY);
+        $attributes = [
+            'recently_bought',
+            'recently_bought_period',
+            'recently_bought_minimal',
+            'recently_bought_sum',
+            'popular_icon',
+            'popular_icon_categories'
+        ];
+
+        foreach($attributes as $attribute){
+            $this->eavSetup->updateAttribute($entityType, $attribute, 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
+        }
+    }
+
 }

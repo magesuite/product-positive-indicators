@@ -27,7 +27,7 @@
                 </field>
                 <field id="sort_by" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Product Listing Sort by</label>
-                    <source_model>Magento\Catalog\Model\Config\Source\ListSort</source_model>
+                    <source_model>MageSuite\ProductPositiveIndicators\Model\Config\Source\SortBy</source_model>
                     <comment></comment>
                 </field>
                 <field id="sort_direction" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
