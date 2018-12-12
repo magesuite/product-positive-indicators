@@ -134,6 +134,10 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
     public static function loadCategories()
     {
         require __DIR__ . '/../_files/categories_with_products.php';
+
+        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
+        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
     }
 
     public static function loadProductsRollback()
