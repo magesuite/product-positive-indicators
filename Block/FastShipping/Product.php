@@ -56,9 +56,12 @@ class Product extends \Magento\Framework\View\Element\Template
         }
 
         $deliveryData = unserialize($this->cache->load(self::CACHE_KEY));
-        $clearCache = $this->getClearCache();
+        $clearCache = $this->_request->getParam('clear', false);
 
-        if($clearCache or!$deliveryData){
+        if($clearCache or !$deliveryData){
+            $this->setCacheLifetime(null);
+            $this->setClearCache(true);
+
             $deliveryData = $this->deliveryDataProvider->prepareDeliveryData($config);
 
             $this->cache->save(serialize($deliveryData), self::CACHE_KEY, [], self::CACHE_LIFETIME);
