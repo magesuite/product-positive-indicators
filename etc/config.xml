@@ -20,7 +20,7 @@
             <fast_shipping>
                 <active>0</active>
                 <working_days>1,2,3,4,5</working_days>
-                <delivery_today_time>0</delivery_today_time>
+                <delivery_today_time>16:00</delivery_today_time>
                 <working_hours>0</working_hours>
                 <order_queue_length>0</order_queue_length>
             </fast_shipping>
