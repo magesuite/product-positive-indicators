@@ -27,10 +27,11 @@ class DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Servi
     public function prepareDeliveryData($config, $format = 'd.m.Y H:i:s', $specificDate = null)
     {
         $utcOffset = (int)$this->dateTime->getGmtOffset();
+        $holidays = $config['holidays'] ?? null;
 
         $this->config = [
             'working_days' => $this->prepareDataFromConfiguration($config['working_days']),
-            'holidays' => $this->prepareDataFromConfiguration($config['holidays']),
+            'holidays' => $this->prepareDataFromConfiguration($holidays),
             'working_hours' => $this->prepareDataFromConfiguration($config['working_hours'], 'hours'),
             'order_queue_length' => $this->prepareDataFromConfiguration($config['order_queue_length'], 'hours'),
             'delivery_today_time' => $config['delivery_today_time']
