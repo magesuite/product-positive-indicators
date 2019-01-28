@@ -18,9 +18,9 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $scopeConfig;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockStateInterface
+     * @var \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface
      */
-    protected $stockInterface;
+    protected $getProductSalableQty;
 
     /**
      * @var \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface
@@ -31,7 +31,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
-        \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
+        \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
         array $data = []
     ) {
@@ -39,7 +39,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
         $this->registry = $registry;
         $this->scopeConfig = $scopeConfigInterface;
-        $this->stockInterface = $stockInterface;
+        $this->getProductSalableQty = $getProductSalableQty;
         $this->categoryFinder = $categoryFinder;
 
         $this->config = $this->getConfig();
@@ -78,10 +78,9 @@ class Product extends \Magento\Framework\View\Element\Template
             return false;
         }
 
-        $qty = $product->getExtensionAttributes()->getStockItem()->getQty();
-        $qty = $qty ? $qty : $this->stockInterface->getStockQty($product->getId());
+        $stockId = $product->getExtensionAttributes()->getStockItem()->getStockId();
 
-        return $qty;
+        return $this->getProductSalableQty->execute($product->getSku(), $stockId);
     }
 
     public function getProduct()
