@@ -127,6 +127,29 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($displayInfo);
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture loadProducts
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
+     */
+    public function testItReturnsCorrectProductQty()
+    {
+        $product = $this->productRepository->get('product_qty_100');
+        $this->coreRegistry->register('product', $product);
+
+        $this->assertEquals(100, $this->productBlock->getProductQty());
+
+        $product = $this->productRepository->get('product_qty_2');
+
+        $this->coreRegistry->unregister('product');
+        $this->coreRegistry->register('product', $product);
+
+        $this->assertEquals(2, $this->productBlock->getProductQty());
+    }
+
 
     public static function loadProducts()
     {
