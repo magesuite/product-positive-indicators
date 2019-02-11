@@ -1,4 +1,6 @@
 <?php
-$deliveryData = $block->getDeliveryData();
-echo $deliveryData;
+/** @var $block \MageSuite\ProductPositiveIndicators\Block\FastShipping\Product */
+$deliveryData = json_decode($block->getDeliveryData(), true);
 ?>
+
+<?= $deliveryData ?>
