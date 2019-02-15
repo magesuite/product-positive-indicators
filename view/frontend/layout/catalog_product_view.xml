@@ -2,21 +2,30 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="product.info.form.content">
-            <block class="MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product" 
-                   name="indicator.low-stock" 
-                   template="MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml" />
+              <block class="MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product" 
+                     name="indicator.low-stock" 
+                     template="MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml" />
 
-            <block class="MageSuite\ProductPositiveIndicators\Block\FastShipping\Product" 
-                   name="indicator.fast-shipping" 
-                   template="MageSuite_ProductPositiveIndicators::fastshipping/product.phtml" />
+              <block class="MageSuite\ProductPositiveIndicators\Block\FastShipping\Product" 
+                     name="indicator.fast-shipping" 
+                     template="MageSuite_ProductPositiveIndicators::fastshipping/product.phtml" />
 
-            <block class="MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product" 
-                   name="indicator.free-shipping" 
-                   template="MageSuite_ProductPositiveIndicators::freeshipping/product.phtml" />
+              <block class="MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product" 
+                     name="indicator.free-shipping" 
+                     template="MageSuite_ProductPositiveIndicators::freeshipping/product.phtml" />
 
-            <block class="MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product" 
-                   name="indicator.recently-bought" 
-                   template="MageSuite_ProductPositiveIndicators::recentlybought/product.phtml" />
+              <block class="MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product" 
+                     name="indicator.recently-bought" 
+                     template="MageSuite_ProductPositiveIndicators::recentlybought/product.phtml" />
+        </referenceContainer>
+        <referenceContainer name="product.info.media">
+              <block class="MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product" 
+                     name="indicator.popular.badge" 
+                     template="MageSuite_ProductPositiveIndicators::popularicon/product-badge.phtml" before="-" />
+
+              <block class="MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product" 
+                     name="indicator.free-shipping.badge"
+                     template="MageSuite_ProductPositiveIndicators::freeshipping/product-badge.phtml" before="-" />
         </referenceContainer>
     </body>
 </page>
