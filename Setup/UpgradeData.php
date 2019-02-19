@@ -80,8 +80,13 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         if (version_compare($context->getVersion(), '0.0.9', '<')) {
             $this->upgradeToVersion009();
         }
+
         if (version_compare($context->getVersion(), '1.0.1', '<')) {
             $this->updateRecentlyAndPopularIndicatorsScope();
+        }
+
+        if (version_compare($context->getVersion(), '1.0.2', '<')) {
+            $this->addAvailabilityAttribute();
         }
 
     }
@@ -356,6 +361,58 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
         foreach($attributes as $attribute){
             $this->eavSetup->updateAttribute($entityType, $attribute, 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
+        }
+    }
+
+    public function addAvailabilityAttribute()
+    {
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'use_specific_lead_time')) {
+            $this->eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'use_specific_lead_time',
+                [
+                    'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                    'type' => 'int',
+                    'unique' => false,
+                    'label' => 'Use specific lead time',
+                    'input' => 'boolean',
+                    'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
+                    'group' => 'Positive Indicators',
+                    'required' => false,
+                    'sort_order' => 70,
+                    'user_defined' => 1,
+                    'searchable' => false,
+                    'filterable' => false,
+                    'filterable_in_search' => false,
+                    'visible_on_front' => false,
+                    'used_in_product_listing' => false,
+                    'note' => 'Lead time from this product will be used if this field is set to Yes and lead time is greater than 0.'
+                ]
+            );
+        }
+
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'specific_lead_time')) {
+            $this->eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'specific_lead_time',
+                [
+                    'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                    'type' => 'varchar',
+                    'unique' => false,
+                    'label' => 'Specific lead time',
+                    'input' => 'text',
+                    'group' => 'Positive Indicators',
+                    'required' => false,
+                    'sort_order' => 80,
+                    'user_defined' => 1,
+                    'searchable' => false,
+                    'filterable' => false,
+                    'filterable_in_search' => false,
+                    'visible_on_front' => false,
+                    'used_in_product_listing' => true,
+                    'note' => 'Lead time (in days)'
+                ]
+            );
         }
     }
 

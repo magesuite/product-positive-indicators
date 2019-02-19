@@ -4,23 +4,24 @@ namespace MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
+    const XML_PATH_CONFIGURATION_KEY = 'only_x_available';
+
     protected $_template = 'MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml';
 
-    private $config;
     /**
      * @var \Magento\Framework\Registry
      */
     protected $registry;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
      * @var \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface
      */
     protected $getProductSalableQty;
+
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     */
+    protected $configuration;
 
     /**
      * @var \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface
@@ -30,28 +31,28 @@ class Product extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
         $this->registry = $registry;
-        $this->scopeConfig = $scopeConfigInterface;
         $this->getProductSalableQty = $getProductSalableQty;
+        $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
-
-        $this->config = $this->getConfig();
     }
 
     public function displayInfoOnProductPage($productQty = null)
     {
-        if(!$this->config['active']){
+        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
+
+        if(!$config['active']){
             return false;
         }
 
-        $qtyFromConfig = $this->getQuantityFromConfig();
+        $qtyFromConfig = $this->getQuantityFromConfig($config);
 
         if(!$qtyFromConfig){
             return false;
@@ -87,7 +88,11 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->registry->registry('product');
 
-        return $product ? $product : false;
+        if(!$product){
+            return false;
+        }
+
+        return $product;
     }
 
     private function getCategory()
@@ -109,7 +114,7 @@ class Product extends \Magento\Framework\View\Element\Template
         return $category ? $category : false;
     }
 
-    private function getQuantityFromConfig()
+    private function getQuantityFromConfig($config)
     {
         $product = $this->getProduct();
 
@@ -123,12 +128,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category->getQtyAvailable();
         }
 
-        return (int)$this->config['quantity'];
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/only_x_available', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return (int)$config['quantity'];
     }
 
 }

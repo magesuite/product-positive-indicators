@@ -4,43 +4,44 @@ namespace MageSuite\ProductPositiveIndicators\Block\PopularIcon;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
+    const XML_PATH_CONFIGURATION_KEY = 'popular_icon';
+
     protected $_template = 'MageSuite_ProductPositiveIndicators::popularicon/product.phtml';
 
-    private $config;
     /**
      * @var \Magento\Framework\Registry
      */
     protected $registry;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
      * @var \Magento\CatalogInventory\Api\StockStateInterface
      */
     protected $stockInterface;
 
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     */
+    protected $configuration;
+
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
         $this->registry = $registry;
-        $this->scopeConfig = $scopeConfigInterface;
         $this->stockInterface = $stockInterface;
-
-        $this->config = $this->getConfig();
+        $this->configuration = $configuration;
     }
 
     public function getPopularIconFlag()
     {
-        if(!$this->config['active']){
+        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
+
+        if(!$config['active']){
             return false;
         }
 
@@ -57,12 +58,11 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->registry->registry('product');
 
-        return $product ? $product : false;
-    }
+        if(!$product){
+            return false;
+        }
 
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/popular_icon', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $product;
     }
 
 }

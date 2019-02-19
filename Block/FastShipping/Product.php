@@ -4,17 +4,11 @@ namespace MageSuite\ProductPositiveIndicators\Block\FastShipping;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
+    const XML_PATH_CONFIGURATION_KEY = 'fast_shipping';
     const CACHE_LIFETIME = 300;
     const CACHE_KEY = 'indicator_fast_shipping';
 
-    const XML_PATH_FAST_SHIPPING_GROUP = 'positive_indicators/fast_shipping';
-
     protected $_template = 'MageSuite_ProductPositiveIndicators::fastshipping/product.phtml';
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
 
     /**
      * @var \Magento\Framework\App\CacheInterface
@@ -27,29 +21,34 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $serializer;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
      */
-    protected $deliveryDataProvider;
+    protected $configuration;
+
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping
+     */
+    protected $fastShippingDataProvider;
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\Serializer\Json $serializer,
-        \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface $deliveryDataProvider,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping $fastShippingDataProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
-        $this->scopeConfig = $scopeConfigInterface;
         $this->cache = $cache;
         $this->serializer = $serializer;
-        $this->deliveryDataProvider = $deliveryDataProvider;
+        $this->configuration = $configuration;
+        $this->fastShippingDataProvider = $fastShippingDataProvider;
     }
 
     public function getDeliveryData()
     {
-        $config = $this->getConfig();
+        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
         if(!$config['active'] or !$config['delivery_today_time']){
             return false;
@@ -62,20 +61,11 @@ class Product extends \Magento\Framework\View\Element\Template
             $this->setCacheLifetime(null);
             $this->setClearCache(true);
 
-            $deliveryData = $this->deliveryDataProvider->prepareDeliveryData($config);
+            $deliveryData = $this->fastShippingDataProvider->prepareDeliveryData($config);
 
             $this->cache->save(serialize($deliveryData), self::CACHE_KEY, [], self::CACHE_LIFETIME);
         }
 
         return $this->serializer->serialize($deliveryData);
     }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue(
-            self::XML_PATH_FAST_SHIPPING_GROUP,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
 }

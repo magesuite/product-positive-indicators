@@ -47,10 +47,15 @@ class Product extends \Magento\Framework\View\Element\Template
         return $this->freeShippingService->showBadgeOnProductsDetailpage();
     }
 
-    private function getProduct()
+    protected function getProduct()
     {
         $product = $this->registry->registry('product');
-        return $product ? $product : false;
+
+        if(!$product){
+            return false;
+        }
+
+        return $product;
     }
 
 }
