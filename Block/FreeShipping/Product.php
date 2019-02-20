@@ -7,9 +7,9 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $_template = 'MageSuite_ProductPositiveIndicators::freeshipping/product.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
      */
-    protected $registry;
+    protected $productHelper;
 
     /**
      * @var \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface
@@ -18,19 +18,19 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Framework\Registry $registry,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService,
         array $data = []
     )
     {
-        $this->registry = $registry;
+        $this->productHelper = $productHelper;
         $this->freeShippingService = $freeShippingService;
         parent::__construct($context, $data);
     }
 
     public function isFreeShippingAvailable()
     {
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
             return false;
@@ -45,17 +45,6 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function showBadgeOnProductsDetailpage(){
         return $this->freeShippingService->showBadgeOnProductsDetailpage();
-    }
-
-    protected function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        if(!$product){
-            return false;
-        }
-
-        return $product;
     }
 
 }

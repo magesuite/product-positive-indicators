@@ -61,7 +61,7 @@ class Product extends \Magento\Framework\View\Element\Template
             $this->setCacheLifetime(null);
             $this->setClearCache(true);
 
-            $deliveryData = $this->fastShippingDataProvider->prepareDeliveryData($config);
+            $deliveryData = $this->fastShippingDataProvider->getDeliveryData($config);
 
             $this->cache->save(serialize($deliveryData), self::CACHE_KEY, [], self::CACHE_LIFETIME);
         }

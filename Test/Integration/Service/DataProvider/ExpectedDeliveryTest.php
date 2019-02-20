@@ -40,13 +40,13 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
     public function testItReturnsCorrectData($config, $date, $sku, $excepted)
     {
         $product = $this->productRepository->get($sku);
-        $deliveryData = $this->expectedDeliveryDataProvider->prepareDeliveryData($config, $product, $date);
+        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($config, $product, $date);
 
         if($excepted === null){
             $this->assertNull($deliveryData);
         }else{
             $this->assertEquals($excepted['deliveryDayName'], (string)$deliveryData['deliveryDayName']);
-            $this->assertEquals($excepted['nextDeliveryDayName'], (string)$deliveryData['nextDeliveryDayName']);
+            $this->assertEquals($excepted['deliveryNextDayName'], (string)$deliveryData['deliveryNextDayName']);
         }
     }
 

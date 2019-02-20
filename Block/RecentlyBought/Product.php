@@ -9,9 +9,9 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $_template = 'MageSuite_ProductPositiveIndicators::recentlybought/product.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
      */
-    protected $registry;
+    protected $productHelper;
 
     /**
      * @var \Magento\CatalogInventory\Api\StockStateInterface
@@ -25,14 +25,14 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        \Magento\Framework\Registry $registry,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
-        $this->registry = $registry;
+        $this->productHelper = $productHelper;
         $this->stockInterface = $stockInterface;
         $this->configuration = $configuration;
     }
@@ -47,7 +47,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return $result;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
             return $result;
@@ -67,16 +67,5 @@ class Product extends \Magento\Framework\View\Element\Template
             'sum' => $product->getRecentlyBoughtSum(),
             'order_period' => $orderPeriod
         ];
-    }
-
-    public function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        if(!$product){
-            return false;
-        }
-
-        return $product;
     }
 }

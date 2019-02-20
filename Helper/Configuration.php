@@ -20,6 +20,6 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getConfig($group)
     {
-        return $this->scopeConfig->getValue('positive_indicators/' . $group, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(sprintf('positive_indicators/%s', $group), \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

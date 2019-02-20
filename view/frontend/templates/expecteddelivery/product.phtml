@@ -1,4 +1,14 @@
 <?php
 /** @var $block \MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery\Product */
 $deliveryData = $block->getDeliveryData();
+
+if($deliveryData) {
+    $canSendToday = $deliveryData['maxTodayTime'] and $deliveryData['maxTodayTime'] < time();
+
+    $deliveryTime = $canSendToday ? $deliveryData['deliveryDayTime'] : $deliveryData['deliveryNextDayTime'];
+    $deliveryDay = $canSendToday ? $deliveryData['deliveryDayName'] : $deliveryData['deliveryNextDayName'];
+
+    ?>
+    <p><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryTime), $deliveryDay); ?></p><?php
+}
 ?>

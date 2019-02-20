@@ -4,16 +4,16 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function prepareDeliveryData($config, $specificDate = null)
+    public function getDeliveryData($config, $specificDate = null)
     {
-        $config = $this->prepareConfigurationForIndicator($config, $specificDate);
+        $config = $this->getConfigurationForIndicator($config, $specificDate);
 
         $currentDateTime = new \DateTime('now');
         $currentDateTime->setTimestamp($config['timestamp']);
 
         $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config['delivery_today_time']);
 
-        $businessDay = $this->isBusinessDay($config, $currentDateTime);
+        $businessDay = $this->isWorkingDay($config, $currentDateTime) && $this->isNotHoliday($config, $currentDateTime);
 
         if($businessDay and ($currentDateTime->getTimestamp() + $config['order_queue_length']) < $maxTimeToday->getTimestamp()){
             return [
@@ -80,12 +80,12 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         return ['deliveryDay' => $currentTime, 'nextDay' => $nextDay];
     }
 
-    protected function prepareConfigurationForIndicator($config, $specificDate)
+    protected function getConfigurationForIndicator($config, $specificDate)
     {
-        $config = $this->prepareConfiguration($config);
+        $config = $this->getConfiguration($config);
 
-        $config['working_hours'] = $this->prepareDataFromConfiguration($config['working_hours'], 'hours');
-        $config['order_queue_length'] = $this->prepareDataFromConfiguration($config['order_queue_length'], 'hours');
+        $config['working_hours'] = $this->getDataFromConfiguration($config['working_hours'], 'hours');
+        $config['order_queue_length'] = $this->getDataFromConfiguration($config['order_queue_length'], 'hours');
         $config['timestamp'] = $specificDate ? strtotime($specificDate) : $this->localeDate->scopeTimeStamp();
 
         return $config;

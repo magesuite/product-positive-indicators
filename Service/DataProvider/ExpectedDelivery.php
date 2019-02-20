@@ -4,7 +4,7 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function prepareDeliveryData($config, $product = null, $specificDate = null)
+    public function getDeliveryData($config, $product = null, $specificDate = null)
     {
         $isInStock = $product->getQuantityAndStockStatus()['is_in_stock'];
 
@@ -12,11 +12,11 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             return null;
         }
 
-        $config = $this->prepareConfigurationForIndicator($config, $specificDate);
+        $config = $this->getConfigurationForIndicator($config, $specificDate);
 
-        $leadTime = $this->prepareLeadTime($config, $product);
+        $shippingTimeInDays = $this->getShippingTimeInDays($config, $product);
 
-        if(!$leadTime){
+        if(!$shippingTimeInDays){
             return null;
         }
 
@@ -24,45 +24,45 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         $currentDateTime->setTimestamp($config['timestamp']);
         $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config['delivery_today_time']);
 
-        $canShipToday = $this->isBusinessDay($config, $currentDateTime);
-        $shippingDays = $this->prepareShippingDays($config, $currentDateTime, $leadTime);
+        $canShipToday = $this->isWorkingDay($config, $currentDateTime) && $this->isNotHoliday($config, $currentDateTime);
+        $shippingDays = $this->getShippingDays($config, $currentDateTime, $shippingTimeInDays);
 
         return [
             'maxTodayTime' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
             'deliveryDayTime' => $shippingDays['delivery_day']->getTimestamp(),
             'deliveryDayName' => __($shippingDays['delivery_day']->format('l')),
-            'nextDeliveryDayTime' => $shippingDays['next_delivery_day']->getTimestamp(),
-            'nextDeliveryDayName' => __($shippingDays['next_delivery_day']->format('l')),
+            'deliveryNextDayTime' => $shippingDays['next_delivery_day']->getTimestamp(),
+            'deliveryNextDayName' => __($shippingDays['next_delivery_day']->format('l')),
             'utcOffset' => $config['utc_offset']
         ];
 
     }
 
-    protected function prepareLeadTime($config, $product)
+    protected function getShippingTimeInDays($config, $product)
     {
-        $leadTime = $config['default_lead_time'] ?? 0;
+        $shippingTime = $config['default_shipping_time'] ?? 0;
 
-        if($product->getUseSpecificLeadTime()){
-            $leadTime = $product->getSpecificLeadTime() ? $product->getSpecificLeadTime() : $leadTime;
+        if($product->getUseSpecificShippingTime()){
+            $shippingTime = $product->getSpecificShippingTime() ? $product->getSpecificShippingTime() : $shippingTime;
         }
 
-        return $leadTime;
+        return $shippingTime;
     }
 
-    protected function prepareShippingDays($config, $currentDay, $leadTime)
+    protected function getShippingDays($config, $currentDay, $shippingTimeInDays)
     {
         $deliveryDay = null;
 
-        while ($leadTime) {
+        while ($shippingTimeInDays) {
             $currentDay->modify('+1 day');
 
-            $isBusinessDay = $this->isBusinessDay($config, $currentDay);
+            $isBusinessDay = $this->isWorkingDay($config, $currentDay) && $this->isNotHoliday($config, $currentDay);
 
             if(!$isBusinessDay) {
                 continue;
             }
 
-            $leadTime--;
+            $shippingTimeInDays--;
             $deliveryDay = $currentDay;
         }
 
@@ -73,7 +73,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         while (!$nextDeliveryDay){
             $dateTime->modify('+1 day');
 
-            $isBusinessDay = $this->isBusinessDay($config, $dateTime);
+            $isBusinessDay = $this->isWorkingDay($config, $dateTime) && $this->isNotHoliday($config, $dateTime);
 
             if(!$isBusinessDay) {
                 continue;
@@ -85,9 +85,9 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         return ['delivery_day' => $deliveryDay, 'next_delivery_day' => $nextDeliveryDay];
     }
 
-    protected function prepareConfigurationForIndicator($config, $specificDate)
+    protected function getConfigurationForIndicator($config, $specificDate)
     {
-        $config = $this->prepareConfiguration($config);
+        $config = $this->getConfiguration($config);
         $config['timestamp'] = $specificDate ? strtotime($specificDate) : $this->localeDate->scopeTimeStamp();
 
         return $config;

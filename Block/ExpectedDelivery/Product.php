@@ -20,9 +20,9 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $serializer;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
      */
-    protected $registry;
+    protected $productHelper;
 
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -43,7 +43,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\Serializer\Json $serializer,
-        \Magento\Framework\Registry $registry,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
         \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery $expectedDeliveryDataProvider,
@@ -53,7 +53,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
         $this->cache = $cache;
         $this->serializer = $serializer;
-        $this->registry = $registry;
+        $this->productHelper = $productHelper;
         $this->storeManager = $storeManager;
         $this->configuration = $configuration;
         $this->expectedDeliveryDataProvider = $expectedDeliveryDataProvider;
@@ -67,36 +67,25 @@ class Product extends \Magento\Framework\View\Element\Template
             return false;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
             return false;
         }
 
-        $cacheKey = $this->prepareCacheKey($product->getId());
+        $cacheKey = $this->getCacheKey($product->getId());
 
         $deliveryData = unserialize($this->cache->load($cacheKey));
 
         if(!$deliveryData){
-            $deliveryData = $this->expectedDeliveryDataProvider->prepareDeliveryData($config, $product);
+            $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($config, $product);
             $this->cache->save(serialize($deliveryData), $cacheKey);
         }
 
         return $deliveryData;
     }
 
-    protected function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        if(!$product){
-            return false;
-        }
-
-        return $product;
-    }
-
-    protected function prepareCacheKey(int $productId)
+    public function getCacheKey(int $productId)
     {
         return sprintf(
             self::CACHE_KEY,

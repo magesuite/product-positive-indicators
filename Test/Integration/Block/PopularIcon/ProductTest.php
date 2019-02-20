@@ -64,7 +64,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
         $popularIconFlag = $this->productBlock->getPopularIconFlag();
 
-        $this->assertFalse($popularIconFlag);
+        $this->assertNull($popularIconFlag);
     }
 
 

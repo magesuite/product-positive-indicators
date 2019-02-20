@@ -10,5 +10,5 @@ interface DeliveryDataProviderInterface
      * @param [] $config
      * @return array
      */
-    public function prepareDeliveryData($config);
+    public function getDeliveryData($config);
 }

@@ -89,8 +89,13 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         return (isset($config['popular_icon']) and $config['popular_icon']['active']);
     }
 
-    private function getProduct($product)
+    public function getProduct($product = null)
     {
+        if(!$product){
+            $product = $this->registry->registry('product');
+            return $product ? $product : null;
+        }
+
         if ($product instanceof \Magento\Catalog\Api\Data\ProductInterface) {
             return $product;
         }

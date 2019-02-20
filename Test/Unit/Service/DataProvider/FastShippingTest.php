@@ -24,7 +24,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectData($config, $date, $excepted)
     {
-        $deliveryData = $this->fastShippingDataProvider->prepareDeliveryData($config, $date);
+        $deliveryData = $this->fastShippingDataProvider->getDeliveryData($config, $date);
 
         $this->assertEquals($excepted, $deliveryData);
     }

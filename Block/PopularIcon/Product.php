@@ -9,9 +9,9 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $_template = 'MageSuite_ProductPositiveIndicators::popularicon/product.phtml';
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
      */
-    protected $registry;
+    protected $productHelper;
 
     /**
      * @var \Magento\CatalogInventory\Api\StockStateInterface
@@ -25,14 +25,14 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        \Magento\Framework\Registry $registry,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
-        $this->registry = $registry;
+        $this->productHelper = $productHelper;
         $this->stockInterface = $stockInterface;
         $this->configuration = $configuration;
     }
@@ -42,27 +42,16 @@ class Product extends \Magento\Framework\View\Element\Template
         $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
         if(!$config['active']){
-            return false;
+            return null;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
-            return false;
+            return null;
         }
 
         return (boolean)$product->getPopularIcon();
-    }
-
-    public function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        if(!$product){
-            return false;
-        }
-
-        return $product;
     }
 
 }

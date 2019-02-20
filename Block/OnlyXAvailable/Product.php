@@ -9,6 +9,11 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $_template = 'MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml';
 
     /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
+     */
+    protected $productHelper;
+
+    /**
      * @var \Magento\Framework\Registry
      */
     protected $registry;
@@ -30,6 +35,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
         \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
@@ -38,13 +44,14 @@ class Product extends \Magento\Framework\View\Element\Template
     ) {
         parent::__construct($context, $data);
 
+        $this->productHelper = $productHelper;
         $this->registry = $registry;
         $this->getProductSalableQty = $getProductSalableQty;
         $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
     }
 
-    public function displayInfoOnProductPage($productQty = null)
+    public function shouldDisplayInfoOnProductPage($productQty = null)
     {
         $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
@@ -69,30 +76,19 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getProductQty()
     {
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
-            return false;
+            return null;
         }
 
         if($product->getTypeId() != 'simple'){
-            return false;
+            return null;
         }
 
         $stockId = $product->getExtensionAttributes()->getStockItem()->getStockId();
 
         return $this->getProductSalableQty->execute($product->getSku(), $stockId);
-    }
-
-    public function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        if(!$product){
-            return false;
-        }
-
-        return $product;
     }
 
     private function getCategory()
@@ -103,10 +99,10 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
-            return false;
+            return null;
         }
 
         $category = $this->categoryFinder->getCategory($product);
@@ -116,7 +112,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     private function getQuantityFromConfig($config)
     {
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if($product and $product->getQtyAvailable() !== null){
             return (float)$product->getQtyAvailable();

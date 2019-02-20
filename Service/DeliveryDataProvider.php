@@ -22,17 +22,26 @@ class DeliveryDataProvider
         $this->localeDate = $localeDate;
     }
 
-    protected function prepareConfiguration($config)
+    protected function getConfiguration($config)
     {
-        $config['working_days'] = $this->prepareDataFromConfiguration($config['working_days']);
-        $config['holidays'] = !empty($config['holidays']) ? $this->prepareDataFromConfiguration($config['holidays']) : [];
+        $config['working_days'] = $this->getDataFromConfiguration($config['working_days']);
+        $config['holidays'] = !empty($config['holidays']) ? $this->getDataFromConfiguration($config['holidays']) : [];
 
         $config['utc_offset'] = (int)$this->dateTime->getGmtOffset();
 
         return $config;
     }
 
-    protected function isBusinessDay($config, $currentDay)
+    protected function isWorkingDay($config, $currentDay)
+    {
+        if(in_array($currentDay->format('N'), $config['working_days'])){
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function isNotHoliday($config, $currentDay)
     {
         if(in_array($currentDay->format('N'), $config['working_days']) and !in_array($currentDay->format('d.m.Y'), $config['holidays'])){
             return true;
@@ -41,7 +50,7 @@ class DeliveryDataProvider
         return false;
     }
 
-    protected function prepareDataFromConfiguration($data, $type = 'array')
+    protected function getDataFromConfiguration($data, $type = 'array')
     {
         if($type == 'hours'){
             return $data * 3600;

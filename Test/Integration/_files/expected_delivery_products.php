@@ -54,8 +54,8 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setWebsiteIds([1])
     ->setStockData(['use_config_manage_stock' => 1, 'qty' => 10, 'is_qty_decimal' => 0, 'is_in_stock' => 1])
     ->setCanSaveCustomOptions(true)
-    ->setUseSpecificLeadTime(1)
-    ->setSpecificLeadTime(4)
+    ->setUseSpecificShippingTime(1)
+    ->setSpecificShippingTime(4)
     ->save();
 
 $product->reindex();

@@ -56,7 +56,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get($sku);
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertEquals($flag, $displayInfo);
     }
@@ -75,7 +75,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get($sku);
         $productQty = $this->stockInterface->getStockQty($product->getId());
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage($productQty);
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage($productQty);
 
         $this->assertEquals($flag, $displayInfo);
     }
@@ -91,7 +91,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get('product_qty_100');
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertFalse($displayInfo);
     }
@@ -104,7 +104,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     {
         $this->coreRegistry->register('product', null);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertFalse($displayInfo);
     }
@@ -122,7 +122,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get('product_qty_available');
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertTrue($displayInfo);
     }
