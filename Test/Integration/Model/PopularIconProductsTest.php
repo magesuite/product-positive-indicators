@@ -63,10 +63,10 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
     public function testItReturnsCorrectProductIdsForDefaultSorting()
     {
         $expectedResult = [
-            604 => [333],
-            603 => [333],
-            602 => [333],
-            601 => [334]
+            604 => [433],
+            603 => [433],
+            602 => [433],
+            601 => [434]
         ];
         $productIds = $this->popularIconProducts->getProductsData();
         $this->assertEquals($expectedResult, $productIds);
@@ -84,9 +84,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
     public function testItReturnsCorrectProductIdsForSpecificSortingDirection()
     {
         $expectedResult = [
-            601 => [333,334],
-            600 => [333],
-            602 => [333]
+            601 => [433,434],
+            600 => [433],
+            602 => [433]
         ];
         $productIds = $this->popularIconProducts->getProductsData();
         $this->assertEquals($expectedResult, $productIds);
@@ -104,9 +104,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
     public function testItReturnsCorrectProductIdsForSpecificSortBy()
     {
         $expectedResult = [
-            604 => [333],
-            601 => [333,334],
-            603 => [333]
+            604 => [433],
+            601 => [433,434],
+            603 => [433]
         ];
         $productIds = $this->popularIconProducts->getProductsData();
         $this->assertEquals($expectedResult, $productIds);
@@ -123,9 +123,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
     public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts()
     {
         $expectedResult = [
-            604 => [333],
-            603 => [333],
-            601 => [334]
+            604 => [433],
+            603 => [433],
+            601 => [434]
         ];
         $productIds = $this->popularIconProducts->getProductsData();
         $this->assertEquals($expectedResult, $productIds);

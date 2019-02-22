@@ -101,7 +101,7 @@ $product->priceReindexCallback();
 $category = $objectManager->create('Magento\Catalog\Model\Category');
 $category->isObjectNew(true);
 $category
-    ->setId(333)
+    ->setId(433)
     ->setCreatedAt('2014-06-23 09:50:07')
     ->setName('First category')
     ->setParentId(2)
@@ -126,7 +126,7 @@ $category
 $category = $objectManager->create('Magento\Catalog\Model\Category');
 $category->isObjectNew(true);
 $category
-    ->setId(334)
+    ->setId(434)
     ->setCreatedAt('2014-06-23 09:50:07')
     ->setName('Subcategory')
     ->setParentId(2)
