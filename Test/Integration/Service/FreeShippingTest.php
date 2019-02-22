@@ -31,6 +31,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      */
     public function testIsFreeShippedReturnFalse()
@@ -42,6 +44,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
      * @magentoConfigFixture current_store general/country/default DE
@@ -59,6 +63,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
      * @magentoConfigFixture current_store general/country/default PL
@@ -76,6 +82,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method ups
      * @magentoConfigFixture current_store carriers/ups/active 1
@@ -93,6 +101,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
 
 
     /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @magentoConfigFixture current_store carriers/ups/active 1
      * @magentoConfigFixture current_store carriers/ups/sallowspecific 0
      * @magentoConfigFixture current_store carriers/ups/free_shipping_enable 1
