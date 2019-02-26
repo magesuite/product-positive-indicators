@@ -63,7 +63,7 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
-        if(!$config['active'] or !$config['delivery_today_time']){
+        if(!$config->getActive() or !$config->getDeliveryTodayTime()){
             return false;
         }
 

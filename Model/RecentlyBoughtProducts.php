@@ -4,8 +4,6 @@ namespace MageSuite\ProductPositiveIndicators\Model;
 
 class RecentlyBoughtProducts
 {
-    private $config = null;
-
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -26,30 +24,37 @@ class RecentlyBoughtProducts
      */
     protected $resourceConnection;
 
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     */
+    protected $configuration;
+
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
-        \Magento\Framework\App\ResourceConnection $resourceConnection
+        \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
     )
     {
         $this->scopeConfig = $scopeConfigInterface;
         $this->productResourceAction = $productResourceAction;
         $this->productCollectionFactory = $productCollectionFactory;
         $this->resourceConnection = $resourceConnection;
-
-        $this->config = $this->getConfig();
+        $this->configuration = $configuration;
     }
 
     public function execute()
     {
+        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product::XML_PATH_CONFIGURATION_KEY);
+
         $this->removeRecentlyBoughtFlag();
 
-        if(!$this->config['active'] or !$this->config['period'] or !$this->config['minimal']){
+        if(!$config->getActive() or !$config->getPeriod() or !$config->getMinimal()){
             return false;
         }
 
-        $productsData = $this->getProductsData();
+        $productsData = $this->getProductsData($config);
 
         if(empty($productsData)){
             return false;
@@ -58,13 +63,13 @@ class RecentlyBoughtProducts
         $this->addRecentlyBoughtFlagToProducts($productsData);
     }
 
-    public function getProductsData()
+    public function getProductsData($config)
     {
         $products = $this->getProductCollection();
 
-        $from = date('Y-m-d 00:00:00', strtotime('-' . $this->config['period'] . ' days'));
+        $from = date('Y-m-d 00:00:00', strtotime('-' . $config->getPeriod() . ' days'));
         $to = date('Y-m-d 23:59:59', strtotime('-1 day'));
-        $minimalValue = $this->config['minimal'];
+        $minimalValue = $config->getMinimal();
 
         $productsData = [];
 
@@ -177,10 +182,5 @@ class RecentlyBoughtProducts
         ]);
 
         return $collection;
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/recently_bought', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

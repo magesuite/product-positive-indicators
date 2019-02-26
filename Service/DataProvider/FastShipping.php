@@ -4,27 +4,25 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function getDeliveryData($config, $specificDate = null)
+    public function getDeliveryData($config)
     {
-        $config = $this->getConfigurationForIndicator($config, $specificDate);
-
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($config['timestamp']);
+        $currentDateTime->setTimestamp($config->getTimestamp());
 
-        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config['delivery_today_time']);
+        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
 
-        $businessDay = $this->isWorkingDay($config, $currentDateTime) && $this->isNotHoliday($config, $currentDateTime);
+        $businessDay = $this->isWorkingDay($config, $currentDateTime) && !$this->isHoliday($config, $currentDateTime);
 
-        if($businessDay and ($currentDateTime->getTimestamp() + $config['order_queue_length']) < $maxTimeToday->getTimestamp()){
+        if($businessDay and ($currentDateTime->getTimestamp() + $config->getOrderQueueLength()) < $maxTimeToday->getTimestamp()){
             return [
                 'day' => 'today',
-                'time' => ($maxTimeToday->getTimestamp() - $config['order_queue_length']) - $config['utc_offset'],
+                'time' => ($maxTimeToday->getTimestamp() - $config->getOrderQueueLength()) - $config->getUtcOffset(),
                 'deliveryDay' => __($maxTimeToday->format('l')),
-                'utcOffset' => $config['utc_offset']
+                'utcOffset' => $config->getUtcOffset()
             ];
         }
 
-        $timeLeft = $config['order_queue_length'] - ($maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
+        $timeLeft = $config->getOrderQueueLength() - ($maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
 
         $deliveryDayAndNextDay = $this->getDeliveryDayAndNextDay($config, $currentDateTime, $timeLeft);
 
@@ -34,8 +32,8 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         $time = $deliveryDay->getTimestamp();
 
         if($dayType == 'tomorrow'){
-            $deliveryDay = new \DateTime($deliveryDay->format('d.m.Y') . ' ' . $config['delivery_today_time']);
-            $time  = $deliveryDay->getTimestamp() - $config['utc_offset'];
+            $deliveryDay = new \DateTime($deliveryDay->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
+            $time  = $deliveryDay->getTimestamp() - $config->getUtcOffset();
 
         }
 
@@ -43,7 +41,7 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
             'day' => $dayType,
             'time' => $time,
             'deliveryDay' => __($deliveryDay->format('l')),
-            'utcOffset' => $config['utc_offset']
+            'utcOffset' => $config->getUtcOffset()
         ];
 
     }
@@ -60,15 +58,15 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
                 $nextDay = $currentTime->format('d');
             }
 
-            if (!in_array($currentTime->format('N'), $config['working_days'])){
+            if(!$this->isWorkingDay($config, $currentTime)){
                 continue;
             }
 
-            if (in_array($currentTime->format('d.m.Y'), $config['holidays'])){
+            if($this->isHoliday($config, $currentTime)){
                 continue;
             }
 
-            $timeLeft = $timeLeft - $config['working_hours'];
+            $timeLeft = $timeLeft - $config->getWorkingHours();
 
             if($timeLeft > 0){
                 continue;
@@ -78,16 +76,5 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         }
 
         return ['deliveryDay' => $currentTime, 'nextDay' => $nextDay];
-    }
-
-    protected function getConfigurationForIndicator($config, $specificDate)
-    {
-        $config = $this->getConfiguration($config);
-
-        $config['working_hours'] = $this->getDataFromConfiguration($config['working_hours'], 'hours');
-        $config['order_queue_length'] = $this->getDataFromConfiguration($config['order_queue_length'], 'hours');
-        $config['timestamp'] = $specificDate ? strtotime($specificDate) : $this->localeDate->scopeTimeStamp();
-
-        return $config;
     }
 }

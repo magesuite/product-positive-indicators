@@ -4,8 +4,6 @@ namespace MageSuite\ProductPositiveIndicators\Model;
 
 class PopularIconProducts
 {
-    private $config;
-
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -36,12 +34,18 @@ class PopularIconProducts
      */
     protected $catalogLayer;
 
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     */
+    protected $configuration;
+
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Magento\Catalog\Model\Layer\Resolver $layerResolver
+        \Magento\Catalog\Model\Layer\Resolver $layerResolver,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
     )
     {
         $this->scopeConfig = $scopeConfigInterface;
@@ -49,19 +53,19 @@ class PopularIconProducts
         $this->productCollectionFactory = $productCollectionFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
         $this->catalogLayer = $layerResolver->get();
-
-        $this->config = $this->getConfig();
+        $this->configuration = $configuration;
     }
 
     public function execute()
     {
+        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
         $this->removePopularIconFlag();
 
-        if(!$this->config['active']){
+        if(!$config->getActive()){
             return false;
         }
 
-        $productsData = $this->getProductsData();
+        $productsData = $this->getProductsData($config);
 
         if(empty($productsData)){
             return false;
@@ -70,7 +74,7 @@ class PopularIconProducts
         $this->addPopularIconFlagToProducts($productsData);
     }
 
-    public function getProductsData()
+    public function getProductsData($config)
     {
         $categories = $this->getCategories();
 
@@ -85,7 +89,7 @@ class PopularIconProducts
                 continue;
             }
 
-            $productCollection = $this->getProductCollectionFromCategory($category);
+            $productCollection = $this->getProductCollectionFromCategory($config, $category);
 
             if(!$productCollection){
                 continue;
@@ -101,7 +105,7 @@ class PopularIconProducts
         return $productsData;
     }
 
-    private function getProductCollectionFromCategory($category)
+    private function getProductCollectionFromCategory($config, $category)
     {
         $collection = $this->initializeCollection($category);
 
@@ -110,11 +114,11 @@ class PopularIconProducts
         }
 
         $collection->setOrder(
-            $this->config['sort_by'],
-            $this->config['sort_direction']
+            $config->getSortBy(),
+            $config->getSortDirection()
         );
 
-        $collection->setPage(1, (int)$this->config['number_of_products']);
+        $collection->setPage(1, (int)$config->getNumberOfProducts());
 
         return $collection;
     }
@@ -197,10 +201,5 @@ class PopularIconProducts
         $collection->addAttributeToSelect('popular_icon');
 
         return $collection->getSize() ? $collection->getItems() : [];
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/popular_icon', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 }

@@ -366,15 +366,15 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
     public function addShippingTimeInDaysAttribute()
     {
-        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'use_specific_shipping_time')) {
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'use_time_needed_to_ship_product')) {
             $this->eavSetup->addAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
-                'use_specific_shipping_time',
+                'use_time_needed_to_ship_product',
                 [
                     'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
                     'type' => 'int',
                     'unique' => false,
-                    'label' => 'Use specific Shipping time',
+                    'label' => 'Take into account specific time needed to ship product',
                     'input' => 'boolean',
                     'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
                     'group' => 'Positive Indicators',
@@ -391,15 +391,15 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
             );
         }
 
-        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'specific_shipping_time')) {
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'time_needed_to_ship_product')) {
             $this->eavSetup->addAttribute(
                 \Magento\Catalog\Model\Product::ENTITY,
-                'specific_shipping_time',
+                'time_needed_to_ship_product',
                 [
                     'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
                     'type' => 'varchar',
                     'unique' => false,
-                    'label' => 'Specific shipping time',
+                    'label' => 'Specific time needed to ship product',
                     'input' => 'text',
                     'group' => 'Positive Indicators',
                     'required' => false,

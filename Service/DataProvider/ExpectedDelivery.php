@@ -4,15 +4,13 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function getDeliveryData($config, $product = null, $specificDate = null)
+    public function getDeliveryData($config, $product = null)
     {
         $isInStock = $product->getQuantityAndStockStatus()['is_in_stock'];
 
         if(empty($isInStock)){
             return null;
         }
-
-        $config = $this->getConfigurationForIndicator($config, $specificDate);
 
         $shippingTimeInDays = $this->getShippingTimeInDays($config, $product);
 
@@ -21,10 +19,10 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         }
 
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($config['timestamp']);
-        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config['delivery_today_time']);
+        $currentDateTime->setTimestamp($config->getTimestamp());
+        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
 
-        $canShipToday = $this->isWorkingDay($config, $currentDateTime) && $this->isNotHoliday($config, $currentDateTime);
+        $canShipToday = $this->isWorkingDay($config, $currentDateTime) && !$this->isHoliday($config, $currentDateTime);
         $shippingDays = $this->getShippingDays($config, $currentDateTime, $shippingTimeInDays);
 
         return [
@@ -33,17 +31,17 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             'deliveryDayName' => __($shippingDays['delivery_day']->format('l')),
             'deliveryNextDayTime' => $shippingDays['next_delivery_day']->getTimestamp(),
             'deliveryNextDayName' => __($shippingDays['next_delivery_day']->format('l')),
-            'utcOffset' => $config['utc_offset']
+            'utcOffset' => $config->getUtcOffset()
         ];
 
     }
 
     protected function getShippingTimeInDays($config, $product)
     {
-        $shippingTime = $config['default_shipping_time'] ?? 0;
+        $shippingTime = $config->getDefaultShippingTime() ?? 0;
 
-        if($product->getUseSpecificShippingTime()){
-            $shippingTime = $product->getSpecificShippingTime() ? $product->getSpecificShippingTime() : $shippingTime;
+        if($product->getUseTimeNeededToShipProduct()){
+            $shippingTime = $product->getTimeNeededToShipProduct() ? $product->getTimeNeededToShipProduct() : $shippingTime;
         }
 
         return $shippingTime;
@@ -56,7 +54,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         while ($shippingTimeInDays) {
             $currentDay->modify('+1 day');
 
-            $isBusinessDay = $this->isWorkingDay($config, $currentDay) && $this->isNotHoliday($config, $currentDay);
+            $isBusinessDay = $this->isWorkingDay($config, $currentDay) && !$this->isHoliday($config, $currentDay);
 
             if(!$isBusinessDay) {
                 continue;
@@ -73,7 +71,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         while (!$nextDeliveryDay){
             $dateTime->modify('+1 day');
 
-            $isBusinessDay = $this->isWorkingDay($config, $dateTime) && $this->isNotHoliday($config, $dateTime);
+            $isBusinessDay = $this->isWorkingDay($config, $dateTime) && !$this->isHoliday($config, $dateTime);
 
             if(!$isBusinessDay) {
                 continue;
@@ -83,14 +81,6 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         }
 
         return ['delivery_day' => $deliveryDay, 'next_delivery_day' => $nextDeliveryDay];
-    }
-
-    protected function getConfigurationForIndicator($config, $specificDate)
-    {
-        $config = $this->getConfiguration($config);
-        $config['timestamp'] = $specificDate ? strtotime($specificDate) : $this->localeDate->scopeTimeStamp();
-
-        return $config;
     }
 
 

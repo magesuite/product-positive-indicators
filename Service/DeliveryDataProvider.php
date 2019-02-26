@@ -22,42 +22,21 @@ class DeliveryDataProvider
         $this->localeDate = $localeDate;
     }
 
-    protected function getConfiguration($config)
-    {
-        $config['working_days'] = $this->getDataFromConfiguration($config['working_days']);
-        $config['holidays'] = !empty($config['holidays']) ? $this->getDataFromConfiguration($config['holidays']) : [];
-
-        $config['utc_offset'] = (int)$this->dateTime->getGmtOffset();
-
-        return $config;
-    }
-
     protected function isWorkingDay($config, $currentDay)
     {
-        if(in_array($currentDay->format('N'), $config['working_days'])){
+        if(in_array($currentDay->format('N'), $config->getWorkingDays())){
             return true;
         }
 
         return false;
     }
 
-    protected function isNotHoliday($config, $currentDay)
+    protected function isHoliday($config, $currentDay)
     {
-        if(in_array($currentDay->format('N'), $config['working_days']) and !in_array($currentDay->format('d.m.Y'), $config['holidays'])){
+        if(in_array($currentDay->format('d.m.Y'), $config->getHolidays())){
             return true;
         }
 
         return false;
-    }
-
-    protected function getDataFromConfiguration($data, $type = 'array')
-    {
-        if($type == 'hours'){
-            return $data * 3600;
-        }
-
-        $array = explode(',', $data);
-
-        return array_map('trim', $array);
     }
 }

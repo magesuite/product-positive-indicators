@@ -43,7 +43,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
         $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
-        if(!$config['active']){
+        if(!$config->getActive()){
             return $result;
         }
 
@@ -60,7 +60,7 @@ class Product extends \Magento\Framework\View\Element\Template
         }
 
         $orderPeriod = $product->getRecentlyBoughtPeriod();
-        $orderPeriod = $orderPeriod ? $orderPeriod : $config['period'];
+        $orderPeriod = $orderPeriod ? $orderPeriod : $config->getPeriod();
 
         return [
             'active' => $product->getRecentlyBought(),

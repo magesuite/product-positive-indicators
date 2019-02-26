@@ -55,7 +55,7 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
 
-        if(!$config['active']){
+        if(!$config->getActive()){
             return false;
         }
 
@@ -124,7 +124,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category->getQtyAvailable();
         }
 
-        return (int)$config['quantity'];
+        return (int)$config->getQuantity();
     }
 
 }

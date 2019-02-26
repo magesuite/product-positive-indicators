@@ -14,6 +14,11 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
     protected $productRepository;
 
     /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     */
+    protected $configurationStub;
+
+    /**
      * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery
      */
     protected $expectedDeliveryDataProvider;
@@ -23,6 +28,18 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
         $this->productRepository = $objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+
+        $this->configurationStub = $this
+            ->getMockBuilder(\MageSuite\ProductPositiveIndicators\Helper\Configuration::class)
+            ->setConstructorArgs([
+                $objectManager->get(\Magento\Framework\App\Helper\Context::class),
+                $objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class),
+                $objectManager->get(\Magento\Framework\Stdlib\DateTime\DateTime::class),
+                $objectManager->get(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
+            ])
+            ->setMethods(['getConfigFromDatabase'])
+            ->getMock();
+
         $this->expectedDeliveryDataProvider = $objectManager->get(\MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery::class);
     }
 
@@ -32,15 +49,18 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @param array $config
-     * @param string $date
      * @param string $sku
      * @param array $excepted
      * @dataProvider dataProvider
      */
-    public function testItReturnsCorrectData($config, $date, $sku, $excepted)
+    public function testItReturnsCorrectData($config, $sku, $excepted)
     {
         $product = $this->productRepository->get($sku);
-        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($config, $product, $date);
+
+        $this->configurationStub->method('getConfigFromDatabase')->willReturn($config);
+        $preparedConfig = $this->configurationStub->getConfig('test');
+
+        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($preparedConfig, $product);
 
         if($excepted === null){
             $this->assertNull($deliveryData);
