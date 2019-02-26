@@ -17,6 +17,16 @@
             <block class="MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product" 
                    name="indicator.recently-bought" 
                    template="MageSuite_ProductPositiveIndicators::recentlybought/product.phtml" />
+        </referenceContainer>        
+        <referenceContainer name="product.info.media">
+              <block class="MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product" 
+                     name="indicator.popular.badge" 
+                     template="MageSuite_ProductPositiveIndicators::popularicon/product-badge.phtml" before="-" />
+
+              <block class="MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product" 
+                     name="indicator.free-shipping.badge"
+                     template="MageSuite_ProductPositiveIndicators::freeshipping/product-badge.phtml" before="-" />
         </referenceContainer>
+
     </body>
 </page>
