@@ -14,9 +14,9 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
     protected $productRepository;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery
      */
-    protected $configurationStub;
+    protected $configuration;
 
     /**
      * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery
@@ -29,17 +29,7 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
 
         $this->productRepository = $objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
 
-        $this->configurationStub = $this
-            ->getMockBuilder(\MageSuite\ProductPositiveIndicators\Helper\Configuration::class)
-            ->setConstructorArgs([
-                $objectManager->get(\Magento\Framework\App\Helper\Context::class),
-                $objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class),
-                $objectManager->get(\Magento\Framework\Stdlib\DateTime\DateTime::class),
-                $objectManager->get(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
-            ])
-            ->setMethods(['getConfigFromDatabase'])
-            ->getMock();
-
+        $this->configuration = $objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery::class);
         $this->expectedDeliveryDataProvider = $objectManager->get(\MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery::class);
     }
 
@@ -57,10 +47,9 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
     {
         $product = $this->productRepository->get($sku);
 
-        $this->configurationStub->method('getConfigFromDatabase')->willReturn($config);
-        $preparedConfig = $this->configurationStub->getConfig('test');
+        $config = $this->prepareConfiguration($config);
 
-        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($preparedConfig, $product);
+        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($config, $product);
 
         if($excepted === null){
             $this->assertNull($deliveryData);
@@ -68,6 +57,17 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals($excepted['deliveryDayName'], (string)$deliveryData['deliveryDayName']);
             $this->assertEquals($excepted['deliveryNextDayName'], (string)$deliveryData['deliveryNextDayName']);
         }
+    }
+
+    private function prepareConfiguration($testConfig)
+    {
+        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery\Product::XML_PATH_CONFIGURATION_KEY);
+
+        foreach($testConfig as $key => $value){
+            $config->setData($key, $value);
+        }
+
+        return $config;
     }
 
     public function dataProvider()

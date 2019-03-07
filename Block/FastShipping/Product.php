@@ -21,7 +21,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $serializer;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
      */
     protected $configuration;
 
@@ -34,7 +34,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\App\CacheInterface $cache,
         \Magento\Framework\Serialize\Serializer\Json $serializer,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration,
         \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping $fastShippingDataProvider,
         array $data = []
     ) {

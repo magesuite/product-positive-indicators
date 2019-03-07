@@ -3,6 +3,8 @@
 $deliveryData = $block->getDeliveryData();
 
 if($deliveryData) {
+
+    //this value depends on actual time and we should use js to get actual time
     $canSendToday = $deliveryData['maxTodayTime'] and $deliveryData['maxTodayTime'] < time();
 
     $deliveryTime = $canSendToday ? $deliveryData['deliveryDayTime'] : $deliveryData['deliveryNextDayTime'];

@@ -5,9 +5,9 @@ namespace MageSuite\ProductPositiveIndicators\Test\Unit\Service\DataProvider;
 class FastShippingTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
      */
-    protected $configurationStub;
+    protected $configuration;
 
     /**
      * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping
@@ -18,18 +18,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
     {
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 
-
-        $this->configurationStub = $this
-            ->getMockBuilder(\MageSuite\ProductPositiveIndicators\Helper\Configuration::class)
-            ->setConstructorArgs([
-                $objectManager->get(\Magento\Framework\App\Helper\Context::class),
-                $objectManager->get(\Magento\Framework\App\Config\ScopeConfigInterface::class),
-                $objectManager->get(\Magento\Framework\Stdlib\DateTime\DateTime::class),
-                $objectManager->get(\Magento\Framework\Stdlib\DateTime\TimezoneInterface::class)
-            ])
-            ->setMethods(['getConfigFromDatabase'])
-            ->getMock();
-
+        $this->configuration = $objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping::class);
         $this->fastShippingDataProvider = $objectManager->get(\MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping::class);
     }
 
@@ -41,12 +30,22 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectData($config, $excepted)
     {
-        $this->configurationStub->method('getConfigFromDatabase')->willReturn($config);
-        $preparedConfig = $this->configurationStub->getConfig('test');
+        $config = $this->prepareConfiguration($config);
 
-        $deliveryData = $this->fastShippingDataProvider->getDeliveryData($preparedConfig);
+        $deliveryData = $this->fastShippingDataProvider->getDeliveryData($config);
 
         $this->assertEquals($excepted, $deliveryData);
+    }
+
+    private function prepareConfiguration($testConfig)
+    {
+        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\FastShipping\Product::XML_PATH_CONFIGURATION_KEY);
+
+        foreach($testConfig as $key => $value){
+            $config->setData($key, $value);
+        }
+
+        return $config;
     }
 
     public function dataProvider()

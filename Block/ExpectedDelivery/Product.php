@@ -30,7 +30,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $storeManager;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery
      */
     protected $configuration;
 
@@ -45,7 +45,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Framework\Serialize\Serializer\Json $serializer,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration,
         \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery $expectedDeliveryDataProvider,
         array $data = []
     ) {
@@ -73,7 +73,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return false;
         }
 
-        $cacheKey = $this->getCacheKey($product->getId());
+        $cacheKey = $this->getCacheKeyForProductId($product->getId());
 
         $deliveryData = unserialize($this->cache->load($cacheKey));
 
@@ -85,7 +85,7 @@ class Product extends \Magento\Framework\View\Element\Template
         return $deliveryData;
     }
 
-    public function getCacheKey(int $productId)
+    public function getCacheKeyForProductId(int $productId)
     {
         return sprintf(
             self::CACHE_KEY,

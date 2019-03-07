@@ -374,7 +374,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
                     'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
                     'type' => 'int',
                     'unique' => false,
-                    'label' => 'Take into account specific time needed to ship product',
+                    'label' => 'Use specific Shipping time',
                     'input' => 'boolean',
                     'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
                     'group' => 'Positive Indicators',
@@ -386,7 +386,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
                     'filterable_in_search' => false,
                     'visible_on_front' => false,
                     'used_in_product_listing' => false,
-                    'note' => 'Shipping time (in days) from this product will be used if this field is set to Yes and shipping time is greater than 0.'
+                    'note' => 'Take into account specific time needed to ship product'
                 ]
             );
         }
@@ -399,7 +399,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
                     'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
                     'type' => 'varchar',
                     'unique' => false,
-                    'label' => 'Specific time needed to ship product',
+                    'label' => 'Specific shipping time',
                     'input' => 'text',
                     'group' => 'Positive Indicators',
                     'required' => false,
@@ -410,7 +410,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
                     'filterable_in_search' => false,
                     'visible_on_front' => false,
                     'used_in_product_listing' => true,
-                    'note' => 'Shipping time (in days)'
+                    'note' => 'Specific time needed to ship product'
                 ]
             );
         }
