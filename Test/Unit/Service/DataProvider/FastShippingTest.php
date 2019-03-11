@@ -30,22 +30,20 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectData($config, $excepted)
     {
-        $config = $this->prepareConfiguration($config);
+        $this->prepareConfiguration($config);
 
-        $deliveryData = $this->fastShippingDataProvider->getDeliveryData($config);
+        $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
 
         $this->assertEquals($excepted, $deliveryData);
     }
 
     private function prepareConfiguration($testConfig)
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\FastShipping\Product::XML_PATH_CONFIGURATION_KEY);
+        $config = $this->configuration->getConfig();
 
         foreach($testConfig as $key => $value){
             $config->setData($key, $value);
         }
-
-        return $config;
     }
 
     public function dataProvider()

@@ -4,7 +4,7 @@ namespace MageSuite\ProductPositiveIndicators\Block\FastShipping;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const XML_PATH_CONFIGURATION_KEY = 'fast_shipping';
+
     const CACHE_LIFETIME = 300;
     const CACHE_KEY = 'indicator_fast_shipping';
 
@@ -48,9 +48,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getDeliveryData()
     {
-        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive() or !$config->getDeliveryTodayTime()){
+        if(!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()){
             return false;
         }
 
@@ -61,7 +59,7 @@ class Product extends \Magento\Framework\View\Element\Template
             $this->setCacheLifetime(null);
             $this->setClearCache(true);
 
-            $deliveryData = $this->fastShippingDataProvider->getDeliveryData($config);
+            $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
 
             $this->cache->save(serialize($deliveryData), self::CACHE_KEY, [], self::CACHE_LIFETIME);
         }

@@ -23,17 +23,11 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      */
     protected $popularIconProducts;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
-     */
-    protected $configuration;
-
     public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->popularIconProducts = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Model\PopularIconProducts::class);
-        $this->configuration = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Configuration::class);
     }
 
     /**
@@ -68,7 +62,6 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectProductIdsForDefaultSorting()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
         $expectedResult = [
             604 => [333],
             603 => [333],
@@ -76,7 +69,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
             601 => [334]
         ];
 
-        $productIds = $this->popularIconProducts->getProductsData($config);
+        $productIds = $this->popularIconProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
     }
@@ -92,14 +85,13 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectProductIdsForSpecificSortingDirection()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
         $expectedResult = [
             601 => [333,334],
             600 => [333],
             602 => [333]
         ];
 
-        $productIds = $this->popularIconProducts->getProductsData($config);
+        $productIds = $this->popularIconProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
     }
@@ -115,14 +107,13 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectProductIdsForSpecificSortBy()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
         $expectedResult = [
             604 => [333],
             601 => [333,334],
             603 => [333]
         ];
 
-        $productIds = $this->popularIconProducts->getProductsData($config);
+        $productIds = $this->popularIconProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
     }
@@ -137,15 +128,13 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
-
         $expectedResult = [
             604 => [333],
             603 => [333],
             601 => [334]
         ];
 
-        $productIds = $this->popularIconProducts->getProductsData($config);
+        $productIds = $this->popularIconProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
     }

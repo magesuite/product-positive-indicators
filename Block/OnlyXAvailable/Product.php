@@ -4,8 +4,6 @@ namespace MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const XML_PATH_CONFIGURATION_KEY = 'only_x_available';
-
     protected $_template = 'MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml';
 
     /**
@@ -24,7 +22,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $getProductSalableQty;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable
      */
     protected $configuration;
 
@@ -38,7 +36,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
         \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
         array $data = []
     ) {
@@ -53,13 +51,11 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function shouldDisplayInfoOnProductPage($productQty = null)
     {
-        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive()){
+        if(!$this->configuration->isEnabled()){
             return false;
         }
 
-        $qtyFromConfig = $this->getQuantityFromConfig($config);
+        $qtyFromConfig = $this->getQuantityFromConfig();
 
         if(!$qtyFromConfig){
             return false;
@@ -110,7 +106,7 @@ class Product extends \Magento\Framework\View\Element\Template
         return $category ? $category : false;
     }
 
-    private function getQuantityFromConfig($config)
+    private function getQuantityFromConfig()
     {
         $product = $this->productHelper->getProduct();
 
@@ -124,7 +120,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category->getQtyAvailable();
         }
 
-        return (int)$config->getQuantity();
+        return (int)$this->configuration->getQuantity();
     }
 
 }

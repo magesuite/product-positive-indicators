@@ -5,35 +5,28 @@ namespace MageSuite\ProductPositiveIndicators\Service;
 class DeliveryDataProvider
 {
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
      */
-    protected $dateTime;
-
-    /**
-     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
-     */
-    protected $localeDate;
+    protected $configuration;
 
     public function __construct(
-        \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
     ){
-        $this->dateTime = $dateTime;
-        $this->localeDate = $localeDate;
+        $this->configuration = $configuration;
     }
 
-    protected function isWorkingDay($config, $currentDay)
+    protected function isWorkingDay($currentDay)
     {
-        if(in_array($currentDay->format('N'), $config->getWorkingDays())){
+        if(in_array($currentDay->format('N'), $this->configuration->getWorkingDays())){
             return true;
         }
 
         return false;
     }
 
-    protected function isHoliday($config, $currentDay)
+    protected function isHoliday($currentDay)
     {
-        if(in_array($currentDay->format('d.m.Y'), $config->getHolidays())){
+        if(in_array($currentDay->format('d.m.Y'), $this->configuration->getHolidays())){
             return true;
         }
 

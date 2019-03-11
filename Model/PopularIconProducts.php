@@ -35,7 +35,7 @@ class PopularIconProducts
     protected $catalogLayer;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
      */
     protected $configuration;
 
@@ -45,7 +45,7 @@ class PopularIconProducts
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
         \Magento\Catalog\Model\Layer\Resolver $layerResolver,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $configuration
     )
     {
         $this->scopeConfig = $scopeConfigInterface;
@@ -56,16 +56,15 @@ class PopularIconProducts
         $this->configuration = $configuration;
     }
 
-    public function execute()
+    public function execute($test = false)
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
         $this->removePopularIconFlag();
 
-        if(!$config->getActive()){
+        if(!$this->configuration->isEnabled()){
             return false;
         }
 
-        $productsData = $this->getProductsData($config);
+        $productsData = $this->getProductsData();
 
         if(empty($productsData)){
             return false;
@@ -74,7 +73,7 @@ class PopularIconProducts
         $this->addPopularIconFlagToProducts($productsData);
     }
 
-    public function getProductsData($config)
+    public function getProductsData()
     {
         $categories = $this->getCategories();
 
@@ -89,7 +88,7 @@ class PopularIconProducts
                 continue;
             }
 
-            $productCollection = $this->getProductCollectionFromCategory($config, $category);
+            $productCollection = $this->getProductCollectionFromCategory($category);
 
             if(!$productCollection){
                 continue;
@@ -105,7 +104,7 @@ class PopularIconProducts
         return $productsData;
     }
 
-    private function getProductCollectionFromCategory($config, $category)
+    private function getProductCollectionFromCategory($category)
     {
         $collection = $this->initializeCollection($category);
 
@@ -114,11 +113,11 @@ class PopularIconProducts
         }
 
         $collection->setOrder(
-            $config->getSortBy(),
-            $config->getSortDirection()
+            $this->configuration->getSortBy(),
+            $this->configuration->getSortDirection()
         );
 
-        $collection->setPage(1, (int)$config->getNumberOfProducts());
+        $collection->setPage(1, (int)$this->configuration->getNumberOfProducts());
 
         return $collection;
     }

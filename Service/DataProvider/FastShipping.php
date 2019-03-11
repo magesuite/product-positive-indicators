@@ -4,27 +4,38 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function getDeliveryData($config)
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
+     */
+    protected $configuration;
+
+    public function __construct(
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration
+    ){
+        parent::__construct($configuration);
+    }
+
+    public function getDeliveryData()
     {
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($config->getTimestamp());
+        $currentDateTime->setTimestamp($this->configuration->getTimestamp());
 
-        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
+        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
 
-        $businessDay = $this->isWorkingDay($config, $currentDateTime) && !$this->isHoliday($config, $currentDateTime);
+        $businessDay = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
 
-        if($businessDay and ($currentDateTime->getTimestamp() + $config->getOrderQueueLength()) < $maxTimeToday->getTimestamp()){
+        if($businessDay and ($currentDateTime->getTimestamp() + $this->configuration->getOrderQueueLength()) < $maxTimeToday->getTimestamp()){
             return [
                 'day' => 'today',
-                'time' => ($maxTimeToday->getTimestamp() - $config->getOrderQueueLength()) - $config->getUtcOffset(),
+                'time' => ($maxTimeToday->getTimestamp() - $this->configuration->getOrderQueueLength()) - $this->configuration->getUtcOffset(),
                 'deliveryDay' => __($maxTimeToday->format('l')),
-                'utcOffset' => $config->getUtcOffset()
+                'utcOffset' => $this->configuration->getUtcOffset()
             ];
         }
 
-        $timeLeft = $config->getOrderQueueLength() - ($maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
+        $timeLeft = $this->configuration->getOrderQueueLength() - ($maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
 
-        $deliveryDayAndNextDay = $this->getDeliveryDayAndNextDay($config, $currentDateTime, $timeLeft);
+        $deliveryDayAndNextDay = $this->getDeliveryDayAndNextDay($currentDateTime, $timeLeft);
 
         $deliveryDay = $deliveryDayAndNextDay['deliveryDay'];
         $dayType = $deliveryDay->format('d') == $deliveryDayAndNextDay['nextDay'] ? 'tomorrow' : 'other';
@@ -32,8 +43,8 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         $time = $deliveryDay->getTimestamp();
 
         if($dayType == 'tomorrow'){
-            $deliveryDay = new \DateTime($deliveryDay->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
-            $time  = $deliveryDay->getTimestamp() - $config->getUtcOffset();
+            $deliveryDay = new \DateTime($deliveryDay->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
+            $time  = $deliveryDay->getTimestamp() - $this->configuration->getUtcOffset();
 
         }
 
@@ -41,12 +52,12 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
             'day' => $dayType,
             'time' => $time,
             'deliveryDay' => __($deliveryDay->format('l')),
-            'utcOffset' => $config->getUtcOffset()
+            'utcOffset' => $this->configuration->getUtcOffset()
         ];
 
     }
 
-    protected function getDeliveryDayAndNextDay($config, $currentTime, $timeLeft)
+    protected function getDeliveryDayAndNextDay($currentTime, $timeLeft)
     {
         $nextBusinessDay = false;
         $nextDay = null;
@@ -58,15 +69,15 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
                 $nextDay = $currentTime->format('d');
             }
 
-            if(!$this->isWorkingDay($config, $currentTime)){
+            if(!$this->isWorkingDay($currentTime)){
                 continue;
             }
 
-            if($this->isHoliday($config, $currentTime)){
+            if($this->isHoliday($currentTime)){
                 continue;
             }
 
-            $timeLeft = $timeLeft - $config->getWorkingHours();
+            $timeLeft = $timeLeft - $this->configuration->getWorkingHours();
 
             if($timeLeft > 0){
                 continue;

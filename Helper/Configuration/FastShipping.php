@@ -4,6 +4,8 @@ namespace MageSuite\ProductPositiveIndicators\Helper\Configuration;
 
 class FastShipping extends \MageSuite\ProductPositiveIndicators\Helper\Configuration
 {
+    const XML_PATH_CONFIGURATION_KEY = 'fast_shipping';
+
     /**
      * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
@@ -26,23 +28,49 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Helper\Configura
         $this->localeDate = $localeDate;
     }
 
-    public function getConfig($group)
+    public function getDeliveryTodayTime()
     {
-        $config = parent::getConfig($group);
+        return $this->getConfig()->getDeliveryTodayTime();
+    }
 
-        $config->setWorkingDays($this->formatData($config['working_days']));
-        $config->setWorkingHours($this->formatData($config['working_hours'], 'hours'));
-        $config->setQueueLenght($this->formatData($config['order_queue_length'], 'hours'));
-        $config->setHolidays($this->formatData($config['holidays']));
+    public function getWorkingDays()
+    {
+        $workingDays = $this->getConfig()->getWorkingDays();
+        return $this->formatData($workingDays);
+    }
 
-        if(!$config->getTimestamp()){
-            $config->setTimestamp($this->localeDate->scopeTimeStamp());
-        }
+    public function getHolidays()
+    {
+        $holidays = $this->getConfig()->getHolidays();
+        return $this->formatData($holidays);
+    }
 
-        if(!$config->getUtcOffset()){
-            $config->setUtcOffset($this->dateTime->getGmtOffset());
-        }
+    public function getWorkingHours()
+    {
+        $workingHours = $this->getConfig()->getWorkingHours();
+        return $this->formatData($workingHours, 'hours');
+    }
 
-        return $config;
+    public function getOrderQueueLength()
+    {
+        $queueLength = $this->getConfig()->getOrderQueueLength();
+        return $this->formatData($queueLength, 'hours');
+    }
+
+    public function getTimestamp()
+    {
+        $timestamp = $this->getConfig()->getTimestamp();
+        return $timestamp ? $timestamp : $this->localeDate->scopeTimeStamp();
+    }
+
+    public function getUtcOffset()
+    {
+        $utcOffset = $this->getConfig()->getUtcOffset();
+        return $utcOffset !== null ? $utcOffset : $this->dateTime->getGmtOffset();
+    }
+
+    protected function getConfigKey()
+    {
+        return self::XML_PATH_CONFIGURATION_KEY;
     }
 }

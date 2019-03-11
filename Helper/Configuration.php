@@ -9,6 +9,8 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $scopeConfig;
 
+    protected $config = null;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface
@@ -18,11 +20,19 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         $this->scopeConfig = $scopeConfigInterface;
     }
 
-    public function getConfig($group)
+    public function getConfig()
     {
-        $config = $this->getConfigFromDatabase($group);
+        if($this->config === null){
+            $config = $this->getConfigFromDatabase($this->getConfigKey());
+            $this->config = new \Magento\Framework\DataObject($config);
+        }
 
-        return new \Magento\Framework\DataObject($config);
+        return $this->config;
+    }
+
+    public function isEnabled()
+    {
+        return $this->getConfig()->getActive();
     }
 
     protected function getConfigFromDatabase($group)
@@ -43,5 +53,10 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         $array = explode(',', $data);
 
         return array_map('trim', $array);
+    }
+
+    protected function getConfigKey()
+    {
+        return null;
     }
 }

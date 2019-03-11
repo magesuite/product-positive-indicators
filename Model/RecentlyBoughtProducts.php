@@ -25,7 +25,7 @@ class RecentlyBoughtProducts
     protected $resourceConnection;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought
      */
     protected $configuration;
 
@@ -34,7 +34,7 @@ class RecentlyBoughtProducts
         \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought $configuration
     )
     {
         $this->scopeConfig = $scopeConfigInterface;
@@ -46,15 +46,13 @@ class RecentlyBoughtProducts
 
     public function execute()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product::XML_PATH_CONFIGURATION_KEY);
-
         $this->removeRecentlyBoughtFlag();
 
-        if(!$config->getActive() or !$config->getPeriod() or !$config->getMinimal()){
+        if(!$this->configuration->isEnabled() or !$this->configuration->getPeriod() or !$this->configuration->getMinimal()){
             return false;
         }
 
-        $productsData = $this->getProductsData($config);
+        $productsData = $this->getProductsData();
 
         if(empty($productsData)){
             return false;
@@ -63,13 +61,13 @@ class RecentlyBoughtProducts
         $this->addRecentlyBoughtFlagToProducts($productsData);
     }
 
-    public function getProductsData($config)
+    public function getProductsData()
     {
         $products = $this->getProductCollection();
 
-        $from = date('Y-m-d 00:00:00', strtotime('-' . $config->getPeriod() . ' days'));
+        $from = date('Y-m-d 00:00:00', strtotime('-' . $this->configuration->getPeriod() . ' days'));
         $to = date('Y-m-d 23:59:59', strtotime('-1 day'));
-        $minimalValue = $config->getMinimal();
+        $minimalValue = $this->configuration->getMinimal();
 
         $productsData = [];
 

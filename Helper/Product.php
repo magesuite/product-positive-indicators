@@ -35,9 +35,14 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
     protected $productRepository;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
      */
-    protected $configuration;
+    protected $popularIconConfiguration;
+
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
+     */
+    protected $fastShippingConfiguration;
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -47,7 +52,8 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService,
         \Magento\Framework\Registry $registry,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $popularIconConfiguration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration
     ) {
         parent::__construct($context);
 
@@ -57,14 +63,13 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         $this->freeShippingService = $freeShippingService;
         $this->registry = $registry;
         $this->productRepository = $productRepository;
-        $this->configuration = $configuration;
+        $this->fastShippingConfiguration = $fastShippingConfiguration;
+        $this->popularIconConfiguration = $popularIconConfiguration;
     }
 
     public function getPopularIconFlag($product)
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive()) {
+        if(!$this->popularIconConfiguration->isEnabled()) {
             return false;
         }
 
@@ -136,9 +141,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function isFastShippingEnabled()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\FastShipping\Product::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive()){
+        if(!$this->fastShippingConfiguration->isEnabled()){
             return false;
         }
 

@@ -4,8 +4,6 @@ namespace MageSuite\ProductPositiveIndicators\Block\RecentlyBought;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const XML_PATH_CONFIGURATION_KEY = 'recently_bought';
-
     protected $_template = 'MageSuite_ProductPositiveIndicators::recentlybought/product.phtml';
 
     /**
@@ -19,7 +17,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $stockInterface;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought
      */
     protected $configuration;
 
@@ -27,7 +25,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Catalog\Block\Product\Context $context,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -41,9 +39,7 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $result = ['active' => 0];
 
-        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive()){
+        if(!$this->configuration->isEnabled()){
             return $result;
         }
 
@@ -60,7 +56,7 @@ class Product extends \Magento\Framework\View\Element\Template
         }
 
         $orderPeriod = $product->getRecentlyBoughtPeriod();
-        $orderPeriod = $orderPeriod ? $orderPeriod : $config->getPeriod();
+        $orderPeriod = $orderPeriod ? $orderPeriod : $this->configuration->getPeriod();
 
         return [
             'active' => $product->getRecentlyBought(),

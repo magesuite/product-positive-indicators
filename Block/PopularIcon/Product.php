@@ -4,8 +4,6 @@ namespace MageSuite\ProductPositiveIndicators\Block\PopularIcon;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const XML_PATH_CONFIGURATION_KEY = 'popular_icon';
-
     protected $_template = 'MageSuite_ProductPositiveIndicators::popularicon/product.phtml';
 
     /**
@@ -19,7 +17,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $stockInterface;
 
     /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
      */
     protected $configuration;
 
@@ -27,7 +25,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \Magento\Catalog\Block\Product\Context $context,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -39,9 +37,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getPopularIconFlag()
     {
-        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive()){
+        if(!$this->configuration->isEnabled()){
             return null;
         }
 

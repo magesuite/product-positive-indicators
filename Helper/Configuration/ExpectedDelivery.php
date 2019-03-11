@@ -4,6 +4,8 @@ namespace MageSuite\ProductPositiveIndicators\Helper\Configuration;
 
 class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Helper\Configuration
 {
+    const XML_PATH_CONFIGURATION_KEY = 'expected_delivery';
+
     /**
      * @var \Magento\Framework\Stdlib\DateTime\DateTime
      */
@@ -26,21 +28,43 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Helper\Confi
         $this->localeDate = $localeDate;
     }
 
-    public function getConfig($group)
+    public function getDeliveryTodayTime()
     {
-        $config = parent::getConfig($group);
+        return $this->getConfig()->getDeliveryTodayTime();
+    }
 
-        $config->setWorkingDays($this->formatData($config['working_days']));
-        $config->setHolidays($this->formatData($config['holidays']));
+    public function getWorkingDays()
+    {
+        $workingDays = $this->getConfig()->getWorkingDays();
+        return $this->formatData($workingDays);
+    }
 
-        if(!$config->getTimestamp()){
-            $config->setTimestamp($this->localeDate->scopeTimeStamp());
-        }
+    public function getHolidays()
+    {
+        $holidays = $this->getConfig()->getHolidays();
+        return $this->formatData($holidays);
+    }
 
-        if(!$config->getUtcOffset()){
-            $config->setUtcOffset($this->dateTime->getGmtOffset());
-        }
+    public function getDefaultShippingTime()
+    {
+        $defaultShippingTime = $this->getConfig()->getDefaultShippingTime();
+        return $defaultShippingTime ?? 0;
+    }
 
-        return $config;
+    public function getTimestamp()
+    {
+        $timestamp = $this->getConfig()->getTimestamp();
+        return $timestamp ? $timestamp : $this->localeDate->scopeTimeStamp();
+    }
+
+    public function getUtcOffset()
+    {
+        $utcOffset = $this->getConfig()->getUtcOffset();
+        return $utcOffset !== null ? $utcOffset : $this->dateTime->getGmtOffset();
+    }
+
+    protected function getConfigKey()
+    {
+        return self::XML_PATH_CONFIGURATION_KEY;
     }
 }

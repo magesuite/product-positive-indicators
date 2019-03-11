@@ -23,17 +23,11 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      */
     protected $recentlyBoughtProducts;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration
-     */
-    protected $configuration;
-
     public function setUp()
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
         $this->recentlyBoughtProducts = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Model\RecentlyBoughtProducts::class);
-        $this->configuration = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Configuration::class);
     }
 
     /**
@@ -68,15 +62,13 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      */
     public function testItReturnsCorrectProductsDataForSpecificSettings()
     {
-        $config = $this->configuration->getConfig(\MageSuite\ProductPositiveIndicators\Block\RecentlyBought\Product::XML_PATH_CONFIGURATION_KEY);
-
         $expectedResult = [
             601 => 3,
             603 => 2,
             608 => 2,
         ];
 
-        $productIds = $this->recentlyBoughtProducts->getProductsData($config);
+        $productIds = $this->recentlyBoughtProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
     }

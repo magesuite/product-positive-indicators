@@ -4,7 +4,18 @@ namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    public function getDeliveryData($config, $product = null)
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery
+     */
+    protected $configuration;
+
+    public function __construct(
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration
+    ){
+        parent::__construct($configuration);
+    }
+
+    public function getDeliveryData($product = null)
     {
         $isInStock = $product->getQuantityAndStockStatus()['is_in_stock'];
 
@@ -12,18 +23,18 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             return null;
         }
 
-        $shippingTimeInDays = $this->getShippingTimeInDays($config, $product);
+        $shippingTimeInDays = $this->getShippingTimeInDays($product);
 
         if(!$shippingTimeInDays){
             return null;
         }
 
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($config->getTimestamp());
-        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $config->getDeliveryTodayTime());
+        $currentDateTime->setTimestamp($this->configuration->getTimestamp());
+        $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
 
-        $canShipToday = $this->isWorkingDay($config, $currentDateTime) && !$this->isHoliday($config, $currentDateTime);
-        $shippingDays = $this->getShippingDays($config, $currentDateTime, $shippingTimeInDays);
+        $canShipToday = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
+        $shippingDays = $this->getShippingDays($currentDateTime, $shippingTimeInDays);
 
         return [
             'maxTodayTime' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
@@ -31,14 +42,14 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             'deliveryDayName' => __($shippingDays['delivery_day']->format('l')),
             'deliveryNextDayTime' => $shippingDays['next_delivery_day']->getTimestamp(),
             'deliveryNextDayName' => __($shippingDays['next_delivery_day']->format('l')),
-            'utcOffset' => $config->getUtcOffset()
+            'utcOffset' => $this->configuration->getUtcOffset()
         ];
 
     }
 
-    protected function getShippingTimeInDays($config, $product)
+    protected function getShippingTimeInDays($product)
     {
-        $shippingTime = $config->getDefaultShippingTime() ?? 0;
+        $shippingTime = $this->configuration->getDefaultShippingTime();
 
         if($product->getUseTimeNeededToShipProduct()){
             $shippingTime = $product->getTimeNeededToShipProduct() ? $product->getTimeNeededToShipProduct() : $shippingTime;
@@ -47,14 +58,14 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         return $shippingTime;
     }
 
-    protected function getShippingDays($config, $currentDay, $shippingTimeInDays)
+    protected function getShippingDays($currentDay, $shippingTimeInDays)
     {
         $deliveryDay = null;
 
         while ($shippingTimeInDays) {
             $currentDay->modify('+1 day');
 
-            $isBusinessDay = $this->isWorkingDay($config, $currentDay) && !$this->isHoliday($config, $currentDay);
+            $isBusinessDay = $this->isWorkingDay($currentDay) && !$this->isHoliday($currentDay);
 
             if(!$isBusinessDay) {
                 continue;
@@ -71,7 +82,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         while (!$nextDeliveryDay){
             $dateTime->modify('+1 day');
 
-            $isBusinessDay = $this->isWorkingDay($config, $dateTime) && !$this->isHoliday($config, $dateTime);
+            $isBusinessDay = $this->isWorkingDay($dateTime) && !$this->isHoliday($dateTime);
 
             if(!$isBusinessDay) {
                 continue;

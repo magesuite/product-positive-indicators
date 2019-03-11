@@ -4,7 +4,7 @@ namespace MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const XML_PATH_CONFIGURATION_KEY = 'expected_delivery';
+
     const CACHE_KEY = 'indicator_expected_delivery_%s_%s_%s';
 
     protected $_template = 'expecteddelivery/product.phtml';
@@ -61,9 +61,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getDeliveryData()
     {
-        $config = $this->configuration->getConfig(self::XML_PATH_CONFIGURATION_KEY);
-
-        if(!$config->getActive() or !$config->getDeliveryTodayTime()){
+        if(!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()){
             return false;
         }
 
@@ -78,7 +76,7 @@ class Product extends \Magento\Framework\View\Element\Template
         $deliveryData = unserialize($this->cache->load($cacheKey));
 
         if(!$deliveryData){
-            $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($config, $product);
+            $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
             $this->cache->save(serialize($deliveryData), $cacheKey);
         }
 
