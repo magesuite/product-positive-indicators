@@ -7,10 +7,9 @@ if($deliveryData) {
     //this value depends on actual time and we should use js to get actual time
     $canSendToday = $deliveryData['maxTodayTime'] and $deliveryData['maxTodayTime'] < time();
 
-    $deliveryTime = $canSendToday ? $deliveryData['deliveryDayTime'] : $deliveryData['deliveryNextDayTime'];
-    $deliveryDay = $canSendToday ? $deliveryData['deliveryDayName'] : $deliveryData['deliveryNextDayName'];
 
-    ?>
-    <p><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryTime), $deliveryDay); ?></p><?php
+    //display one of these <p>. If $deliveryData['maxTodayTime'] value is bigger than actual time, display the second one.
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryData['deliveryDayTime']), $deliveryData['deliveryDayName']); ?></p><?php
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryData['deliveryNextDayTime']), $deliveryData['deliveryNextDayName']); ?></p><?php
 }
 ?>
