@@ -141,11 +141,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function isFastShippingEnabled()
     {
-        if(!$this->fastShippingConfiguration->isEnabled()){
-            return false;
-        }
-
-        return true;
+        return (boolean)$this->fastShippingConfiguration->isEnabled();
     }
 
     public function isFreeShipped($product)

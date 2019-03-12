@@ -36,14 +36,14 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         $canShipToday = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
         $shippingDays = $this->getShippingDays($currentDateTime, $shippingTimeInDays);
 
-        return [
-            'maxTodayTime' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
-            'deliveryDayTime' => $shippingDays['delivery_day']->getTimestamp(),
-            'deliveryDayName' => __($shippingDays['delivery_day']->format('l')),
-            'deliveryNextDayTime' => $shippingDays['next_delivery_day']->getTimestamp(),
-            'deliveryNextDayName' => __($shippingDays['next_delivery_day']->format('l')),
-            'utcOffset' => $this->configuration->getUtcOffset()
-        ];
+        return new \Magento\Framework\DataObject([
+            'max_today_time' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
+            'ship_today_time' => $shippingDays['delivery_day']->getTimestamp(),
+            'ship_today_name' => __($shippingDays['delivery_day']->format('l')),
+            'ship_next_day_time' => $shippingDays['next_delivery_day']->getTimestamp(),
+            'ship_next_day_name' => __($shippingDays['next_delivery_day']->format('l')),
+            'utc_offset' => $this->configuration->getUtcOffset()
+        ]);
 
     }
 

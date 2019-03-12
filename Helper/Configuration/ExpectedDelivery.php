@@ -36,13 +36,13 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Helper\Confi
     public function getWorkingDays()
     {
         $workingDays = $this->getConfig()->getWorkingDays();
-        return $this->formatData($workingDays);
+        return $this->convertStringToArray($workingDays);
     }
 
     public function getHolidays()
     {
         $holidays = $this->getConfig()->getHolidays();
-        return $this->formatData($holidays);
+        return $this->convertStringToArray($holidays);
     }
 
     public function getDefaultShippingTime()

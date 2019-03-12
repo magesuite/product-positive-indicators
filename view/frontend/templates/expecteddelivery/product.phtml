@@ -1,15 +1,14 @@
 <?php
 /** @var $block \MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery\Product */
-$deliveryData = $block->getDeliveryData();
+$isEnabled = $block->isEnabled();
 
-if($deliveryData) {
+if($isEnabled) {
 
     //this value depends on actual time and we should use js to get actual time
-    $canSendToday = $deliveryData['maxTodayTime'] and $deliveryData['maxTodayTime'] < time();
+    $canSendToday = $block->getMaxTimeToday() and $block->getMaxTimeToday() < time();
 
-
-    //display one of these <p>. If $deliveryData['maxTodayTime'] value is bigger than actual time, display the second one.
-    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryData['deliveryDayTime']), $deliveryData['deliveryDayName']); ?></p><?php
-    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $deliveryData['deliveryNextDayTime']), $deliveryData['deliveryNextDayName']); ?></p><?php
+    //display one of these <p>. If $canSendToday returns true, display the first one. If $canSendToday returns false, return the second one.
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $block->getShipTodayName()), $block->getShipTodayTime()); ?></p><?php
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $block->getShipNextDayName()), $block->getShipNextDayTime()); ?></p><?php
 }
 ?>

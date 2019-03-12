@@ -102,7 +102,7 @@
                 </field>
                 <field id="delivery_today_time" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Time to ship today</label>
-                    <comment>Time to which the orders will be ship on the same day. E.g. 15:00</comment>
+                    <comment>Time to which the orders will be shipped on the same day. E.g. 15:00</comment>
                 </field>
             </group>
             <group id="free_shipping" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">

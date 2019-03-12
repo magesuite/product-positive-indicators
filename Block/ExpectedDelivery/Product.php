@@ -39,6 +39,8 @@ class Product extends \Magento\Framework\View\Element\Template
      */
     protected $expectedDeliveryDataProvider;
 
+    protected $deliveryData = null;
+
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\App\CacheInterface $cache,
@@ -59,31 +61,81 @@ class Product extends \Magento\Framework\View\Element\Template
         $this->expectedDeliveryDataProvider = $expectedDeliveryDataProvider;
     }
 
-    public function getDeliveryData()
+    public function isEnabled()
+    {
+        return $this->configuration->isEnabled();
+    }
+
+    public function getMaxTimeToday()
+    {
+        return $this->getDeliveryDataByKey('max_time_today');
+    }
+
+    public function getShipTodayTime()
+    {
+        return $this->getDeliveryDataByKey('ship_today_time');
+    }
+
+    public function getShipTodayName()
+    {
+        return $this->getDeliveryDataByKey('ship_today_name');
+    }
+
+    public function getShipNextDayTime()
+    {
+        return $this->getDeliveryDataByKey('ship_next_day_time');
+    }
+
+    public function getShipNextDayName()
+    {
+        return $this->getDeliveryDataByKey('ship_next_day_name');
+    }
+
+    public function getUtcOffset()
+    {
+        return $this->getDeliveryDataByKey('utc_offset');
+    }
+
+    protected function getDeliveryDataByKey($key)
+    {
+        $deliveryData = $this->getDeliveryData();
+
+        if(empty($deliveryData)){
+            return null;
+        }
+
+        return $deliveryData->getData($key);
+    }
+
+    protected function getDeliveryData()
     {
         if(!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()){
             return false;
         }
 
-        $product = $this->productHelper->getProduct();
+        if($this->deliveryData === null){
+            $product = $this->productHelper->getProduct();
 
-        if(!$product){
-            return false;
+            if(!$product){
+                return $this->deliveryData;
+            }
+
+            $cacheKey = $this->getCacheKeyForProductId($product->getId());
+
+            $deliveryData = unserialize($this->cache->load($cacheKey));
+
+            if(!$deliveryData){
+                $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
+                $this->cache->save(serialize($deliveryData), $cacheKey);
+            }
+
+            $this->deliveryData = $deliveryData;
         }
 
-        $cacheKey = $this->getCacheKeyForProductId($product->getId());
-
-        $deliveryData = unserialize($this->cache->load($cacheKey));
-
-        if(!$deliveryData){
-            $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
-            $this->cache->save(serialize($deliveryData), $cacheKey);
-        }
-
-        return $deliveryData;
+        return $this->deliveryData;
     }
 
-    public function getCacheKeyForProductId(int $productId)
+    protected function getCacheKeyForProductId(int $productId)
     {
         return sprintf(
             self::CACHE_KEY,

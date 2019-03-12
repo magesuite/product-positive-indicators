@@ -40,19 +40,18 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->scopeConfig->getValue(sprintf('positive_indicators/%s', $group), \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
 
-    protected function formatData($data, $type = 'array')
+    protected function convertSecondsToHours($seconds)
     {
-        if($type == 'hours'){
-            return $data * 3600;
-        }
+        return $seconds * 3600;
+    }
 
-        if(empty($data)){
+    protected function convertStringToArray($string)
+    {
+        if(empty($string)){
             return [];
         }
 
-        $array = explode(',', $data);
-
-        return array_map('trim', $array);
+        return array_map('trim', explode(',', $string));
     }
 
     protected function getConfigKey()
