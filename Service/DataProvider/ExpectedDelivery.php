@@ -38,10 +38,10 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
         return new \Magento\Framework\DataObject([
             'max_today_time' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
-            'ship_today_time' => $shippingDays['delivery_day']->getTimestamp(),
-            'ship_today_name' => __($shippingDays['delivery_day']->format('l')),
-            'ship_next_day_time' => $shippingDays['next_delivery_day']->getTimestamp(),
-            'ship_next_day_name' => __($shippingDays['next_delivery_day']->format('l')),
+            'ship_day_time' => $shippingDays->getShipDay()->getTimestamp(),
+            'ship_day_name' => __($shippingDays->getShipDay()->format('l')),
+            'next_ship_day_time' => $shippingDays->getNextShipDay()->getTimestamp(),
+            'next_ship_day_name' => __($shippingDays->getNextShipDay()->format('l')),
             'utc_offset' => $this->configuration->getUtcOffset()
         ]);
 
@@ -60,7 +60,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
     protected function getShippingDays($currentDay, $shippingTimeInDays)
     {
-        $deliveryDay = null;
+        $shipDay = null;
 
         while ($shippingTimeInDays) {
             $currentDay->modify('+1 day');
@@ -72,14 +72,15 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             }
 
             $shippingTimeInDays--;
-            $deliveryDay = $currentDay;
+            $shipDay = $currentDay;
         }
 
-        $nextDeliveryDay = null;
-        $dateTime = new \DateTime('now');
-        $dateTime->setTimestamp($deliveryDay->getTimestamp());
+        $nextShipDay = null;
 
-        while (!$nextDeliveryDay){
+        $dateTime = new \DateTime('now');
+        $dateTime->setTimestamp($shipDay->getTimestamp());
+
+        while (!$nextShipDay){
             $dateTime->modify('+1 day');
 
             $isBusinessDay = $this->isWorkingDay($dateTime) && !$this->isHoliday($dateTime);
@@ -88,10 +89,13 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
                 continue;
             }
 
-            $nextDeliveryDay = $dateTime;
+            $nextShipDay = $dateTime;
         }
 
-        return ['delivery_day' => $deliveryDay, 'next_delivery_day' => $nextDeliveryDay];
+        return new \Magento\Framework\DataObject([
+            'ship_day' => $shipDay,
+            'next_ship_day' => $nextShipDay
+        ]);
     }
 
 

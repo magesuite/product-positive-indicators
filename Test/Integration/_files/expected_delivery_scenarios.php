@@ -10,7 +10,7 @@ $scenarios = [
             'utc_offset' => 0
         ],
         'simple_product',
-        ['shipTodayName' => 'Wednesday', 'shipNextDayName' => 'Thursday']
+        ['shipDayName' => 'Wednesday', 'nextShipDayName' => 'Thursday']
     ],
     [
         [
@@ -22,7 +22,7 @@ $scenarios = [
             'utc_offset' => 0
         ],
         'simple_product',
-        ['shipTodayName' => 'Wednesday', 'shipNextDayName' => 'Thursday']
+        ['shipDayName' => 'Wednesday', 'nextShipDayName' => 'Thursday']
     ],
     [
         [
@@ -34,7 +34,7 @@ $scenarios = [
             'utc_offset' => 0
         ],
         'simple_product',
-        ['shipTodayName' => 'Tuesday', 'shipNextDayName' => 'Friday']
+        ['shipDayName' => 'Tuesday', 'nextShipDayName' => 'Friday']
     ],
     [
         [
@@ -58,6 +58,6 @@ $scenarios = [
             'utc_offset' => 0
         ],
         'custom_product',
-        ['shipTodayName' => 'Friday', 'shipNextDayName' => 'Monday']
+        ['shipDayName' => 'Friday', 'nextShipDayName' => 'Monday']
     ],
 ];

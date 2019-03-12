@@ -54,8 +54,8 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         if($excepted === null){
             $this->assertNull($deliveryData);
         }else{
-            $this->assertEquals($excepted['shipTodayName'], (string)$deliveryData->getShipTodayName());
-            $this->assertEquals($excepted['shipNextDayName'], (string)$deliveryData->getShipNextDayName());
+            $this->assertEquals($excepted['shipDayName'], (string)$deliveryData->getShipDayName());
+            $this->assertEquals($excepted['nextShipDayName'], (string)$deliveryData->getNextShipDayName());
         }
     }
 

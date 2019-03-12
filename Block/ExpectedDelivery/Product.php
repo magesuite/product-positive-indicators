@@ -71,24 +71,24 @@ class Product extends \Magento\Framework\View\Element\Template
         return $this->getDeliveryDataByKey('max_time_today');
     }
 
-    public function getShipTodayTime()
+    public function getShipDayTime()
     {
-        return $this->getDeliveryDataByKey('ship_today_time');
+        return $this->getDeliveryDataByKey('ship_day_time');
     }
 
-    public function getShipTodayName()
+    public function getShipDayName()
     {
-        return $this->getDeliveryDataByKey('ship_today_name');
+        return $this->getDeliveryDataByKey('ship_day_name');
     }
 
-    public function getShipNextDayTime()
+    public function getNextShipDayTime()
     {
-        return $this->getDeliveryDataByKey('ship_next_day_time');
+        return $this->getDeliveryDataByKey('next_ship_day_time');
     }
 
-    public function getShipNextDayName()
+    public function getNextShipDayName()
     {
-        return $this->getDeliveryDataByKey('ship_next_day_name');
+        return $this->getDeliveryDataByKey('next_ship_day_name');
     }
 
     public function getUtcOffset()
