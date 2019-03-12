@@ -1,0 +1,14 @@
+<?php
+/** @var $block \MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery\Product */
+$isEnabled = $block->isEnabled();
+
+if($isEnabled) {
+
+    //this value depends on actual time and we should use js to get actual time
+    $canSendToday = $block->getMaxTimeToday() and $block->getMaxTimeToday() < time();
+
+    //display one of these <p>. If $canSendToday returns true, display the first one. If $canSendToday returns false, return the second one.
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $block->getShipDayName()), $block->getShipDayTime()); ?></p><?php
+    ?><p style="display:none"><?php echo sprintf(__('You can get this product on %s (%s) if you buy it now!'), date('d.m.Y', $block->getNextShipDayName()), $block->getNextShipDayTime()); ?></p><?php
+}
+?>

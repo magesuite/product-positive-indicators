@@ -24,6 +24,11 @@
                 <working_hours>0</working_hours>
                 <order_queue_length>0</order_queue_length>
             </fast_shipping>
+            <expected_delivery>
+                <active>0</active>
+                <working_days>1,2,3,4,5</working_days>
+                <delivery_today_time>16:00</delivery_today_time>
+            </expected_delivery>
             <free_shipping>
                 <show_in_product_tiles>1</show_in_product_tiles>
                 <show_text_note_on_products_detailpage>1</show_text_note_on_products_detailpage>

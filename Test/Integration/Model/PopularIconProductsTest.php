@@ -68,7 +68,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
             602 => [433],
             601 => [434]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -88,7 +90,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
             600 => [433],
             602 => [433]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -108,7 +112,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
             601 => [433,434],
             603 => [433]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -127,7 +133,9 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
             603 => [433],
             601 => [434]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 

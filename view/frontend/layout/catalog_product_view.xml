@@ -2,13 +2,17 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="product.info.form.content">
-            <block class="MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product" 
-                   name="indicator.low-stock" 
+            <block class="MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product"
+                   name="indicator.low-stock"
                    template="MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml" />
 
             <block class="MageSuite\ProductPositiveIndicators\Block\FastShipping\Product" 
                    name="indicator.fast-shipping" 
                    template="MageSuite_ProductPositiveIndicators::fastshipping/product.phtml" />
+
+            <block class="MageSuite\ProductPositiveIndicators\Block\ExpectedDelivery\Product"
+                   name="indicator.expected-delivery"
+                   template="MageSuite_ProductPositiveIndicators::expecteddelivery/product.phtml" />
 
             <block class="MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product" 
                    name="indicator.free-shipping" 

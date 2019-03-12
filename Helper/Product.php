@@ -34,6 +34,16 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $productRepository;
 
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
+     */
+    protected $popularIconConfiguration;
+
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
+     */
+    protected $fastShippingConfiguration;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Catalog\Model\ResourceModel\Product $productResource,
@@ -41,7 +51,9 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService,
         \Magento\Framework\Registry $registry,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $popularIconConfiguration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration
     ) {
         parent::__construct($context);
 
@@ -51,11 +63,13 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         $this->freeShippingService = $freeShippingService;
         $this->registry = $registry;
         $this->productRepository = $productRepository;
+        $this->fastShippingConfiguration = $fastShippingConfiguration;
+        $this->popularIconConfiguration = $popularIconConfiguration;
     }
 
     public function getPopularIconFlag($product)
     {
-        if(!$this->isPopularIconIndicatorEnabled()) {
+        if(!$this->popularIconConfiguration->isEnabled()) {
             return false;
         }
 
@@ -83,14 +97,13 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         return $enabledInCategory;
     }
 
-    private function isPopularIconIndicatorEnabled()
+    public function getProduct($product = null)
     {
-        $config = $this->getConfig();
-        return (isset($config['popular_icon']) and $config['popular_icon']['active']);
-    }
+        if(!$product){
+            $product = $this->registry->registry('product');
+            return $product ? $product : null;
+        }
 
-    private function getProduct($product)
-    {
         if ($product instanceof \Magento\Catalog\Api\Data\ProductInterface) {
             return $product;
         }
@@ -128,18 +141,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function isFastShippingEnabled()
     {
-        $config = $this->getConfig();
-
-        if(!isset($config['fast_shipping']) or !$config['fast_shipping']['active']){
-            return false;
-        }
-
-        return true;
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return (boolean)$this->fastShippingConfiguration->isEnabled();
     }
 
     public function isFreeShipped($product)
