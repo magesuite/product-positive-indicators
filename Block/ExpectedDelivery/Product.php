@@ -68,7 +68,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getMaxTimeToday()
     {
-        return $this->getDeliveryDataByKey('max_time_today');
+        return $this->getDeliveryDataByKey('max_today_time');
     }
 
     public function getShipDayTime()
