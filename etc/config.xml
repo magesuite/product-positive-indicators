@@ -35,6 +35,9 @@
                 <show_badge_on_products_detailpage>1</show_badge_on_products_detailpage>
                 <show_in_search_autosuggest>1</show_in_search_autosuggest>
             </free_shipping>
+            <top_attributes>
+                <active>1</active>
+            </top_attributes>
         </positive_indicators>
     </default>
 </config>
