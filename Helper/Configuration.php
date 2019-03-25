@@ -32,7 +32,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function isEnabled()
     {
-        return $this->getConfig()->getActive();
+        return $this->getConfig()->getIsEnabled();
     }
 
     protected function getConfigFromDatabase($group)

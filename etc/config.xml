@@ -3,29 +3,29 @@
     <default>
         <positive_indicators>
             <only_x_available>
-                <active>0</active>
+                <is_enabled>0</is_enabled>
                 <quantity>0</quantity>
             </only_x_available>
             <popular_icon>
-                <active>0</active>
+                <is_enabled>0</is_enabled>
                 <sort_by>price</sort_by>
                 <sort_direction>desc</sort_direction>
                 <number_of_products>3</number_of_products>
             </popular_icon>
             <recently_bought>
-                <active>0</active>
+                <is_enabled>0</is_enabled>
                 <period>0</period>
                 <minimal>0</minimal>
             </recently_bought>
             <fast_shipping>
-                <active>0</active>
+                <is_enabled>0</is_enabled>
                 <working_days>1,2,3,4,5</working_days>
                 <delivery_today_time>16:00</delivery_today_time>
                 <working_hours>0</working_hours>
                 <order_queue_length>0</order_queue_length>
             </fast_shipping>
             <expected_delivery>
-                <active>0</active>
+                <is_enabled>0</is_enabled>
                 <working_days>1,2,3,4,5</working_days>
                 <delivery_today_time>16:00</delivery_today_time>
             </expected_delivery>
@@ -36,7 +36,7 @@
                 <show_in_search_autosuggest>1</show_in_search_autosuggest>
             </free_shipping>
             <top_attributes>
-                <active>1</active>
+                <is_enabled>1</is_enabled>
             </top_attributes>
         </positive_indicators>
     </default>

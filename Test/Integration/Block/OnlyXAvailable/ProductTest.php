@@ -48,7 +48,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlag($sku, $flag)
@@ -67,7 +67,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlagForQtyParameter($sku, $flag)
@@ -84,7 +84,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
     public function testItReturnsFalseIfConfigurationIsNotSet()
     {
@@ -98,7 +98,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
     public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
     {
@@ -114,7 +114,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlagForQtyParameterFromProduct()
@@ -132,7 +132,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectProductQty()

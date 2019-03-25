@@ -2,7 +2,7 @@
 $scenarios = [
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5',
             'holidays' => '14.03.2018, 19.03.2018',
             'working_hours' => 10,
@@ -15,7 +15,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5,7',
             'holidays' => '14.03.2018, 25.03.2018',
             'working_hours' => 10,
@@ -28,7 +28,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5,7',
             'holidays' => '14.03.2018, 25.03.2018',
             'working_hours' => 10,
@@ -42,7 +42,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '2',
             'holidays' => '14.03.2018, 25.03.2018',
             'working_hours' => 3,
@@ -55,7 +55,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5',
             'holidays' => '19.03.2018, 20.03.2018, 21.03.2018',
             'working_hours' => 10,
@@ -68,7 +68,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5',
             'holidays' => '14.03.2018, 25.03.2018',
             'working_hours' => 10,
@@ -81,7 +81,7 @@ $scenarios = [
     ],
     [
         [
-            'active' => 1,
+            'is_enabled' => 1,
             'working_days' => '1,2,3,4,5,7',
             'holidays' => '14.03.2018, 25.03.2018',
             'working_hours' => 10,
