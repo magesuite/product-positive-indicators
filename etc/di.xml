@@ -28,6 +28,11 @@
         <plugin name="add_indicators_to_search_flyout" type="\MageSuite\ProductPositiveIndicators\Plugin\AddIndicatorsToSearchFlyout" sortOrder="10"/>
     </type>
 
+    <type name="Magento\Catalog\Block\Product\View\Attributes">
+        <plugin name="add_top_attribute_badge" type="\MageSuite\ProductPositiveIndicators\Plugin\Catalog\Block\Product\View\Attributes\AddTopAttributeBadge"
+                sortOrder="10"/>
+    </type>
+
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

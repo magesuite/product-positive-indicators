@@ -35,7 +35,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItSetCorrectFlagInProducts()
@@ -57,7 +57,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItReturnsCorrectProductIdsForDefaultSorting()
@@ -79,7 +79,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_direction asc
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
@@ -101,7 +101,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_by name
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
@@ -123,7 +123,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 2
      */
     public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts()
