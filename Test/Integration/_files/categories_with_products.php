@@ -106,11 +106,11 @@ $product->priceReindexCallback();
 $category = $objectManager->create('Magento\Catalog\Model\Category');
 $category->isObjectNew(true);
 $category
-    ->setId(333)
+    ->setId(433)
     ->setCreatedAt('2014-06-23 09:50:07')
     ->setName('First category')
     ->setParentId(2)
-    ->setPath('1/2/333')
+    ->setPath('1/2/433')
     ->setLevel(3)
     ->setAvailableSortBy('name')
     ->setDefaultSortBy('name')
@@ -131,11 +131,11 @@ $category
 $category = $objectManager->create('Magento\Catalog\Model\Category');
 $category->isObjectNew(true);
 $category
-    ->setId(334)
+    ->setId(434)
     ->setCreatedAt('2014-06-23 09:50:07')
     ->setName('Subcategory')
     ->setParentId(2)
-    ->setPath('1/2/333/334')
+    ->setPath('1/2/433/434')
     ->setLevel(4)
     ->setAvailableSortBy('name')
     ->setDefaultSortBy('name')

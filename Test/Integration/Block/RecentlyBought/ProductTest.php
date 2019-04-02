@@ -42,7 +42,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/recently_bought/active 1
+     * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      */
     public function testItReturnCorrectFlag($sku, $data)
@@ -57,7 +57,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store positive_indicators/recently_bought/active 1
+     * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      */
     public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
     {

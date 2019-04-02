@@ -35,7 +35,7 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadOrders
-     * @magentoConfigFixture current_store positive_indicators/recently_bought/active 1
+     * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      * @magentoConfigFixture current_store positive_indicators/recently_bought/minimal 2
      */
@@ -56,7 +56,7 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadOrders
-     * @magentoConfigFixture current_store positive_indicators/recently_bought/active 1
+     * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      * @magentoConfigFixture current_store positive_indicators/recently_bought/minimal 2
      */

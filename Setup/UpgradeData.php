@@ -29,12 +29,24 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
      */
     protected $attributeFactory;
 
+    /**
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     */
+    protected $connection;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
     public function __construct(
         \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory,
         \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetupInterface,
         \Magento\Eav\Model\Config $eavConfig,
         \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory,
-        \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory
+        \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory,
+        \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \Psr\Log\LoggerInterface $logger
     )
     {
         $this->eavSetupFactory = $eavSetupFactory;
@@ -50,6 +62,9 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         $this->eavConfig = $eavConfig;
         $this->attrOptionCollectionFactory = $attrOptionCollectionFactory;
         $this->attributeFactory = $attributeFactory;
+
+        $this->connection = $resourceConnection->getConnection();
+        $this->logger = $logger;
     }
 
     public function upgrade(
@@ -80,8 +95,17 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         if (version_compare($context->getVersion(), '0.0.9', '<')) {
             $this->upgradeToVersion009();
         }
+
         if (version_compare($context->getVersion(), '1.0.1', '<')) {
             $this->updateRecentlyAndPopularIndicatorsScope();
+        }
+
+        if (version_compare($context->getVersion(), '1.0.2', '<')) {
+            $this->addShippingTimeInDaysAttribute();
+        }
+
+        if (version_compare($context->getVersion(), '1.0.3', '<')) {
+            $this->migrateConfigurationKeys();
         }
 
     }
@@ -356,6 +380,79 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
         foreach($attributes as $attribute){
             $this->eavSetup->updateAttribute($entityType, $attribute, 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
+        }
+    }
+
+    public function addShippingTimeInDaysAttribute()
+    {
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'use_time_needed_to_ship_product')) {
+            $this->eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'use_time_needed_to_ship_product',
+                [
+                    'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                    'type' => 'int',
+                    'unique' => false,
+                    'label' => 'Use specific Shipping time',
+                    'input' => 'boolean',
+                    'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
+                    'group' => 'Positive Indicators',
+                    'required' => false,
+                    'sort_order' => 70,
+                    'user_defined' => 1,
+                    'searchable' => false,
+                    'filterable' => false,
+                    'filterable_in_search' => false,
+                    'visible_on_front' => false,
+                    'used_in_product_listing' => false,
+                    'note' => 'Take into account specific time needed to ship product'
+                ]
+            );
+        }
+
+        if (!$this->eavSetup->getAttributeId(\Magento\Catalog\Model\Product::ENTITY, 'time_needed_to_ship_product')) {
+            $this->eavSetup->addAttribute(
+                \Magento\Catalog\Model\Product::ENTITY,
+                'time_needed_to_ship_product',
+                [
+                    'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                    'type' => 'varchar',
+                    'unique' => false,
+                    'label' => 'Specific shipping time',
+                    'input' => 'text',
+                    'group' => 'Positive Indicators',
+                    'required' => false,
+                    'sort_order' => 80,
+                    'user_defined' => 1,
+                    'searchable' => false,
+                    'filterable' => false,
+                    'filterable_in_search' => false,
+                    'visible_on_front' => false,
+                    'used_in_product_listing' => true,
+                    'note' => 'Specific time needed to ship product'
+                ]
+            );
+        }
+    }
+
+    protected function migrateConfigurationKeys()
+    {
+        $table = $this->connection->getTableName('core_config_data');
+        $format = 'positive_indicators/%s/%s';
+
+        $indicators = ['only_x_available', 'popular_icon', 'recently_bought', 'fast_shipping', 'expected_delivery'];
+
+        try{
+            foreach($indicators as $indicator){
+                $this->connection->update(
+                    $table,
+                    ['path' => sprintf($format, $indicator, 'is_enabled')],
+                    ['path = ?' => sprintf($format, $indicator, 'active')]
+                );
+            }
+        }catch (\Exception $e){
+            $message = sprintf('Error during ProductPositiveIndicators\Setup\UpgradeData::migrateConfigurationKeys(): %s', $e->getMessage());
+            $this->logger->warning($message);
         }
     }
 

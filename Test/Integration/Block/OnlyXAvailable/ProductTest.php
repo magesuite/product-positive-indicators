@@ -48,7 +48,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlag($sku, $flag)
@@ -56,7 +56,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get($sku);
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertEquals($flag, $displayInfo);
     }
@@ -67,7 +67,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlagForQtyParameter($sku, $flag)
@@ -75,7 +75,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get($sku);
         $productQty = $this->stockInterface->getStockQty($product->getId());
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage($productQty);
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage($productQty);
 
         $this->assertEquals($flag, $displayInfo);
     }
@@ -84,27 +84,27 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
     public function testItReturnsFalseIfConfigurationIsNotSet()
     {
         $product = $this->productRepository->get('product_qty_100');
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertFalse($displayInfo);
     }
 
     /**
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
     public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
     {
         $this->coreRegistry->register('product', null);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertFalse($displayInfo);
     }
@@ -114,7 +114,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/only_x_available/active 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectFlagForQtyParameterFromProduct()
@@ -122,9 +122,32 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = $this->productRepository->get('product_qty_available');
         $this->coreRegistry->register('product', $product);
 
-        $displayInfo = $this->productBlock->displayInfoOnProductPage();
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
 
         $this->assertTrue($displayInfo);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture loadProducts
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
+     */
+    public function testItReturnsCorrectProductQty()
+    {
+        $product = $this->productRepository->get('product_qty_100');
+        $this->coreRegistry->register('product', $product);
+
+        $this->assertEquals(100, $this->productBlock->getProductQty());
+
+        $product = $this->productRepository->get('product_qty_2');
+
+        $this->coreRegistry->unregister('product');
+        $this->coreRegistry->register('product', $product);
+
+        $this->assertEquals(2, $this->productBlock->getProductQty());
     }
 
 

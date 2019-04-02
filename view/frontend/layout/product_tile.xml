@@ -1,4 +1,5 @@
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="product.tile.container.badges">
             <block class="MageSuite\ProductTile\Block\Tile\Fragment"
@@ -9,10 +10,10 @@
                 <arguments>
                     <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\FreeShipping</argument>
                     <argument xsi:type="string" name="wrapper_tag">li</argument>
-                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge cs-product-tile__badge--free-shipping</argument>
-                    <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
+                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge-item</argument>
+                    <argument xsi:type="string" name="css_class">cs-product-tile__badge cs-product-tile__badge--free-shipping</argument>
+                    <argument xsi:type="string" name="text_css_class">cs-product-tile__badge-text</argument>
                     <argument translate="true" xsi:type="string" name="label">Free shipping</argument>
-                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-product-tile__badge-text</argument>
                 </arguments>
             </block>
 
@@ -24,10 +25,10 @@
                 <arguments>
                     <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\Popular</argument>
                     <argument xsi:type="string" name="wrapper_tag">li</argument>
-                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge cs-product-tile__badge--popular</argument>
-                    <argument xsi:type="string" name="css_class">cs-badge cs-badge--cut cs-badge--positive</argument>
+                    <argument xsi:type="string" name="wrapper_css_class">cs-product-tile__badge-item</argument>
+                    <argument xsi:type="string" name="css_class">cs-product-tile__badge cs-product-tile__badge--popular</argument>
+                    <argument xsi:type="string" name="text_css_class">cs-product-tile__badge-text</argument>
                     <argument translate="true" xsi:type="string" name="label">Popular</argument>
-                    <argument xsi:type="string" name="text_css_class">cs-badge__span cs-product-tile__badge-text</argument>
                 </arguments>
             </block>
         </referenceBlock>

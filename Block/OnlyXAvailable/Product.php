@@ -6,21 +6,25 @@ class Product extends \Magento\Framework\View\Element\Template
 {
     protected $_template = 'MageSuite_ProductPositiveIndicators::onlyxavailable/product.phtml';
 
-    private $config;
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
+     */
+    protected $productHelper;
+
     /**
      * @var \Magento\Framework\Registry
      */
     protected $registry;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface
      */
-    protected $scopeConfig;
+    protected $getProductSalableQty;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockStateInterface
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable
      */
-    protected $stockInterface;
+    protected $configuration;
 
     /**
      * @var \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface
@@ -29,25 +33,25 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
-        \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
+        \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
+        $this->productHelper = $productHelper;
         $this->registry = $registry;
-        $this->scopeConfig = $scopeConfigInterface;
-        $this->stockInterface = $stockInterface;
+        $this->getProductSalableQty = $getProductSalableQty;
+        $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
-
-        $this->config = $this->getConfig();
     }
 
-    public function displayInfoOnProductPage($productQty = null)
+    public function shouldDisplayInfoOnProductPage($productQty = null)
     {
-        if(!$this->config['active']){
+        if(!$this->configuration->isEnabled()){
             return false;
         }
 
@@ -68,27 +72,19 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function getProductQty()
     {
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
-            return false;
+            return null;
         }
 
         if($product->getTypeId() != 'simple'){
-            return false;
+            return null;
         }
 
-        $qty = $product->getExtensionAttributes()->getStockItem()->getQty();
-        $qty = $qty ? $qty : $this->stockInterface->getStockQty($product->getId());
+        $stockId = $product->getExtensionAttributes()->getStockItem()->getStockId();
 
-        return $qty;
-    }
-
-    public function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        return $product ? $product : false;
+        return $this->getProductSalableQty->execute($product->getSku(), $stockId);
     }
 
     private function getCategory()
@@ -99,10 +95,10 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
-            return false;
+            return null;
         }
 
         $category = $this->categoryFinder->getCategory($product);
@@ -112,7 +108,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     private function getQuantityFromConfig()
     {
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if($product and $product->getQtyAvailable() !== null){
             return (float)$product->getQtyAvailable();
@@ -124,12 +120,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return $category->getQtyAvailable();
         }
 
-        return (int)$this->config['quantity'];
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/only_x_available', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        return (int)$this->configuration->getQuantity();
     }
 
 }

@@ -35,7 +35,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItSetCorrectFlagInProducts()
@@ -57,18 +57,20 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItReturnsCorrectProductIdsForDefaultSorting()
     {
         $expectedResult = [
-            604 => [333],
-            603 => [333],
-            602 => [333],
-            601 => [334]
+            604 => [433],
+            603 => [433],
+            602 => [433],
+            601 => [434]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -77,18 +79,20 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_direction asc
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItReturnsCorrectProductIdsForSpecificSortingDirection()
     {
         $expectedResult = [
-            601 => [333,334],
-            600 => [333],
-            602 => [333]
+            601 => [433,434],
+            600 => [433],
+            602 => [433]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -97,18 +101,20 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_by name
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
     public function testItReturnsCorrectProductIdsForSpecificSortBy()
     {
         $expectedResult = [
-            604 => [333],
-            601 => [333,334],
-            603 => [333]
+            604 => [433],
+            601 => [433,434],
+            603 => [433]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 
@@ -117,17 +123,19 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadCategories
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 2
      */
     public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts()
     {
         $expectedResult = [
-            604 => [333],
-            603 => [333],
-            601 => [334]
+            604 => [433],
+            603 => [433],
+            601 => [434]
         ];
+
         $productIds = $this->popularIconProducts->getProductsData();
+
         $this->assertEquals($expectedResult, $productIds);
     }
 

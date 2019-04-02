@@ -6,48 +6,44 @@ class Product extends \Magento\Framework\View\Element\Template
 {
     protected $_template = 'MageSuite_ProductPositiveIndicators::recentlybought/product.phtml';
 
-    private $config;
-
     /**
-     * @var \Magento\Framework\Registry
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
      */
-    protected $registry;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected $productHelper;
 
     /**
      * @var \Magento\CatalogInventory\Api\StockStateInterface
      */
     protected $stockInterface;
 
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought
+     */
+    protected $configuration;
+
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
-        $this->registry = $registry;
-        $this->scopeConfig = $scopeConfigInterface;
+        $this->productHelper = $productHelper;
         $this->stockInterface = $stockInterface;
-
-        $this->config = $this->getConfig();
+        $this->configuration = $configuration;
     }
 
     public function getRecentlyBoughtInfo()
     {
         $result = ['active' => 0];
 
-        if(!$this->config['active']){
+        if(!$this->configuration->isEnabled()){
             return $result;
         }
 
-        $product = $this->getProduct();
+        $product = $this->productHelper->getProduct();
 
         if(!$product){
             return $result;
@@ -59,28 +55,13 @@ class Product extends \Magento\Framework\View\Element\Template
             return $result;
         }
 
+        $orderPeriod = $product->getRecentlyBoughtPeriod();
+        $orderPeriod = $orderPeriod ? $orderPeriod : $this->configuration->getPeriod();
+
         return [
             'active' => $product->getRecentlyBought(),
             'sum' => $product->getRecentlyBoughtSum(),
-            'order_period' => $this->getOrderPeriodForProduct($product->getRecentlyBoughtPeriod())
+            'order_period' => $orderPeriod
         ];
     }
-
-    public function getProduct()
-    {
-        $product = $this->registry->registry('product');
-
-        return $product ? $product : false;
-    }
-
-    private function getOrderPeriodForProduct($period)
-    {
-        return $period ? $period : $this->config['period'];
-    }
-
-    private function getConfig()
-    {
-        return $this->scopeConfig->getValue('positive_indicators/recently_bought', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-    }
-
 }

@@ -42,7 +42,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
     public function testItReturnCorrectFlag($sku, $flag)
     {
@@ -56,7 +56,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @magentoAppIsolation enabled
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
     public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
     {
@@ -64,7 +64,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
         $popularIconFlag = $this->productBlock->getPopularIconFlag();
 
-        $this->assertFalse($popularIconFlag);
+        $this->assertNull($popularIconFlag);
     }
 
 

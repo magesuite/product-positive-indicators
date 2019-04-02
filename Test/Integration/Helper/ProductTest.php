@@ -30,7 +30,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @dataProvider getExpectedData
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
     public function testItReturnsCorrectFlag($productId, $flag)
     {
@@ -43,7 +43,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDataFixture loadProducts
-     * @magentoConfigFixture current_store positive_indicators/popular_icon/active 0
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 0
      */
     public function testItReturnsFalseIfConfigurationIsNotSet()
     {
