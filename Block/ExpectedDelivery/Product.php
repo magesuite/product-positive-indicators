@@ -63,7 +63,9 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function isEnabled()
     {
-        return $this->configuration->isEnabled();
+        $deliveryData = $this->getDeliveryData();
+
+        return empty($deliveryData) ? false : true;
     }
 
     public function getMaxTimeToday()
@@ -117,6 +119,10 @@ class Product extends \Magento\Framework\View\Element\Template
             $product = $this->productHelper->getProduct();
 
             if(!$product){
+                return $this->deliveryData;
+            }
+
+            if(!$product->isSaleable()){
                 return $this->deliveryData;
             }
 
