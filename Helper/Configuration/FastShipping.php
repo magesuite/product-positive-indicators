@@ -36,13 +36,13 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Helper\Configura
     public function getWorkingDays()
     {
         $workingDays = $this->getConfig()->getWorkingDays();
-        return $this->convertStringToArray($workingDays);
+        return $this->convertOneLineStringToArray($workingDays);
     }
 
     public function getHolidays()
     {
         $holidays = $this->getConfig()->getHolidays();
-        return $this->convertStringToArray($holidays);
+        return $this->convertMultipleLinesStringToArray($holidays);
     }
 
     public function getWorkingHours()
