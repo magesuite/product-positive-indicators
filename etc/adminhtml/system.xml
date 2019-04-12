@@ -67,7 +67,7 @@
                 </field>
                 <field id="holidays" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Holidays</label>
-                    <comment>Set holidays. E.g. 01.01.2018,25.12.2018</comment>
+                    <comment>Provide list of holidays, one date per line. Format: dd.mm.yyyy</comment>
                 </field>
                 <field id="delivery_today_time" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Time to delivery today</label>
@@ -98,7 +98,7 @@
                 </field>
                 <field id="holidays" translate="label comment" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Holidays</label>
-                    <comment>Set holidays. E.g. 01.01.2018,25.12.2018</comment>
+                    <comment>Provide list of holidays, one date per line. Format: dd.mm.yyyy</comment>
                 </field>
                 <field id="delivery_today_time" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Time to ship today</label>

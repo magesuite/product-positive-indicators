@@ -45,13 +45,25 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
         return $seconds * 3600;
     }
 
-    protected function convertStringToArray($string)
+    protected function convertOneLineStringToArray($string)
     {
         if(empty($string)){
             return [];
         }
 
         return array_map('trim', explode(',', $string));
+    }
+
+    protected function convertMultipleLinesStringToArray($string)
+    {
+        if(empty($string)){
+            return [];
+        }
+
+        $string = str_replace("\r\n", "\n", $string);
+        $string = str_replace("\r", "\n", $string);
+
+        return array_map('trim', explode(PHP_EOL, $string));
     }
 
     protected function getConfigKey()

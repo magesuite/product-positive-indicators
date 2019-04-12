@@ -108,6 +108,10 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
             $this->migrateConfigurationKeys();
         }
 
+        if (version_compare($context->getVersion(), '1.0.4', '<')) {
+            $this->updateAttributeLabels();
+        }
+
     }
 
     protected function upgradeToVersion002()
@@ -454,6 +458,19 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
             $message = sprintf('Error during ProductPositiveIndicators\Setup\UpgradeData::migrateConfigurationKeys(): %s', $e->getMessage());
             $this->logger->warning($message);
         }
+    }
+
+    protected function updateAttributeLabels()
+    {
+        $entityType = $this->eavSetup->getEntityTypeId(\Magento\Catalog\Model\Product::ENTITY);
+
+        $this->eavSetup->updateAttribute($entityType, 'recently_bought_sum', 'frontend_label', 'Recently Bought: Ordered Sum');
+
+        $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'frontend_label', 'Expected Delivery: Use Specific Shipping Time');
+        $this->eavSetup->updateAttribute($entityType, 'time_needed_to_ship_product', 'frontend_label', 'Expected Delivery: Specific Shipping Time');
+
+        $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'note', 'Take into account specific time (in days) needed to ship product.');
+        $this->eavSetup->updateAttribute($entityType, 'time_needed_to_ship_product', 'note', 'Specific time (in days) needed to ship product.');
     }
 
 }
