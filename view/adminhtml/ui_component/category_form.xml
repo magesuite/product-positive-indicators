@@ -14,8 +14,8 @@
         <field name="qty_available" sortOrder="10" formElement="input">
             <settings>
                 <dataType>string</dataType>
-                <label translate="true">Only X Available Qty</label>
-                <notice>Display info on PDP if product qty is less than this value. This setting can be overwritten in product.</notice>
+                <label translate="true">"Only X available" threshold</label>
+                <notice>If product quantity is less than this number, show information "Only X products left" on the product page. This setting applies to all the products within the category. This parameter can also be set for a product directly, and that value is more important.</notice>
             </settings>
         </field>
         <field name="popular_icon">
