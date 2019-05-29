@@ -22,58 +22,46 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
 
         $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
 
-        $businessDay = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
+        $timeLeft = max(0, $maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
+        $timeLeft = $this->configuration->getOrderQueueLength() - $timeLeft;
 
-        if($businessDay and ($currentDateTime->getTimestamp() + $this->configuration->getOrderQueueLength()) < $maxTimeToday->getTimestamp()){
-            return [
-                'day' => 'today',
-                'time' => ($maxTimeToday->getTimestamp() - $this->configuration->getOrderQueueLength()) - $this->configuration->getUtcOffset(),
-                'deliveryDay' => __($maxTimeToday->format('l')),
-                'utcOffset' => $this->configuration->getUtcOffset()
-            ];
+        $isBusinessDay = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
+
+        if(!$isBusinessDay){
+            $midnight = sprintf('%s 00:00:00', $currentDateTime->format('d.m.Y'));
+            $maxTimeToday = new \DateTime($midnight);
         }
 
-        $timeLeft = $this->configuration->getOrderQueueLength() - ($maxTimeToday->getTimestamp() - $currentDateTime->getTimestamp());
+        $nextShippingDay = $this->getNextShippingDay($currentDateTime, $timeLeft);
 
-        $deliveryDayAndNextDay = $this->getDeliveryDayAndNextDay($currentDateTime, $timeLeft);
-
-        $deliveryDay = $deliveryDayAndNextDay['deliveryDay'];
-        $dayType = $deliveryDay->format('d') == $deliveryDayAndNextDay['nextDay'] ? 'tomorrow' : 'other';
-
-        $time = $deliveryDay->getTimestamp();
-
-        if($dayType == 'tomorrow'){
-            $deliveryDay = new \DateTime($deliveryDay->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
-            $time  = $deliveryDay->getTimestamp() - $this->configuration->getUtcOffset();
-
-        }
-
-        return [
-            'day' => $dayType,
-            'time' => $time,
-            'deliveryDay' => __($deliveryDay->format('l')),
-            'utcOffset' => $this->configuration->getUtcOffset()
-        ];
-
+        return new \Magento\Framework\DataObject([
+            'max_today_time' => $maxTimeToday->getTimestamp() - $this->configuration->getOrderQueueLength(),
+            'ship_day_time' => $currentDateTime->getTimestamp(),
+            'ship_day_name' => __($currentDateTime->format('l')),
+            'is_next_day_tomorrow' => $nextShippingDay->getIsNextDayTomorrow(),
+            'next_ship_day_time' => $nextShippingDay->getShipDay()->getTimestamp(),
+            'next_ship_day_name' => __($nextShippingDay->getShipDay()->format('l'))
+        ]);
     }
 
-    protected function getDeliveryDayAndNextDay($currentTime, $timeLeft)
+    protected function getNextShippingDay($currentTime, $timeLeft)
     {
+        $dayTime = clone $currentTime;
         $nextBusinessDay = false;
         $nextDay = null;
 
         while (!$nextBusinessDay) {
-            $currentTime->modify('+1 day');
+            $dayTime->modify('+1 day');
 
             if(!$nextDay){
-                $nextDay = $currentTime->format('d');
+                $nextDay = $dayTime->format('d');
             }
 
-            if(!$this->isWorkingDay($currentTime)){
+            if(!$this->isWorkingDay($dayTime)){
                 continue;
             }
 
-            if($this->isHoliday($currentTime)){
+            if($this->isHoliday($dayTime)){
                 continue;
             }
 
@@ -86,6 +74,9 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
             $nextBusinessDay = true;
         }
 
-        return ['deliveryDay' => $currentTime, 'nextDay' => $nextDay];
+        return new \Magento\Framework\DataObject([
+            'ship_day' => $dayTime,
+            'is_next_day_tomorrow' => $dayTime->format('d') == $nextDay ? true : false
+        ]);
     }
 }

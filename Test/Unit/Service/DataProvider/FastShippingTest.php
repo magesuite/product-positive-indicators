@@ -23,7 +23,9 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @magentoAppArea frontend
      * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
      * @param array $config
      * @param array $excepted
      * @dataProvider dataProvider
@@ -34,7 +36,10 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
 
         $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
 
-        $this->assertEquals($excepted, $deliveryData);
+        $this->assertEquals($excepted['shipDayName'], (string)$deliveryData->getShipDayName());
+        $this->assertEquals($excepted['nextShipDayName'], (string)$deliveryData->getNextShipDayName());
+        $this->assertEquals($excepted['maxTodayTime'], $deliveryData->getMaxTodayTime());
+        $this->assertEquals($excepted['isNextDayTomorrow'], $deliveryData->getIsNextDayTomorrow());
     }
 
     private function prepareConfiguration($testConfig)
