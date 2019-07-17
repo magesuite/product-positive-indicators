@@ -30,11 +30,6 @@ class PopularIconProducts
     protected $categoryRepository;
 
     /**
-     * @var \Magento\Catalog\Model\Layer
-     */
-    protected $catalogLayer;
-
-    /**
      * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
      */
     protected $configuration;
@@ -44,7 +39,6 @@ class PopularIconProducts
         \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \Magento\Catalog\Model\Layer\Resolver $layerResolver,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $configuration
     )
     {
@@ -52,7 +46,6 @@ class PopularIconProducts
         $this->productResourceAction = $productResourceAction;
         $this->productCollectionFactory = $productCollectionFactory;
         $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->catalogLayer = $layerResolver->get();
         $this->configuration = $configuration;
     }
 
@@ -124,10 +117,8 @@ class PopularIconProducts
 
     private function initializeCollection($category)
     {
-        $layer = $this->catalogLayer;
-        $layer->setCurrentCategory($category);
+        $productCollection = $category->getProductCollection();
 
-        $productCollection = $layer->getProductCollection();
         $productCollection->addFieldToFilter('status', 1);
         $productCollection->addCategoryFilter($category);
 
