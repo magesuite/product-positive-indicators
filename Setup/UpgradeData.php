@@ -112,6 +112,9 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
             $this->updateAttributeLabels();
         }
 
+        if (version_compare($context->getVersion(), '1.0.5', '<')) {
+            $this->setExpectedDeliveryAsGlobal();
+        }
     }
 
     protected function upgradeToVersion002()
@@ -471,6 +474,16 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
         $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'note', 'Take into account specific time (in days) needed to ship product.');
         $this->eavSetup->updateAttribute($entityType, 'time_needed_to_ship_product', 'note', 'Specific time (in days) needed to ship product.');
+    }
+
+    protected function setExpectedDeliveryAsGlobal()
+    {
+        $entityType = $this->eavSetup->getEntityTypeId(\Magento\Catalog\Model\Product::ENTITY);
+
+        $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
+        $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'used_in_product_listing', true);
+
+
     }
 
 }
