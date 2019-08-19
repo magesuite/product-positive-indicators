@@ -19,7 +19,7 @@ class Popular implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeInterfa
      */
     public function isVisible(\MageSuite\ProductTile\Block\Tile $tile)
     {
-        return $this->productHelper->getPopularIconFlag($tile->getProductEntity()->getId());
+        return $this->productHelper->getPopularIconFlag($tile->getProductEntity());
     }
 
     /**
