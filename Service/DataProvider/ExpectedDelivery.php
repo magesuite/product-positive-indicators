@@ -17,15 +17,18 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
     public function getDeliveryData($product = null)
     {
-        $isInStock = $product->getQuantityAndStockStatus()['is_in_stock'];
+        $stockStatus = $product->getQuantityAndStockStatus();
+        if (!isset($stockStatus['is_in_stock'])) {
+            return null;
+        }
 
-        if(empty($isInStock)){
+        $isInStock = $stockStatus['is_in_stock'];
+        if (empty($isInStock)) {
             return null;
         }
 
         $shippingTimeInDays = $this->getShippingTimeInDays($product);
-
-        if(!$shippingTimeInDays){
+        if (!$shippingTimeInDays) {
             return null;
         }
 
