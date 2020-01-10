@@ -173,12 +173,12 @@ class RecentlyBoughtProducts
     private function getProductCollection()
     {
         $collection = $this->productCollectionFactory->create();
+        $collection->setFlag('has_stock_status_filter', false);
         $collection->addAttributeToSelect([
             'recently_bought',
             'recently_bought_period',
             'recently_bought_minimal'
         ]);
-
         return $collection;
     }
 }

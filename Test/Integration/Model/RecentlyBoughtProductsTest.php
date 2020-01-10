@@ -64,8 +64,9 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
     {
         $expectedResult = [
             601 => 3,
+            602 => 2,
             603 => 2,
-            608 => 2,
+            608 => 2
         ];
 
         $productIds = $this->recentlyBoughtProducts->getProductsData();
