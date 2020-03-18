@@ -9,21 +9,14 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
      */
     protected $configuration;
 
-    public function __construct(
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration
-    ){
+    public function __construct(\MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration)
+    {
         parent::__construct($configuration);
     }
 
     public function getDeliveryData($product = null)
     {
-        $stockStatus = $product->getQuantityAndStockStatus();
-        if (!isset($stockStatus['is_in_stock'])) {
-            return null;
-        }
-
-        $isInStock = $stockStatus['is_in_stock'];
-        if (empty($isInStock)) {
+        if (!$this->isProductInStock($product)) {
             return null;
         }
 
@@ -47,14 +40,13 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             'next_ship_day_name' => __($shippingDays->getNextShipDay()->format('l')),
             'utc_offset' => $this->configuration->getUtcOffset()
         ]);
-
     }
 
     protected function getShippingTimeInDays($product)
     {
         $shippingTime = $this->configuration->getDefaultShippingTime();
 
-        if($product->getUseTimeNeededToShipProduct()){
+        if ($product->getUseTimeNeededToShipProduct()) {
             $shippingTime = $product->getTimeNeededToShipProduct() ? $product->getTimeNeededToShipProduct() : $shippingTime;
         }
 
@@ -70,7 +62,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
             $isBusinessDay = $this->isWorkingDay($currentDay) && !$this->isHoliday($currentDay);
 
-            if(!$isBusinessDay) {
+            if (!$isBusinessDay) {
                 continue;
             }
 
@@ -83,12 +75,12 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         $dateTime = new \DateTime('now');
         $dateTime->setTimestamp($shipDay->getTimestamp());
 
-        while (!$nextShipDay){
+        while (!$nextShipDay) {
             $dateTime->modify('+1 day');
 
             $isBusinessDay = $this->isWorkingDay($dateTime) && !$this->isHoliday($dateTime);
 
-            if(!$isBusinessDay) {
+            if (!$isBusinessDay) {
                 continue;
             }
 
@@ -101,5 +93,18 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         ]);
     }
 
+    public function isProductInStock($product)
+    {
+        $stockStatus = $product->getQuantityAndStockStatus();
+        if (!isset($stockStatus['is_in_stock'])) {
+            return false;
+        }
 
+        $isInStock = $stockStatus['is_in_stock'];
+        if (empty($isInStock)) {
+            return false;
+        }
+
+        return true;
+    }
 }
