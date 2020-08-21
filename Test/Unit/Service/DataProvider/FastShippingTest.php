@@ -14,7 +14,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      */
     protected $fastShippingDataProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 

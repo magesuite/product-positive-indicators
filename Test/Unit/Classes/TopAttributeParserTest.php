@@ -9,7 +9,7 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
      */
     private $topAttributeParser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->topAttributeParser = new \MageSuite\ProductPositiveIndicators\Parser\TopAttribute();
     }

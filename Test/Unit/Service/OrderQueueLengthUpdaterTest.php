@@ -9,7 +9,7 @@ class OrderQueueLengthUpdaterTest extends \PHPUnit\Framework\TestCase
      */
     private $orderQueueLengthUpdater;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
 

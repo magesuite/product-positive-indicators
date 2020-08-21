@@ -23,7 +23,7 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      */
     protected $recentlyBoughtProducts;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->productRepository = $this->objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
