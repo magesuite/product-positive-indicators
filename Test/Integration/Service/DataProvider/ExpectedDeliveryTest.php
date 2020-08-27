@@ -23,7 +23,7 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
      */
     protected $expectedDeliveryDataProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $objectManager = \Magento\TestFramework\ObjectManager::getInstance();
 

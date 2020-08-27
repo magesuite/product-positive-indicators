@@ -18,7 +18,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      */
     protected $productHelper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->productHelper = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Product::class);
