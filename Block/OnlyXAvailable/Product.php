@@ -22,6 +22,11 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $getProductSalableQty;
 
     /**
+     * @var \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite
+     */
+    protected $getStockIdForCurrentWebsite;
+
+    /**
      * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable
      */
     protected $configuration;
@@ -36,6 +41,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
         \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
+        \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
         array $data = []
@@ -45,6 +51,7 @@ class Product extends \Magento\Framework\View\Element\Template
         $this->productHelper = $productHelper;
         $this->registry = $registry;
         $this->getProductSalableQty = $getProductSalableQty;
+        $this->getStockIdForCurrentWebsite = $getStockIdForCurrentWebsite;
         $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
     }
@@ -82,7 +89,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return null;
         }
 
-        $stockId = $product->getExtensionAttributes()->getStockItem()->getStockId();
+        $stockId = $this->getStockIdForCurrentWebsite->execute();
 
         return $this->getProductSalableQty->execute($product->getSku(), $stockId);
     }
