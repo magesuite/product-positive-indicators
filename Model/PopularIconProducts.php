@@ -166,7 +166,10 @@ class PopularIconProducts
         $collection
             ->addAttributeToFilter('is_active', 1)
             ->addAttributeToFilter('level', ['gt' => 1])
-            ->addAttributeToFilter('popular_icon', 1)
+            ->addAttributeToFilter([
+                ['attribute' => 'popular_icon', 'null' => true],
+                ['attribute' => 'popular_icon', 'eq' => 1],
+            ])
             ->addAttributeToSelect('popular_icon');
 
         return $collection;
