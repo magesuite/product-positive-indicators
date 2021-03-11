@@ -32,7 +32,7 @@ class Product extends \Magento\Framework\View\Element\Template
      * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping
      */
     protected $fastShippingDataProvider;
-    
+
     protected $deliveryData = null;
 
     public function __construct(
@@ -112,12 +112,17 @@ class Product extends \Magento\Framework\View\Element\Template
 
         if($this->deliveryData === null){
             $cacheKey = $this->getCacheKeyForIndicator();
+            $deliveryData = $this->cache->load($cacheKey);
 
-            $deliveryData = unserialize($this->cache->load($cacheKey));
-
-            if(!$deliveryData){
+            if ($deliveryData) {
+                $deliveryData = $this->serializer->unserialize($deliveryData);
+            } else {
                 $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
-                $this->cache->save(serialize($deliveryData), $cacheKey);
+                $this->cache->save(
+                    $this->serializer->serialize($deliveryData),
+                    $cacheKey,
+                    [\Magento\Framework\App\Config::CACHE_TAG]
+                );
             }
 
             $this->deliveryData = $deliveryData;
