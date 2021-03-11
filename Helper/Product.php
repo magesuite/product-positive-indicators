@@ -44,27 +44,44 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $fastShippingConfiguration;
 
+    /**
+     * @var \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface
+     */
+    protected $getProductSalableQty;
+
+    /**
+     * @var \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite
+     */
+    protected $getStockIdForCurrentWebsite;
+
+    /**
+     * @var array
+     */
+    protected $productQtyCache = [];
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Catalog\Model\ResourceModel\Product $productResource,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfigInterface,
         \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService,
         \Magento\Framework\Registry $registry,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $popularIconConfiguration,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration,
+        \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
+        \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite
     ) {
         parent::__construct($context);
 
         $this->productResource = $productResource;
         $this->storeManager = $storeManager;
-        $this->scopeConfig = $scopeConfigInterface;
         $this->freeShippingService = $freeShippingService;
         $this->registry = $registry;
         $this->productRepository = $productRepository;
         $this->fastShippingConfiguration = $fastShippingConfiguration;
         $this->popularIconConfiguration = $popularIconConfiguration;
+        $this->getProductSalableQty = $getProductSalableQty;
+        $this->getStockIdForCurrentWebsite = $getStockIdForCurrentWebsite;
     }
 
     public function getPopularIconFlag($product)
@@ -121,6 +138,23 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         return $product;
     }
 
+    public function getProductQty($product = null)
+    {
+        $product = $product ?? $this->getProduct();
+
+        if (!$product) {
+            return 0;
+        }
+
+        if (!isset($this->productQtyCache[$product->getId()])) {
+            $stockId = $this->getStockIdForCurrentWebsite->execute();
+            $qty = $this->getProductSalableQty->execute($product->getSku(), $stockId);
+            $this->productQtyCache[$product->getId()] = $qty;
+        }
+
+        return $this->productQtyCache[$product->getId()];
+    }
+
     private function isPopularIconEnabled($product)
     {
         return (boolean)$product->getPopularIcon();
@@ -149,21 +183,23 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->freeShippingService->isFreeShipped($product);
     }
 
-    public function showFreeShippingInProductTiles(){
+    public function showFreeShippingInProductTiles()
+    {
         return $this->freeShippingService->showInProductTiles();
     }
 
-    public function showFreeShippingTextNoteOnProductsDetailpage(){
+    public function showFreeShippingTextNoteOnProductsDetailpage()
+    {
         return $this->freeShippingService->showTextNoteOnProductsDetailpage();
     }
 
-    public function showFreeShippingBadgeOnProductsDetailpage(){
+    public function showFreeShippingBadgeOnProductsDetailpage()
+    {
         return $this->freeShippingService->showBadgeOnProductsDetailpage();
     }
 
-    public function showFreeShippingInSearchAutosuggest(){
+    public function showFreeShippingInSearchAutosuggest()
+    {
         return $this->freeShippingService->showInSearchAutosuggest();
     }
-
-
 }

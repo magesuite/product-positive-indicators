@@ -12,11 +12,6 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $productHelper;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockStateInterface
-     */
-    protected $stockInterface;
-
-    /**
      * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought
      */
     protected $configuration;
@@ -24,14 +19,12 @@ class Product extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
-        \Magento\CatalogInventory\Api\StockStateInterface $stockInterface,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought $configuration,
         array $data = []
     ) {
         parent::__construct($context, $data);
 
         $this->productHelper = $productHelper;
-        $this->stockInterface = $stockInterface;
         $this->configuration = $configuration;
     }
 

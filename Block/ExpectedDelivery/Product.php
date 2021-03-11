@@ -111,28 +111,33 @@ class Product extends \Magento\Framework\View\Element\Template
 
     protected function getDeliveryData()
     {
-        if(!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()){
+        if (!$this->configuration->isEnabled() || !$this->configuration->getDeliveryTodayTime()) {
             return false;
         }
 
-        if($this->deliveryData === null){
+        if ($this->deliveryData === null) {
             $product = $this->productHelper->getProduct();
 
-            if(!$product){
+            if (!$product) {
                 return $this->deliveryData;
             }
 
-            if(!$product->isSaleable()){
+            if (!$product->isSaleable()) {
                 return $this->deliveryData;
             }
 
             $cacheKey = $this->getCacheKeyForProductId($product->getId());
+            $deliveryData = $this->cache->load($cacheKey);
 
-            $deliveryData = unserialize($this->cache->load($cacheKey));
-
-            if(!$deliveryData){
+            if ($deliveryData) {
+                $deliveryData = $this->serializer->unserialize($deliveryData);
+            } else {
                 $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
-                $this->cache->save(serialize($deliveryData), $cacheKey);
+                $this->cache->save(
+                    $this->serializer->serialize($deliveryData),
+                    $cacheKey,
+                    [\Magento\Framework\App\Config::CACHE_TAG]
+                );
             }
 
             $this->deliveryData = $deliveryData;

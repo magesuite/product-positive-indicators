@@ -9,9 +9,17 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
      */
     protected $configuration;
 
-    public function __construct(\MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration)
-    {
+    /**
+     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
+     */
+    protected $productHelper;
+
+    public function __construct(
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration,
+        \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper
+    ) {
         parent::__construct($configuration);
+        $this->productHelper = $productHelper;
     }
 
     public function getDeliveryData($product = null)
@@ -95,16 +103,6 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
     public function isProductInStock($product)
     {
-        $stockStatus = $product->getQuantityAndStockStatus();
-        if (!isset($stockStatus['is_in_stock'])) {
-            return false;
-        }
-
-        $isInStock = $stockStatus['is_in_stock'];
-        if (empty($isInStock)) {
-            return false;
-        }
-
-        return true;
+        return $this->productHelper->getProductQty($product) > 0;
     }
 }
