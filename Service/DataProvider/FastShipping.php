@@ -37,10 +37,10 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         return new \Magento\Framework\DataObject([
             'max_today_time' => $maxTimeToday->getTimestamp() - $this->configuration->getOrderQueueLength(),
             'ship_day_time' => $currentDateTime->getTimestamp(),
-            'ship_day_name' => __($currentDateTime->format('l')),
+            'ship_day_name' => (string)__($currentDateTime->format('l')),
             'is_next_day_tomorrow' => $nextShippingDay->getIsNextDayTomorrow(),
             'next_ship_day_time' => $nextShippingDay->getShipDay()->getTimestamp(),
-            'next_ship_day_name' => __($nextShippingDay->getShipDay()->format('l'))
+            'next_ship_day_name' => (string)__($nextShippingDay->getShipDay()->format('l'))
         ]);
     }
 
