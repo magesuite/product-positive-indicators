@@ -103,6 +103,6 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
     public function isProductInStock($product)
     {
-        return $this->productHelper->getProductQty($product) > 0;
+        return $product->isSalable();
     }
 }
