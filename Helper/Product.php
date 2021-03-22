@@ -148,7 +148,11 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
         if (!isset($this->productQtyCache[$product->getId()])) {
             $stockId = $this->getStockIdForCurrentWebsite->execute();
-            $qty = $this->getProductSalableQty->execute($product->getSku(), $stockId);
+            try {
+                $qty = $this->getProductSalableQty->execute($product->getSku(), $stockId);
+            } catch (\Magento\Framework\Exception\InputException $e) {
+                $qty = 0;
+            }
             $this->productQtyCache[$product->getId()] = $qty;
         }
 
