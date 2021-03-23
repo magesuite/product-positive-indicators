@@ -24,7 +24,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
 
     public function getDeliveryData($product = null)
     {
-        if (!$this->isProductInStock($product)) {
+        if (!$product->isSalable()) {
             return null;
         }
 
@@ -99,10 +99,5 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             'ship_day' => $shipDay,
             'next_ship_day' => $nextShipDay
         ]);
-    }
-
-    public function isProductInStock($product)
-    {
-        return $product->isSalable();
     }
 }
