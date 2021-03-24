@@ -43,9 +43,9 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         return new \Magento\Framework\DataObject([
             'max_today_time' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
             'ship_day_time' => $shippingDays->getShipDay()->getTimestamp(),
-            'ship_day_name' => __($shippingDays->getShipDay()->format('l')),
+            'ship_day_name' => (string)__($shippingDays->getShipDay()->format('l')),
             'next_ship_day_time' => $shippingDays->getNextShipDay()->getTimestamp(),
-            'next_ship_day_name' => __($shippingDays->getNextShipDay()->format('l')),
+            'next_ship_day_name' => (string)__($shippingDays->getNextShipDay()->format('l')),
             'utc_offset' => $this->configuration->getUtcOffset()
         ]);
     }

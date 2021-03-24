@@ -15,7 +15,7 @@ class Product extends \Magento\Framework\View\Element\Template
     protected $cache;
 
     /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
+     * @var \Magento\Framework\Serialize\SerializerInterface
      */
     protected $serializer;
 
@@ -44,7 +44,7 @@ class Product extends \Magento\Framework\View\Element\Template
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Framework\Serialize\Serializer\Json $serializer,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration,
@@ -130,11 +130,13 @@ class Product extends \Magento\Framework\View\Element\Template
             $deliveryData = $this->cache->load($cacheKey);
 
             if ($deliveryData) {
-                $deliveryData = $this->serializer->unserialize($deliveryData);
+                $deliveryData = new \Magento\Framework\DataObject(
+                    $this->serializer->unserialize($deliveryData)
+                );
             } else {
                 $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
                 $this->cache->save(
-                    $this->serializer->serialize($deliveryData),
+                    $this->serializer->serialize($deliveryData->toArray()),
                     $cacheKey,
                     [\Magento\Framework\App\Config::CACHE_TAG]
                 );
