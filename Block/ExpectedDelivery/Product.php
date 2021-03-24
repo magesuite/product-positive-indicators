@@ -122,10 +122,6 @@ class Product extends \Magento\Framework\View\Element\Template
                 return $this->deliveryData;
             }
 
-            if (!$product->isSaleable()) {
-                return $this->deliveryData;
-            }
-
             $cacheKey = $this->getCacheKeyForProductId($product->getId());
             $deliveryData = $this->cache->load($cacheKey);
 
