@@ -131,11 +131,14 @@ class Product extends \Magento\Framework\View\Element\Template
                 );
             } else {
                 $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
-                $this->cache->save(
-                    $this->serializer->serialize($deliveryData->toArray()),
-                    $cacheKey,
-                    [\Magento\Framework\App\Config::CACHE_TAG]
-                );
+
+                if ($deliveryData != null) {
+                    $this->cache->save(
+                        $this->serializer->serialize($deliveryData->toArray()),
+                        $cacheKey,
+                        [\Magento\Framework\App\Config::CACHE_TAG]
+                    );
+                }
             }
 
             $this->deliveryData = $deliveryData;
