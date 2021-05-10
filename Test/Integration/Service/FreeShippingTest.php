@@ -116,10 +116,6 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     {
         $value = $this->freeShippingService->getShippingMethodsWithFreeShipping();
 
-        $this->assertArrayHasKey('ups', $value);
-        $this->assertEquals('United Parcel Service', $value['ups']['title']);
-        $this->assertEquals('20', $value['ups']['value']);
-
         $this->assertArrayHasKey('freeshipping', $value);
         $this->assertEquals('Free Shipping', $value['freeshipping']['title']);
         $this->assertEquals('49', $value['freeshipping']['value']);
