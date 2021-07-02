@@ -51,4 +51,11 @@
         </arguments>
     </type>
 
+    <type name="Smile\ElasticsuiteCatalog\Model\Autocomplete\Product\AttributeConfig">
+        <arguments>
+            <argument name="additionalSelectedAttributes" xsi:type="array">
+                <item name="popular_icon" xsi:type="string">popular_icon</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
