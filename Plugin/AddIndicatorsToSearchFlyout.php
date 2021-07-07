@@ -10,26 +10,27 @@ class AddIndicatorsToSearchFlyout
      */
     protected $freeShipping;
 
-    public function __construct(
-        \MageSuite\ProductPositiveIndicators\Service\FreeShipping $freeShipping
-    ){
+    public function __construct(\MageSuite\ProductPositiveIndicators\Service\FreeShipping $freeShipping)
+    {
         $this->freeShipping = $freeShipping;
     }
 
-    public function beforeCreate(
-        \Smile\ElasticsuiteCatalog\Model\Autocomplete\Product\ItemFactory $subject,
-        array $data
-    ): array {
+    public function afterCreate(\Smile\ElasticsuiteCatalog\Model\Autocomplete\Product\ItemFactory $subject, $result, array $data)
+    {
         $product = $data['product'];
 
         if ($product->getPopularIcon()) {
-            $data['popular_icon'] = __('Popular');
+            $result->setData('popular_icon', __('Popular'));
+        } else {
+            $result->unsetData('popular_icon');
         }
 
         if ($this->freeShipping->showInSearchAutosuggest() && $this->freeShipping->isFreeShipped($product)) {
-            $data['free_shipping'] = __('Free Shipping');
+            $result->setData('free_shipping', __('Free Shipping'));
+        } else {
+            $result->unsetData('free_shipping');
         }
 
-        return [$data];
+        return $result;
     }
 }
