@@ -168,7 +168,6 @@ class FreeShipping implements FreeShippingInterface
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
 
-
         $shipToSpecifCountry = $this->scopeConfig->getValue(
             'carriers/' . $defaultShippingMethod . '/specificcountry',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE

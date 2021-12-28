@@ -6,7 +6,7 @@ class RecentlyBought extends \Symfony\Component\Console\Command\Command
     /**
      * @var \Magento\Framework\App\State
      */
-    private $state;
+    protected $state;
 
     /**
      * @var \Magento\Framework\Config\ScopeInterface $scope

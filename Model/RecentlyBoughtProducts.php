@@ -47,7 +47,7 @@ class RecentlyBoughtProducts
     {
         $this->removeRecentlyBoughtFlag();
 
-        if (!$this->configuration->isEnabled() or !$this->configuration->getPeriod() or !$this->configuration->getMinimal()) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->getPeriod() || !$this->configuration->getMinimal()) {
             return false;
         }
 
@@ -82,7 +82,7 @@ class RecentlyBoughtProducts
 
             $recentlyBoughtSum = $this->getRecentlyBoughtSum($productId, $productFrom, $to);
 
-            if (!$recentlyBoughtSum or $recentlyBoughtSum < $productMinimalValue) {
+            if (!$recentlyBoughtSum || $recentlyBoughtSum < $productMinimalValue) {
                 continue;
             }
 
@@ -109,7 +109,7 @@ class RecentlyBoughtProducts
 
         $result = $connection->fetchRow($query);
 
-        if (!$result or !$result['count_ordered']) {
+        if (!$result || !$result['count_ordered']) {
             return null;
         }
 

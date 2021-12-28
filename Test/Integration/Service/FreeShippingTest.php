@@ -99,7 +99,6 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false, $value);
     }
 
-
     /**
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled

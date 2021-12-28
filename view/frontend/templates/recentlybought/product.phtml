@@ -9,5 +9,5 @@
         $daysWording = $recentlyBought['order_period'] > 1 ? 'days' : 'day';
     ?>
 
-    <?= __("%1 bought this product within last %2", $recentlyBought['sum'].' '.$customersWording, $recentlyBought['order_period'].' '.$daysWording); ?>
+    <?= /* @noEscape */ __("%1 bought this product within last %2", $recentlyBought['sum'].' '.$customersWording, $recentlyBought['order_period'].' '.$daysWording); ?>
 <?php endif; ?>

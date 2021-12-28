@@ -1,5 +1,5 @@
 <?php
 /** @var $block \MageSuite\ProductPositiveIndicators\Block\FreeShipping\Product */
 if ($block->isFreeShippingAvailable() && $block->showTextNoteOnProductsDetailpage()) : ?>
-    <?= __('Free shipping for this item'); ?>
+    <?= /* @noEscape */ __('Free shipping for this item'); ?>
 <?php endif; ?>

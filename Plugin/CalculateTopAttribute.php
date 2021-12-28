@@ -28,7 +28,7 @@ class CalculateTopAttribute
         \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface $parser,
         \Magento\Swatches\Helper\Data $swatchHelper,
         \Magento\Framework\Serialize\Serializer\Json $serializer
-    ){
+    ) {
         $this->parser = $parser;
         $this->swatchHelper = $swatchHelper;
         $this->serializer = $serializer;

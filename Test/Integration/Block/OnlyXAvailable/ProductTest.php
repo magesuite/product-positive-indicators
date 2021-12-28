@@ -168,7 +168,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $this->productBlock->getProductQty());
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';

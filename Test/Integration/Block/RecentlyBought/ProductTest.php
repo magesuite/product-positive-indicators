@@ -68,7 +68,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['active' => 0], $recentlyBoughtInfo);
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';

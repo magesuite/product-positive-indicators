@@ -67,7 +67,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($popularIconFlag);
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';
