@@ -133,6 +133,24 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 5
+     */
+    public function testItReturnsFalseWhenBackordersEnabled()
+    {
+        $product = $this->productRepository->get('product_backorders_enabled');
+        $this->coreRegistry->register('product', $product);
+
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
+
+        $this->assertFalse($displayInfo);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture loadProducts
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectProductQty()

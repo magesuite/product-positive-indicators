@@ -26,12 +26,18 @@ class Product extends \Magento\Framework\View\Element\Template
      */
     protected $categoryFinder;
 
+    /**
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
+     */
+    protected $stockRegistry;
+
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
+        \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -40,6 +46,7 @@ class Product extends \Magento\Framework\View\Element\Template
         $this->registry = $registry;
         $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
+        $this->stockRegistry = $stockRegistry;
     }
 
     public function shouldDisplayInfoOnProductPage($productQty = null)
@@ -74,6 +81,14 @@ class Product extends \Magento\Framework\View\Element\Template
         if($product->getTypeId() != 'simple'){
             return null;
         }
+
+        $stockItem = $this->stockRegistry->getStockItem($product->getId());
+
+        if (!$stockItem->getManageStock()
+            || $stockItem->getBackorders() !== \Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface::BACKORDERS_NO) {
+            return null;
+        }
+
 
         return $this->productHelper->getProductQty();
     }
