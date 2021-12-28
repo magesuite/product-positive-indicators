@@ -2,7 +2,6 @@
 
 namespace MageSuite\ProductPositiveIndicators\Cron;
 
-
 class TopAttributeRefresh
 {
     const DEFAULT_STORE_INDEX = 0;
@@ -52,8 +51,7 @@ class TopAttributeRefresh
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Serialize\Serializer\Json $serializer
-    )
-    {
+    ) {
         $this->attributeResource = $attributeResource;
         $this->productAttributeCollectionFactory = $productAttributeCollectionFactory;
         $this->parser = $parser;
@@ -85,7 +83,8 @@ class TopAttributeRefresh
      * @throws \Exception
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function calculateMinValueForTextAttribute(\Magento\Eav\Model\Entity\Attribute $attribute){
+    public function calculateMinValueForTextAttribute(\Magento\Eav\Model\Entity\Attribute $attribute)
+    {
         try {
             $topAttributeValues = $this->serializer->unserialize($attribute->getTopAttributeValue());
             $productAttributeValues = $this->getProductAttributeValues($attribute->getAttributeId(), $attribute->getBackendTable());
@@ -113,7 +112,8 @@ class TopAttributeRefresh
             ])
             ->where('att.attribute_id = ?', $attributeId)
             // remove duplicated values by group
-            ->group(['store_id', 'value']);;
+            ->group(['store_id', 'value']);
+        ;
 
         $result = $connection->fetchAll($select);
         $formattedResult = $this->reindexResult($result);
@@ -145,7 +145,8 @@ class TopAttributeRefresh
      * @param array $formattedResult
      * @return array
      */
-    public function fillMissingValues($formattedResult) {
+    public function fillMissingValues($formattedResult)
+    {
         $response = [];
         $storeIds = $this->getStoreIds();
 
@@ -168,5 +169,4 @@ class TopAttributeRefresh
 
         return $storeIds;
     }
-
 }

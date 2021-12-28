@@ -23,7 +23,7 @@ class AddTopAttributeBadge
         \Magento\Framework\View\Element\BlockFactory $blockFactory,
         \MageSuite\ProductPositiveIndicators\Helper\TopAttribute $topAttributeHelper,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\TopAttributes $topAttributesConfiguration
-    ){
+    ) {
         $this->blockFactory = $blockFactory;
         $this->topAttributeHelper = $topAttributeHelper;
         $this->topAttributesConfiguration = $topAttributesConfiguration;
@@ -31,15 +31,15 @@ class AddTopAttributeBadge
 
     public function afterGetAdditionalData($subject, $result)
     {
-        if(!$this->topAttributesConfiguration->isEnabled()){
+        if (!$this->topAttributesConfiguration->isEnabled()) {
             return $result;
         }
 
         $topAttributesBlockHtml = $this->blockFactory->createBlock(\MageSuite\ProductPositiveIndicators\Block\TopAttributes\Badge::class)->toHtml();
 
-        foreach($result as $attributeCode => $data){
+        foreach ($result as $attributeCode => $data) {
 
-            if(!$this->topAttributeHelper->checkTopAttribute($attributeCode, $data['value'])){
+            if (!$this->topAttributeHelper->checkTopAttribute($attributeCode, $data['value'])) {
                 continue;
             }
 

@@ -3,7 +3,7 @@
     $recentlyBought = $block->getRecentlyBoughtInfo();
 ?>
 
-<?php if ($recentlyBought['active']): ?>
+<?php if ($recentlyBought['active']) : ?>
     <?php
         $customersWording = $recentlyBought['sum'] > 1 ? 'customers' : 'customer';
         $daysWording = $recentlyBought['order_period'] > 1 ? 'days' : 'day';

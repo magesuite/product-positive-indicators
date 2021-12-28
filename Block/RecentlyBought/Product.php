@@ -32,19 +32,19 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $result = ['active' => 0];
 
-        if(!$this->configuration->isEnabled()){
+        if (!$this->configuration->isEnabled()) {
             return $result;
         }
 
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return $result;
         }
 
         $recentlyBoughtSum = $product->getRecentlyBoughtSum();
 
-        if(!$recentlyBoughtSum){
+        if (!$recentlyBoughtSum) {
             return $result;
         }
 

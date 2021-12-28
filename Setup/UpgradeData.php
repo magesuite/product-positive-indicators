@@ -47,8 +47,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Psr\Log\LoggerInterface $logger
-    )
-    {
+    ) {
         $this->eavSetupFactory = $eavSetupFactory;
         $this->moduleDataSetupInterface = $moduleDataSetupInterface;
         $this->eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetupInterface]);
@@ -70,8 +69,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
     public function upgrade(
         \Magento\Framework\Setup\ModuleDataSetupInterface $setup,
         \Magento\Framework\Setup\ModuleContextInterface $context
-    )
-    {
+    ) {
         if (version_compare($context->getVersion(), '0.0.2', '<')) {
             $this->upgradeToVersion002();
         }
@@ -328,7 +326,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         $attributes = ['popular_icon', 'recently_bought', 'recently_bought_period', 'recently_bought_minimal', 'recently_bought_sum'];
         $entityType = $this->eavSetup->getEntityTypeId(\Magento\Catalog\Model\Product::ENTITY);
 
-        foreach($attributes as $attribute){
+        foreach ($attributes as $attribute) {
             $this->eavSetup->updateAttribute($entityType, $attribute, 'is_searchable', false);
             $this->eavSetup->updateAttribute($entityType, $attribute, 'is_filterable', false);
         }
@@ -385,7 +383,7 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
             'popular_icon_categories'
         ];
 
-        foreach($attributes as $attribute){
+        foreach ($attributes as $attribute) {
             $this->eavSetup->updateAttribute($entityType, $attribute, 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
         }
     }
@@ -449,15 +447,15 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
         $indicators = ['only_x_available', 'popular_icon', 'recently_bought', 'fast_shipping', 'expected_delivery'];
 
-        try{
-            foreach($indicators as $indicator){
+        try {
+            foreach ($indicators as $indicator) {
                 $this->connection->update(
                     $table,
                     ['path' => sprintf($format, $indicator, 'is_enabled')],
                     ['path = ?' => sprintf($format, $indicator, 'active')]
                 );
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $message = sprintf('Error during ProductPositiveIndicators\Setup\UpgradeData::migrateConfigurationKeys(): %s', $e->getMessage());
             $this->logger->warning($message);
         }
@@ -482,8 +480,5 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
 
         $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'is_global', \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL);
         $this->eavSetup->updateAttribute($entityType, 'use_time_needed_to_ship_product', 'used_in_product_listing', true);
-
-
     }
-
 }

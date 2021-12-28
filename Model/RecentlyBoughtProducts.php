@@ -35,8 +35,7 @@ class RecentlyBoughtProducts
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\RecentlyBought $configuration
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfigInterface;
         $this->productResourceAction = $productResourceAction;
         $this->productCollectionFactory = $productCollectionFactory;
@@ -48,13 +47,13 @@ class RecentlyBoughtProducts
     {
         $this->removeRecentlyBoughtFlag();
 
-        if(!$this->configuration->isEnabled() or !$this->configuration->getPeriod() or !$this->configuration->getMinimal()){
+        if (!$this->configuration->isEnabled() or !$this->configuration->getPeriod() or !$this->configuration->getMinimal()) {
             return false;
         }
 
         $productsData = $this->getProductsData();
 
-        if(empty($productsData)){
+        if (empty($productsData)) {
             return false;
         }
 
@@ -71,7 +70,7 @@ class RecentlyBoughtProducts
 
         $productsData = [];
 
-        foreach($products->getItems() AS $product){
+        foreach ($products->getItems() as $product) {
 
             $recentlyBoughtPeriod = $product->getRecentlyBoughtPeriod();
             $recentlyBoughtMinimal = $product->getRecentlyBoughtMinimal();
@@ -83,7 +82,7 @@ class RecentlyBoughtProducts
 
             $recentlyBoughtSum = $this->getRecentlyBoughtSum($productId, $productFrom, $to);
 
-            if(!$recentlyBoughtSum or $recentlyBoughtSum < $productMinimalValue){
+            if (!$recentlyBoughtSum or $recentlyBoughtSum < $productMinimalValue) {
                 continue;
             }
 
@@ -110,7 +109,7 @@ class RecentlyBoughtProducts
 
         $result = $connection->fetchRow($query);
 
-        if(!$result or !$result['count_ordered']){
+        if (!$result or !$result['count_ordered']) {
             return null;
         }
 
@@ -119,7 +118,7 @@ class RecentlyBoughtProducts
 
     protected function addRecentlyBoughtFlagToProducts($productIds)
     {
-        foreach($productIds AS $productId => $sum){
+        foreach ($productIds as $productId => $sum) {
             $this->productResourceAction->updateAttributes(
                 [$productId],
                 ['recently_bought' => 1],
@@ -140,11 +139,11 @@ class RecentlyBoughtProducts
     {
         $products = $this->getProductsWithFlag();
 
-        if(empty($products)){
+        if (empty($products)) {
             return true;
         }
 
-        foreach($products AS $product){
+        foreach ($products as $product) {
             $this->productResourceAction->updateAttributes(
                 [$product->getId()],
                 ['recently_bought' => 0],

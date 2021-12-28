@@ -11,7 +11,7 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
 
     public function __construct(
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration
-    ){
+    ) {
         parent::__construct($configuration);
     }
 
@@ -27,7 +27,7 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
 
         $isBusinessDay = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
 
-        if(!$isBusinessDay){
+        if (!$isBusinessDay) {
             $midnight = sprintf('%s 00:00:00', $currentDateTime->format('d.m.Y'));
             $maxTimeToday = new \DateTime($midnight);
         }
@@ -53,21 +53,21 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         while (!$nextBusinessDay) {
             $dayTime->modify('+1 day');
 
-            if(!$nextDay){
+            if (!$nextDay) {
                 $nextDay = $dayTime->format('d');
             }
 
-            if(!$this->isWorkingDay($dayTime)){
+            if (!$this->isWorkingDay($dayTime)) {
                 continue;
             }
 
-            if($this->isHoliday($dayTime)){
+            if ($this->isHoliday($dayTime)) {
                 continue;
             }
 
             $timeLeft = $timeLeft - $this->configuration->getWorkingHours();
 
-            if($timeLeft > 0){
+            if ($timeLeft > 0) {
                 continue;
             }
 

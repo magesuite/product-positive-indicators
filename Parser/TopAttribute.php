@@ -15,7 +15,7 @@ class TopAttribute implements TopAttributeInterface
      */
     public function parse($productAttributeValue, $sign, $value, $minValue, $isMultiselect = false)
     {
-        if($isMultiselect) {
+        if ($isMultiselect) {
             $productAttributeValues = explode(', ', $productAttributeValue);
 
             foreach ($productAttributeValues as $pav) {
@@ -31,20 +31,20 @@ class TopAttribute implements TopAttributeInterface
         $valueFloat = $this->parseToFloat($value);
 
         switch ($sign) {
-            case '%' :
+            case '%':
                 return !empty($minValue) ?
                     $productAttributeValueFloat >= $minValue : false;
-            case '[]' :
+            case '[]':
                 return in_array(trim($productAttributeValue), array_map('trim', explode(',', $value)));
-            case '=' :
+            case '=':
                 return trim($productAttributeValue) == trim($value);
-            case '<' :
+            case '<':
                 return $productAttributeValueFloat < $valueFloat;
-            case '<=' :
+            case '<=':
                 return $productAttributeValueFloat <= $valueFloat;
-            case '>' :
+            case '>':
                 return $productAttributeValueFloat > $valueFloat;
-            case '>=' :
+            case '>=':
                 return $productAttributeValueFloat >= $valueFloat;
         }
 
@@ -74,20 +74,20 @@ class TopAttribute implements TopAttributeInterface
     public function calculateTopAttributeMinValue(array $percents, array $values)
     {
         $minValues = [];
-        if(empty($values) || empty($percents)){
+        if (empty($values) || empty($percents)) {
             return $minValues;
         }
 
         $defaultPercent = isset($percents[self::DEFAULT_STORE_INDEX]) ? $percents[self::DEFAULT_STORE_INDEX] : [];
-        foreach($percents as $storeId => $percent){
+        foreach ($percents as $storeId => $percent) {
             $percents[$storeId] = $this->parseToFloat($percent == "" ? $defaultPercent : $percent);
         }
 
         $defaultValues = isset($values[self::DEFAULT_STORE_INDEX]) ? $values[self::DEFAULT_STORE_INDEX] : [];
         // fill values with default variable when value is empty
-        foreach($values as $storeId => $storeValues){
-            foreach($storeValues as $key => $value) {
-                if($value == "" && isset($defaultValues[$key])) {
+        foreach ($values as $storeId => $storeValues) {
+            foreach ($storeValues as $key => $value) {
+                if ($value == "" && isset($defaultValues[$key])) {
                     $value = $defaultValues[$key];
                 }
 

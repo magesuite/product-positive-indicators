@@ -10,8 +10,7 @@ class RecentlyBought
 
     public function __construct(
         \MageSuite\ProductPositiveIndicators\Model\RecentlyBoughtProducts $recentlyBoughtProducts
-    )
-    {
+    ) {
         $this->recentlyBoughtProducts = $recentlyBoughtProducts;
     }
 

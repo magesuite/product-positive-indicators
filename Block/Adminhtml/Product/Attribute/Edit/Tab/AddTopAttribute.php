@@ -43,8 +43,7 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Serialize\Serializer\Json $serializer,
         array $data = []
-    )
-    {
+    ) {
         $this->yesNo = $yesNo;
         $this->propertyLocker = $propertyLocker;
         $this->storeManager = $storeManager;

@@ -63,21 +63,21 @@ class TopAttribute extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         $enabled = $attribute->getData('top_attribute_enabled');
-        if(!$enabled){
+        if (!$enabled) {
             return false;
         }
 
         $storeId = $this->storeManager->getStore()->getId();
         $sign = $attribute->getData('top_attribute_sign');
 
-        try{
+        try {
             $values = $this->serializer->unserialize($attribute->getData('top_attribute_value'));
         } catch (\Exception $e) {
             $values = [];
         }
         $storeValue = $this->getStoreValue($values, $storeId);
 
-        try{
+        try {
             $minValues = $this->serializer->unserialize($attribute->getData('top_attribute_min_value'));
         } catch (\Exception $e) {
             $minValues = [];
@@ -95,12 +95,13 @@ class TopAttribute extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int $storeId
      * @return mixed
      */
-    public function getStoreValue($values, $storeId){
-        if(!is_array($values)){
+    public function getStoreValue($values, $storeId)
+    {
+        if (!is_array($values)) {
             return '';
         }
 
-        if(!isset($values[$storeId]) && !isset($values[self::DEFAULT_STORE_INDEX])){
+        if (!isset($values[$storeId]) && !isset($values[self::DEFAULT_STORE_INDEX])) {
             return '';
         }
 

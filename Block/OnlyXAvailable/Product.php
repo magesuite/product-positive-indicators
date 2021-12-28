@@ -51,19 +51,19 @@ class Product extends \Magento\Framework\View\Element\Template
 
     public function shouldDisplayInfoOnProductPage($productQty = null)
     {
-        if(!$this->configuration->isEnabled()){
+        if (!$this->configuration->isEnabled()) {
             return false;
         }
 
         $qtyFromConfig = $this->getQuantityFromConfig();
 
-        if(!$qtyFromConfig){
+        if (!$qtyFromConfig) {
             return false;
         }
 
         $productQty = $productQty ? $productQty : $this->getProductQty();
 
-        if(!$productQty or (int)$productQty < 0){
+        if (!$productQty or (int)$productQty < 0) {
             return false;
         }
 
@@ -74,11 +74,11 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return null;
         }
 
-        if($product->getTypeId() != 'simple'){
+        if ($product->getTypeId() != 'simple') {
             return null;
         }
 
@@ -97,13 +97,13 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $category = $this->registry->registry('current_category');
 
-        if($category){
+        if ($category) {
             return $category;
         }
 
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return null;
         }
 
@@ -116,17 +116,16 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if($product and $product->getQtyAvailable() !== null){
+        if ($product and $product->getQtyAvailable() !== null) {
             return (float)$product->getQtyAvailable();
         }
 
         $category = $this->getCategory();
 
-        if($category and $category->getQtyAvailable() !== null){
+        if ($category and $category->getQtyAvailable() !== null) {
             return $category->getQtyAvailable();
         }
 
         return (int)$this->configuration->getQuantity();
     }
-
 }

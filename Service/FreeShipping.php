@@ -2,7 +2,6 @@
 
 namespace MageSuite\ProductPositiveIndicators\Service;
 
-
 class FreeShipping implements FreeShippingInterface
 {
 
@@ -31,36 +30,39 @@ class FreeShipping implements FreeShippingInterface
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Checkout\Model\Session $session,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->session = $session;
         $this->shippingConfig = $shippingConfig;
         $this->productRepository = $productRepository;
     }
 
-    public function showInProductTiles(){
+    public function showInProductTiles()
+    {
         return $this->scopeConfig->getValue(
             'positive_indicators/free_shipping/show_in_product_tiles',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
     }
 
-    public function showTextNoteOnProductsDetailpage(){
+    public function showTextNoteOnProductsDetailpage()
+    {
         return $this->scopeConfig->getValue(
             'positive_indicators/free_shipping/show_text_note_on_products_detailpage',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
     }
 
-    public function showBadgeOnProductsDetailpage(){
+    public function showBadgeOnProductsDetailpage()
+    {
         return $this->scopeConfig->getValue(
             'positive_indicators/free_shipping/show_badge_on_products_detailpage',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
     }
 
-    public function showInSearchAutosuggest(){
+    public function showInSearchAutosuggest()
+    {
         return $this->scopeConfig->getValue(
             'positive_indicators/free_shipping/show_in_search_autosuggest',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE
@@ -69,17 +71,17 @@ class FreeShipping implements FreeShippingInterface
 
     public function isFreeShipped($product)
     {
-        if($this->getFreeShippingValue() === false) {
+        if ($this->getFreeShippingValue() === false) {
             return false;
         }
 
-        if(!$product){
+        if (!$product) {
             return false;
         }
 
         $finalPrice = $product->getPriceInfo()->getPrice('final_price')->getValue();
 
-        if(!$finalPrice){
+        if (!$finalPrice) {
             return false;
         }
 

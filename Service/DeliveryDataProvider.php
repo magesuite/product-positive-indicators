@@ -11,13 +11,13 @@ class DeliveryDataProvider
 
     public function __construct(
         \MageSuite\ProductPositiveIndicators\Helper\Configuration $configuration
-    ){
+    ) {
         $this->configuration = $configuration;
     }
 
     protected function isWorkingDay($currentDay)
     {
-        if(in_array($currentDay->format('N'), $this->configuration->getWorkingDays())){
+        if (in_array($currentDay->format('N'), $this->configuration->getWorkingDays())) {
             return true;
         }
 
@@ -26,7 +26,7 @@ class DeliveryDataProvider
 
     protected function isHoliday($currentDay)
     {
-        if(in_array($currentDay->format('d.m.Y'), $this->configuration->getHolidays())){
+        if (in_array($currentDay->format('d.m.Y'), $this->configuration->getHolidays())) {
             return true;
         }
 

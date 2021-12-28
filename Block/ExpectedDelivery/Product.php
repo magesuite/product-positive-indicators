@@ -102,7 +102,7 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $deliveryData = $this->getDeliveryData();
 
-        if(empty($deliveryData)){
+        if (empty($deliveryData)) {
             return null;
         }
 
@@ -156,5 +156,4 @@ class Product extends \Magento\Framework\View\Element\Template
             date('d')
         );
     }
-
 }

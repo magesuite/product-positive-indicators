@@ -51,9 +51,9 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
 
         $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
 
-        if($excepted === null){
+        if ($excepted === null) {
             $this->assertNull($deliveryData);
-        }else{
+        } else {
             $this->assertEquals($excepted['shipDayName'], (string)$deliveryData->getShipDayName());
             $this->assertEquals($excepted['nextShipDayName'], (string)$deliveryData->getNextShipDayName());
         }
@@ -63,7 +63,7 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
     {
         $config = $this->configuration->getConfig();
 
-        foreach($testConfig as $key => $value){
+        foreach ($testConfig as $key => $value) {
             $config->setData($key, $value);
         }
     }
@@ -85,4 +85,3 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         require __DIR__ . '/../../_files/expected_delivery_products_rollback.php';
     }
 }
-

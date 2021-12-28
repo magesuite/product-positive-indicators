@@ -21,8 +21,7 @@ class Product extends \Magento\Framework\View\Element\Template
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService,
         array $data = []
-    )
-    {
+    ) {
         $this->productHelper = $productHelper;
         $this->freeShippingService = $freeShippingService;
         parent::__construct($context, $data);
@@ -32,19 +31,20 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return false;
         }
 
         return $this->freeShippingService->isFreeShipped($product);
     }
 
-    public function showTextNoteOnProductsDetailpage(){
+    public function showTextNoteOnProductsDetailpage()
+    {
         return $this->freeShippingService->showTextNoteOnProductsDetailpage();
     }
 
-    public function showBadgeOnProductsDetailpage(){
+    public function showBadgeOnProductsDetailpage()
+    {
         return $this->freeShippingService->showBadgeOnProductsDetailpage();
     }
-
 }

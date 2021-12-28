@@ -2,8 +2,8 @@
     $qty = $block->getProductQty();
     $displayFlag = $block->shouldDisplayInfoOnProductPage($qty);
 ?>
-<?php if($displayFlag) {
-    if($qty == 1) {
+<?php if ($displayFlag) {
+    if ($qty == 1) {
         echo __('<span>Hurry up!</span> Only <span>1 product</span> available!');
     } else {
         echo __('<span>Hurry up!</span> Only <span>%1 products</span> available!', $qty);
