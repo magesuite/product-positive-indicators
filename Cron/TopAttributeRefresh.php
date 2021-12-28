@@ -9,22 +9,22 @@ class TopAttributeRefresh
     /**
      * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute
      */
-    private $attributeResource;
+    protected $attributeResource;
 
     /**
      * @var \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory
      */
-    private $productAttributeCollectionFactory;
+    protected $productAttributeCollectionFactory;
 
     /**
      * @var \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface
      */
-    private $parser;
+    protected $parser;
 
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
-    private $resourceConnection;
+    protected $resourceConnection;
 
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
@@ -34,7 +34,7 @@ class TopAttributeRefresh
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    private $serializer;
+    protected $serializer;
 
     /**
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute $attributeResource

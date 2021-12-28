@@ -16,11 +16,11 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
     /**
      * @var \Magento\Eav\Block\Adminhtml\Attribute\PropertyLocker
      */
-    private $propertyLocker;
+    protected $propertyLocker;
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    private $serializer;
+    protected $serializer;
 
     const DEFAULT_STORE_INDEX = 0;
 

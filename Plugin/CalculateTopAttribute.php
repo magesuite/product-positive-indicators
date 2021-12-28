@@ -12,20 +12,23 @@ class CalculateTopAttribute
     /**
      * @var \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface
      */
-    private $parser;
+    protected $parser;
 
     /**
      * @var \Magento\Swatches\Helper\Data
      */
-    private $swatchHelper;
+    protected $swatchHelper;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    private $serializer;
+    protected $serializer;
 
-    public function __construct(\MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface $parser, \Magento\Swatches\Helper\Data $swatchHelper, \Magento\Framework\Serialize\Serializer\Json $serializer)
-    {
+    public function __construct(
+        \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface $parser,
+        \Magento\Swatches\Helper\Data $swatchHelper,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
+    ){
         $this->parser = $parser;
         $this->swatchHelper = $swatchHelper;
         $this->serializer = $serializer;

@@ -63,7 +63,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
         $productQty = $productQty ? $productQty : $this->getProductQty();
 
-        if (!$productQty or (int)$productQty < 0) {
+        if (!$productQty || (int)$productQty < 0) {
             return false;
         }
 
@@ -88,7 +88,6 @@ class Product extends \Magento\Framework\View\Element\Template
             || $stockItem->getBackorders() !== \Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface::BACKORDERS_NO) {
             return null;
         }
-
 
         return $this->productHelper->getProductQty();
     }
@@ -116,13 +115,13 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if ($product and $product->getQtyAvailable() !== null) {
+        if ($product && $product->getQtyAvailable() !== null) {
             return (float)$product->getQtyAvailable();
         }
 
         $category = $this->getCategory();
 
-        if ($category and $category->getQtyAvailable() !== null) {
+        if ($category && $category->getQtyAvailable() !== null) {
             return $category->getQtyAvailable();
         }
 

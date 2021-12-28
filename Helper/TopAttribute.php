@@ -24,7 +24,7 @@ class TopAttribute extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    private $serializer;
+    protected $serializer;
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context

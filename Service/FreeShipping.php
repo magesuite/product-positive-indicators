@@ -8,22 +8,22 @@ class FreeShipping implements FreeShippingInterface
     /**
      * @var \Magento\Shipping\Model\Config
      */
-    private $shippingConfig;
+    protected $shippingConfig;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    private $scopeConfig;
+    protected $scopeConfig;
 
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    private $session;
+    protected $session;
 
     /**
      * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
-    private $productRepository;
+    protected $productRepository;
 
     public function __construct(
         \Magento\Shipping\Model\Config $shippingConfig,

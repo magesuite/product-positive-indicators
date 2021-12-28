@@ -105,7 +105,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         $currentProduct = $this->registry->registry('product');
         $currentCategory = $this->registry->registry('current_category');
 
-        if (!$currentCategory or $currentProduct) {
+        if (!$currentCategory || $currentProduct) {
             return $isPopularIconEnabled;
         }
 
@@ -125,7 +125,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
             return $product;
         }
 
-        if (!is_int($product) and !is_string($product)) {
+        if (!is_int($product) && !is_string($product)) {
             return null;
         }
 

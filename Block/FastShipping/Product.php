@@ -106,7 +106,7 @@ class Product extends \Magento\Framework\View\Element\Template
 
     protected function getDeliveryData()
     {
-        if (!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->getDeliveryTodayTime()) {
             return false;
         }
 
