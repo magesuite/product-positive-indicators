@@ -67,7 +67,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($popularIconFlag);
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';
@@ -78,7 +77,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         require __DIR__ . '/../../_files/products_rollback.php';
     }
 
-    public static function getExpectedData() {
+    public static function getExpectedData()
+    {
         return [
             ['product_qty_100', false],
             ['product_qty_2', true],

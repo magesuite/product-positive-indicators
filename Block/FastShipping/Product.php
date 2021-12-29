@@ -97,7 +97,7 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $deliveryData = $this->getDeliveryData();
 
-        if(empty($deliveryData)){
+        if (empty($deliveryData)) {
             return null;
         }
 
@@ -106,11 +106,11 @@ class Product extends \Magento\Framework\View\Element\Template
 
     protected function getDeliveryData()
     {
-        if(!$this->configuration->isEnabled() or !$this->configuration->getDeliveryTodayTime()){
+        if (!$this->configuration->isEnabled() || !$this->configuration->getDeliveryTodayTime()) {
             return false;
         }
 
-        if($this->deliveryData === null){
+        if ($this->deliveryData === null) {
             $cacheKey = $this->getCacheKeyForIndicator();
             $deliveryData = $this->cache->load($cacheKey);
 

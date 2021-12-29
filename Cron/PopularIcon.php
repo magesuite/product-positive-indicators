@@ -17,8 +17,7 @@ class PopularIcon
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \MageSuite\ProductPositiveIndicators\Model\PopularIconProducts $popularIconProducts
-    )
-    {
+    ) {
         $this->storeManager = $storeManager;
         $this->popularIconProducts = $popularIconProducts;
     }

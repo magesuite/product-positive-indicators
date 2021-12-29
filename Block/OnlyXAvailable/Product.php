@@ -26,12 +26,18 @@ class Product extends \Magento\Framework\View\Element\Template
      */
     protected $categoryFinder;
 
+    /**
+     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
+     */
+    protected $stockRegistry;
+
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
         \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         \Magento\Framework\Registry $registry,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\OnlyXAvailable $configuration,
         \MageSuite\Frontend\Service\Breadcrumb\BreadcrumbCategoryFinderInterface $categoryFinder,
+        \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -40,23 +46,24 @@ class Product extends \Magento\Framework\View\Element\Template
         $this->registry = $registry;
         $this->configuration = $configuration;
         $this->categoryFinder = $categoryFinder;
+        $this->stockRegistry = $stockRegistry;
     }
 
     public function shouldDisplayInfoOnProductPage($productQty = null)
     {
-        if(!$this->configuration->isEnabled()){
+        if (!$this->configuration->isEnabled()) {
             return false;
         }
 
         $qtyFromConfig = $this->getQuantityFromConfig();
 
-        if(!$qtyFromConfig){
+        if (!$qtyFromConfig) {
             return false;
         }
 
         $productQty = $productQty ? $productQty : $this->getProductQty();
 
-        if(!$productQty or (int)$productQty < 0){
+        if (!$productQty || (int)$productQty < 0) {
             return false;
         }
 
@@ -67,11 +74,18 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return null;
         }
 
-        if($product->getTypeId() != 'simple'){
+        if ($product->getTypeId() != 'simple') {
+            return null;
+        }
+
+        $stockItem = $this->stockRegistry->getStockItem($product->getId());
+
+        if (!$stockItem->getManageStock()
+            || $stockItem->getBackorders() !== \Magento\InventoryConfigurationApi\Api\Data\StockItemConfigurationInterface::BACKORDERS_NO) {
             return null;
         }
 
@@ -82,13 +96,13 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $category = $this->registry->registry('current_category');
 
-        if($category){
+        if ($category) {
             return $category;
         }
 
         $product = $this->productHelper->getProduct();
 
-        if(!$product){
+        if (!$product) {
             return null;
         }
 
@@ -101,17 +115,16 @@ class Product extends \Magento\Framework\View\Element\Template
     {
         $product = $this->productHelper->getProduct();
 
-        if($product and $product->getQtyAvailable() !== null){
+        if ($product && $product->getQtyAvailable() !== null) {
             return (float)$product->getQtyAvailable();
         }
 
         $category = $this->getCategory();
 
-        if($category and $category->getQtyAvailable() !== null){
+        if ($category && $category->getQtyAvailable() !== null) {
             return $category->getQtyAvailable();
         }
 
         return (int)$this->configuration->getQuantity();
     }
-
 }

@@ -19,7 +19,7 @@ class FreeShipping implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeIn
      */
     public function isVisible(\MageSuite\ProductTile\Block\Tile $tile)
     {
-        return $this->productHelper->showFreeShippingInProductTiles() and $this->productHelper->isFreeShipped($tile->getProductEntity());
+        return $this->productHelper->showFreeShippingInProductTiles() && $this->productHelper->isFreeShipped($tile->getProductEntity());
     }
 
     /**

@@ -9,24 +9,24 @@ class OrderQueueLengthUpdater implements \MageSuite\ProductPositiveIndicators\Ap
     /**
      * @var \Magento\Framework\App\Config\ConfigResource\ConfigInterface
      */
-    private $resourceConfig;
+    protected $resourceConfig;
 
     /**
      * @var \Magento\Framework\App\Cache\Manager
      */
-    private $cacheManager;
+    protected $cacheManager;
 
     public function __construct(
         \Magento\Framework\App\Config\ConfigResource\ConfigInterface  $resourceConfig,
         \Magento\Framework\App\Cache\Manager $cacheManager
-    ){
+    ) {
         $this->resourceConfig = $resourceConfig;
         $this->cacheManager = $cacheManager;
     }
 
     public function updateOrderQueueLength($orderQueueLength)
     {
-        if(!is_numeric($orderQueueLength)){
+        if (!is_numeric($orderQueueLength)) {
             return false;
         }
 

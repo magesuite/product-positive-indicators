@@ -7,7 +7,7 @@ class TopAttributeRefresh extends \Symfony\Component\Console\Command\Command
     /**
      * @var \MageSuite\ProductPositiveIndicators\Cron\TopAttributeRefreshFactory
      */
-    private $cronTopAttributeRefreshFactory;
+    protected $cronTopAttributeRefreshFactory;
 
     public function __construct(\MageSuite\ProductPositiveIndicators\Cron\TopAttributeRefreshFactory $cronTopAttributeRefreshFactory)
     {

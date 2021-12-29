@@ -22,7 +22,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getConfig()
     {
-        if($this->config === null){
+        if ($this->config === null) {
             $config = $this->getConfigFromDatabase($this->getConfigKey());
             $this->config = new \Magento\Framework\DataObject($config);
         }
@@ -47,7 +47,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected function convertOneLineStringToArray($string)
     {
-        if(empty($string)){
+        if (empty($string)) {
             return [];
         }
 
@@ -56,7 +56,7 @@ class Configuration extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected function convertMultipleLinesStringToArray($string)
     {
-        if(empty($string)){
+        if (empty($string)) {
             return [];
         }
 

@@ -46,7 +46,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
     {
         $config = $this->configuration->getConfig();
 
-        foreach($testConfig as $key => $value){
+        foreach ($testConfig as $key => $value) {
             $config->setData($key, $value);
         }
     }
@@ -58,4 +58,3 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
         return $scenarios;
     }
 }
-

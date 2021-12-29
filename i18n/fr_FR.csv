@@ -5,3 +5,5 @@ Popular,Poulaire
 "Top Spec","Valeur Top"
 Quantity,Quantité
 "Product Listing Sort by","Tri des listes de produits"
+"<span>Hurry up!</span> Only <span>1 product</span> available!","<span>Dépêchez-vous!</span> Seulement <span>1 produit</span> disponsible!"
+"<span>Hurry up!</span> Only <span>%1 products</span> available!","<span>Dépêchez-vous!</span> Seulement <span>%1 produits</span> disponsibles!"

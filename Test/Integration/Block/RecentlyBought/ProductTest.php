@@ -68,7 +68,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['active' => 0], $recentlyBoughtInfo);
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';
@@ -79,7 +78,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         require __DIR__ . '/../../_files/products_rollback.php';
     }
 
-    public static function getExpectedData() {
+    public static function getExpectedData()
+    {
         return [
             ['product_qty_100', ['active' => 0]],
             ['product_qty_2', ['active' => 1, 'sum' => 100, 'order_period' => 7]],

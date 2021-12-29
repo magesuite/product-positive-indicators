@@ -50,7 +50,7 @@ class PopularIconProducts
         $this->removePopularIconFlag();
         $productsData = $this->getProductsData();
 
-        if (empty($productsData)){
+        if (empty($productsData)) {
             return false;
         }
 
@@ -73,7 +73,7 @@ class PopularIconProducts
                 continue;
             }
 
-            foreach($productCollection->getItems() as $productId => $product){
+            foreach ($productCollection->getItems() as $productId => $product) {
                 $productsData[$productId][] = $category->getId();
             }
         }
@@ -113,7 +113,7 @@ class PopularIconProducts
             \Magento\Store\Model\Store::DEFAULT_STORE_ID
         );
 
-        foreach($productIds AS $productId => $categoryIds) {
+        foreach ($productIds as $productId => $categoryIds) {
             $categories = implode(',', $categoryIds);
             $this->productResourceAction->updateAttributes(
                 [$productId],
@@ -134,7 +134,7 @@ class PopularIconProducts
             return true;
         }
 
-        foreach ($products AS $product) {
+        foreach ($products as $product) {
             $this->productResourceAction->updateAttributes(
                 [$product->getId()],
                 ['popular_icon' => 0],

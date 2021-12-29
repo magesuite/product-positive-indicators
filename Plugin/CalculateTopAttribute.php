@@ -12,20 +12,23 @@ class CalculateTopAttribute
     /**
      * @var \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface
      */
-    private $parser;
+    protected $parser;
 
     /**
      * @var \Magento\Swatches\Helper\Data
      */
-    private $swatchHelper;
+    protected $swatchHelper;
 
     /**
      * @var \Magento\Framework\Serialize\Serializer\Json
      */
-    private $serializer;
+    protected $serializer;
 
-    public function __construct(\MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface $parser, \Magento\Swatches\Helper\Data $swatchHelper, \Magento\Framework\Serialize\Serializer\Json $serializer)
-    {
+    public function __construct(
+        \MageSuite\ProductPositiveIndicators\Parser\TopAttributeInterface $parser,
+        \Magento\Swatches\Helper\Data $swatchHelper,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
+    ) {
         $this->parser = $parser;
         $this->swatchHelper = $swatchHelper;
         $this->serializer = $serializer;
@@ -38,16 +41,16 @@ class CalculateTopAttribute
         $attribute->setTopAttributeValue($this->serializer->serialize($topAttributeValues));
 
         // skip if sign is not % or attribute type is not select
-        if($attribute->getTopAttributeSign() != '%' || !in_array($attribute->getFrontendInput(), ["select", "multiselect"])){
+        if ($attribute->getTopAttributeSign() != '%' || !in_array($attribute->getFrontendInput(), ["select", "multiselect"])) {
             $attribute->setTopAttributeMinValue("");
             return [];
         }
 
         // get attribute options with special check for swatch
         $options = $attribute->getData('option');
-        if($this->swatchHelper->isVisualSwatch($attribute)){
+        if ($this->swatchHelper->isVisualSwatch($attribute)) {
             $options = $attribute->getData('optionvisual');
-        } else if($this->swatchHelper->isTextSwatch($attribute)){
+        } elseif ($this->swatchHelper->isTextSwatch($attribute)) {
             $options = $attribute->getData('optiontext');
         }
         $attributeOptions = $this->getAttributeOptionValues($options);
@@ -62,12 +65,12 @@ class CalculateTopAttribute
     public function getAttributeOptionValues($options)
     {
         $optionValues = [];
-        if(empty($options) || empty($options["value"])) {
+        if (empty($options) || empty($options["value"])) {
             return $optionValues;
         }
 
         foreach ($options["value"] as $opt) {
-            foreach($opt as $storeId => $optionValue){
+            foreach ($opt as $storeId => $optionValue) {
                 $optionValues[$storeId][] = $optionValue;
             }
         }
@@ -75,4 +78,3 @@ class CalculateTopAttribute
         return $optionValues;
     }
 }
-

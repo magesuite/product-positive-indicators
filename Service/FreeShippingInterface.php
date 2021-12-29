@@ -2,7 +2,6 @@
 
 namespace MageSuite\ProductPositiveIndicators\Service;
 
-
 interface FreeShippingInterface
 {
 

@@ -13,9 +13,10 @@ class AddTopAttributeTab
      * @return array
      * @throws \Exception
      */
-    public function beforeAddTab(\Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tabs $subject, $tabId, $tab) {
+    public function beforeAddTab(\Magento\Catalog\Block\Adminhtml\Product\Attribute\Edit\Tabs $subject, $tabId, $tab)
+    {
 
-        if(! $this->added) {
+        if (! $this->added) {
             $this->added = true;
 
             $subject->addTab(

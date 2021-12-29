@@ -4,7 +4,7 @@ $registry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get('Ma
 $registry->unregister('isSecureArea');
 $registry->register('isSecureArea', true);
 
-foreach([605,606,607] as $productId) {
+foreach ([605,606,607] as $productId) {
     $product = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->create('Magento\Catalog\Model\Product');
 
     $product->load($productId);

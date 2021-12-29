@@ -42,5 +42,4 @@ class Product extends \Magento\Framework\View\Element\Template
 
         return (boolean)$product->getPopularIcon();
     }
-
 }

@@ -133,6 +133,24 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoDbIsolation enabled
      * @magentoDataFixture loadProducts
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 5
+     */
+    public function testItReturnsFalseWhenBackordersEnabled()
+    {
+        $product = $this->productRepository->get('product_backorders_enabled');
+        $this->coreRegistry->register('product', $product);
+
+        $displayInfo = $this->productBlock->shouldDisplayInfoOnProductPage();
+
+        $this->assertFalse($displayInfo);
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture loadProducts
+     * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
     public function testItReturnsCorrectProductQty()
@@ -150,7 +168,6 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $this->productBlock->getProductQty());
     }
 
-
     public static function loadProducts()
     {
         require __DIR__ . '/../../_files/products.php';
@@ -161,7 +178,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         require __DIR__ . '/../../_files/products_rollback.php';
     }
 
-    public static function getExpectedData() {
+    public static function getExpectedData()
+    {
         return [
             ['product_qty_100', false],
             ['product_qty_2', true],

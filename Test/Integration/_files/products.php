@@ -1,4 +1,5 @@
 <?php
+use Magento\CatalogInventory\Model\Stock;
 
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
 
@@ -98,6 +99,26 @@ $product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
     ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
     ->setWebsiteIds([1])
     ->setStockData(['use_config_manage_stock' => 1, 'qty' => 10, 'is_qty_decimal' => 0, 'is_in_stock' => 1])
+    ->setCanSaveCustomOptions(true)
+    ->setRecentlyBought(1)
+    ->setRecentlyBoughtSum(0)
+    ->setRecentlyBoughtPeriod(7)
+    ->save();
+
+$product->reindex();
+$product->priceReindexCallback();
+
+$product->setTypeId(\Magento\Catalog\Model\Product\Type::TYPE_SIMPLE)
+    ->setId(605)
+    ->setAttributeSetId(4)
+    ->setName('Product with backorders')
+    ->setSku('product_backorders_enabled')
+    ->setUrlKey('product_backorders_enabled')
+    ->setPrice(50)
+    ->setVisibility(\Magento\Catalog\Model\Product\Visibility::VISIBILITY_BOTH)
+    ->setStatus(\Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED)
+    ->setWebsiteIds([1])
+    ->setStockData(['use_config_manage_stock' => 1, 'qty' => 10, 'is_qty_decimal' => 0, 'is_in_stock' => 1, 'backorders' => Stock::BACKORDERS_YES_NOTIFY])
     ->setCanSaveCustomOptions(true)
     ->setRecentlyBought(1)
     ->setRecentlyBoughtSum(0)

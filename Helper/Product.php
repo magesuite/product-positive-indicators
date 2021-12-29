@@ -86,26 +86,26 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getPopularIconFlag($product)
     {
-        if(!$this->popularIconConfiguration->isEnabled()) {
+        if (!$this->popularIconConfiguration->isEnabled()) {
             return false;
         }
 
         $product = $this->getProduct($product);
 
-        if(!$product){
+        if (!$product) {
             return false;
         }
 
         $isPopularIconEnabled = $this->isPopularIconEnabled($product);
 
-        if(!$isPopularIconEnabled){
+        if (!$isPopularIconEnabled) {
             return $isPopularIconEnabled;
         }
 
         $currentProduct = $this->registry->registry('product');
         $currentCategory = $this->registry->registry('current_category');
 
-        if(!$currentCategory or $currentProduct){
+        if (!$currentCategory || $currentProduct) {
             return $isPopularIconEnabled;
         }
 
@@ -116,7 +116,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product = null)
     {
-        if(!$product){
+        if (!$product) {
             $product = $this->registry->registry('product');
             return $product ? $product : null;
         }
@@ -125,7 +125,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
             return $product;
         }
 
-        if (!is_int($product) and !is_string($product)) {
+        if (!is_int($product) && !is_string($product)) {
             return null;
         }
 
@@ -168,7 +168,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $enabledInCategories = $product->getPopularIconCategories();
 
-        if(!$enabledInCategories){
+        if (!$enabledInCategories) {
             return false;
         }
 

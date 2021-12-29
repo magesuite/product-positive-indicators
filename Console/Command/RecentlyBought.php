@@ -6,7 +6,7 @@ class RecentlyBought extends \Symfony\Component\Console\Command\Command
     /**
      * @var \Magento\Framework\App\State
      */
-    private $state;
+    protected $state;
 
     /**
      * @var \Magento\Framework\Config\ScopeInterface $scope
@@ -22,8 +22,7 @@ class RecentlyBought extends \Symfony\Component\Console\Command\Command
         \Magento\Framework\App\State $state,
         \Magento\Framework\Config\ScopeInterface $scope,
         \MageSuite\ProductPositiveIndicators\Model\RecentlyBoughtProductsFactory $recentlyBoughtProductsFactory
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->state = $state;
@@ -39,8 +38,7 @@ class RecentlyBought extends \Symfony\Component\Console\Command\Command
     protected function execute(
         \Symfony\Component\Console\Input\InputInterface $input,
         \Symfony\Component\Console\Output\OutputInterface $output
-    )
-    {
+    ) {
         if ($this->scope->getCurrentScope() !== 'frontend') {
             $this->state->setAreaCode('frontend');
         }
