@@ -5,7 +5,11 @@ $viewModel = $block->getViewModel();
 ?>
 <script type="text/x-magento-init">
     {
-        "isCurrentPageCategory": <?=$viewModel->isCurrentPageCategory() ? 'true' : 'false'?>,
-        "currentCategoryId": <?=$viewModel->getCurrentCategoryPageId() ?? 'null' ?>
+        "*": {
+            "MageSuite_ProductPositiveIndicators/js/tile-badge-shower": {
+                "isCurrentPageCategory": <?=$viewModel->isCurrentPageCategory() ? 'true' : 'false'?>,
+                "currentCategoryId": <?=$viewModel->getCurrentCategoryPageId() ?? 'null' ?>
+            }
+        }
     }
 </script>
