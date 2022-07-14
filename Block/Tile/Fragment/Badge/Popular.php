@@ -19,7 +19,7 @@ class Popular implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeInterfa
      */
     public function isVisible(\MageSuite\ProductTile\Block\Tile $tile)
     {
-        return $this->productHelper->getPopularIconFlag($tile->getProductEntity());
+        return $tile->getProductEntity()->getPopularIcon();
     }
 
     /**
@@ -36,5 +36,11 @@ class Popular implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeInterfa
     public function getCssModifier(\MageSuite\ProductTile\Block\Tile $tile)
     {
         return '';
+    }
+
+    public function getCategoriesIds(\MageSuite\ProductTile\Block\Tile $tile) {
+        $categoriesIds = explode(',', $tile->getProductEntity()->getPopularIconCategories());
+
+        return array_map('intval', $categoriesIds);
     }
 }

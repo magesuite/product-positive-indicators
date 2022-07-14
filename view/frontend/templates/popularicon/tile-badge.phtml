@@ -1,0 +1,38 @@
+<?php
+/** @var \MageSuite\ProductTile\Block\Tile\Fragment $block */
+/** @var \MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\Popular $viewModel */
+$viewModel = $block->getViewModel();
+$tile = $block->getTile();
+$isVisible = $viewModel->isVisible($tile);
+$badgeValue = $viewModel->getValue($tile);
+$label = $block->getLabel();
+$value = $block->getValueDisplay();
+?>
+<?php if($isVisible && ($badgeValue || !empty($label))): ?>
+    <?php
+    $wrapperTag = $block->getWrapperTag() ?? 'li';
+
+    $wrapperClass = $block->getWrapperCssClass();
+    $wrapperClass = $wrapperClass ? sprintf('class="%s"', $wrapperClass) : '';
+
+    $cssModifier = $viewModel->getCssModifier($block->getTile());
+    $cssClass = implode(' ', [$block->getCssClass(), $cssModifier]);
+    $cssClass = !empty($cssClass) ? sprintf('class="%s"', $cssClass) : '';
+
+    $badgeTextClass = $block->getTextCssClass();
+    $badgeTextClass = $badgeTextClass ? sprintf('class="%s"', $badgeTextClass) : '';
+
+    $valuePrefix = $block->getValuePrefix();
+    $valueSuffix = $block->getValueSuffix();
+    ?>
+    <<?= $wrapperTag ?> <?= $wrapperClass ?>>
+    <span style="display: none;" <?= $cssClass ?> data-visible-in-categories="<?=json_encode($viewModel->getCategoriesIds($tile))?>">
+        <?php if ($label): ?>
+            <span <?= $badgeTextClass ?>><?= $label ?></span>
+        <?php endif; ?>
+        <?php if ($value): ?>
+            <span <?= $badgeTextClass ?>><?= $valuePrefix ?><?= $badgeValue ?><?= $valueSuffix ?></span>
+        <?php endif; ?>
+        </span>
+    </<?= $wrapperTag ?>>
+<?php endif; ?>

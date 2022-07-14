@@ -12,7 +12,7 @@
                     <argument translate="true" xsi:type="string" name="label">Free shipping</argument>
                 </arguments>
             </block>
-            <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.badge.positive_indicators.popular" template="MageSuite_ProductTile::fragments/badge.phtml" after="product.tile.badge.positive_indicators.free_shipping.grid">
+            <block class="MageSuite\ProductTile\Block\Tile\Fragment" name="product.tile.badge.positive_indicators.popular" template="MageSuite_ProductPositiveIndicators::popularicon/tile-badge.phtml" after="product.tile.badge.positive_indicators.free_shipping">
                 <arguments>
                     <argument xsi:type="object" name="view_model">MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge\Popular</argument>
                     <argument xsi:type="string" name="wrapper_tag">li</argument>

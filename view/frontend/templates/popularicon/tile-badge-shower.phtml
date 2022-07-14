@@ -1,0 +1,15 @@
+<?php
+/** @var \MageSuite\ProductPositiveIndicators\ViewModel\PopularIndicator\TileBadgeShower $viewModel */
+/** @var \Magento\Framework\View\Element\Template $block*/
+$viewModel = $block->getViewModel();
+?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "MageSuite_ProductPositiveIndicators/js/tile-badge-shower": {
+                "isCurrentPageCategory": <?=$viewModel->isCurrentPageCategory() ? 'true' : 'false'?>,
+                "currentCategoryId": <?=$viewModel->getCurrentCategoryPageId() ?? 'null' ?>
+            }
+        }
+    }
+</script>
