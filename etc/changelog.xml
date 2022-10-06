@@ -1,0 +1,33 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:MageSuite_Changelog:etc/changelog.xsd">
+    <module id="MageSuite_ProductBestsellersRanking" name="MageSuite_ProductPositiveIndicators">
+        <changelog>
+            <tag version="3.0.0" date="2022-01-28">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Remove duplicate elements</overview>
+                    <description>
+                        Remove elements which names end with "list" word - with new product tile there is no need
+                        anymore to duplicate tiles elements for grid and list view.
+                    </description>
+                </entry>
+            </tag>
+            <tag version="3.0.1" date="2022-07-14">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Show popular badge only for categories</overview>
+                    <ticket_id>LED-2301</ticket_id>
+                </entry>
+            </tag>
+            <tag version="3.1.0" date="2022-10-05">
+                <entry>
+                    <type>FEATURE</type>
+                    <overview>Handle popular badge showing/hiding</overview>
+                    <description>
+                        Show popular badge only if there is a match between current category and categories in which given product is popular
+                    </description>
+                    <ticket_id>LED-2301</ticket_id>
+                </entry>
+            </tag>
+        </changelog>
+    </module>
+</config>
