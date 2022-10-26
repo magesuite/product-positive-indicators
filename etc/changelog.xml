@@ -35,6 +35,13 @@
                     <ticket_id>MIC-629</ticket_id>
                 </entry>
             </tag>
+            <tag version="3.1.4" date="2022-10-26">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Always show popular badge outside category products list context</overview>
+                    <ticket_id>LEDS-2301</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

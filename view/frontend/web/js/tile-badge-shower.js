@@ -15,15 +15,11 @@ define([
     'use strict';
 
     return function (config) {
+        const badges = document.querySelectorAll('.cs-product-tile__badge--popular');
+
         if (config.isCurrentPageCategory) {
-            document.querySelectorAll('.cs-product-tile__badge--popular').forEach((badge) => {
-
-                function hasSomeParentTheClass(element, classname) {
-                    if (element.className.split(' ').indexOf(classname) >= 0) return true;
-                    return element.parentNode && hasSomeParentTheClass(element.parentNode, classname);
-                }
-
-                const isOnCategoryList = hasSomeParentTheClass(badge, 'product-items');
+            badges.forEach((badge) => {
+                const isOnCategoryList = badge.closest('.product-items').length;
 
                 if (isOnCategoryList) {
                     const categories = JSON.parse(badge.getAttribute('data-visible-in-categories'));
@@ -35,7 +31,7 @@ define([
                 }
             });
         } else {
-            document.querySelectorAll('.cs-product-tile__badge--popular').forEach((badge) => {
+            badges.forEach((badge) => {
                 badge.style.display = '';
             });
         }
