@@ -26,7 +26,7 @@ $value = $block->getValueDisplay();
     $valueSuffix = $block->getValueSuffix();
     ?>
     <<?= $wrapperTag ?> <?= $wrapperClass ?>>
-    <span style="display: none;" <?= $cssClass ?> data-visible-in-categories="<?=json_encode($viewModel->getCategoriesIds($tile))?>">
+    <span <?= $cssClass ?> data-visible-in-categories="<?=json_encode($viewModel->getCategoriesIds($tile))?>">
         <?php if ($label): ?>
             <span <?= $badgeTextClass ?>><?= $label ?></span>
         <?php endif; ?>
