@@ -1,45 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Block\Tile\Fragment\Badge;
 
 class Popular implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeInterface
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
-     */
-    protected $productHelper;
+    protected \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper;
 
     public function __construct(\MageSuite\ProductPositiveIndicators\Helper\Product $productHelper)
     {
         $this->productHelper = $productHelper;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isVisible(\MageSuite\ProductTile\Block\Tile $tile)
+    public function isVisible(\MageSuite\ProductTile\Block\Tile $tile): bool
     {
         return $tile->getProductEntity()->getPopularIcon();
     }
 
-    /**
-     * @return string
-     */
-    public function getValue(\MageSuite\ProductTile\Block\Tile $tile)
+    public function getValue(\MageSuite\ProductTile\Block\Tile $tile): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
-    public function getCssModifier(\MageSuite\ProductTile\Block\Tile $tile)
+    public function getCssModifier(\MageSuite\ProductTile\Block\Tile $tile): string
     {
         return '';
     }
 
-    public function getCategoriesIds(\MageSuite\ProductTile\Block\Tile $tile) {
-        $categoriesIds = explode(',', $tile->getProductEntity()->getPopularIconCategories());
+    public function getCategoriesIds(\MageSuite\ProductTile\Block\Tile $tile): array
+    {
+        $popularIconCategories = $tile->getProductEntity()->getPopularIconCategories();
+
+        if (empty($popularIconCategories)) {
+            return [];
+        }
+
+        $categoriesIds = explode(',', $popularIconCategories);
 
         return array_map('intval', $categoriesIds);
     }
