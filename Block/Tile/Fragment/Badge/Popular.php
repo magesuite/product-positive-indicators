@@ -15,7 +15,7 @@ class Popular implements \MageSuite\ProductTile\Block\Tile\Fragment\BadgeInterfa
 
     public function isVisible(\MageSuite\ProductTile\Block\Tile $tile): bool
     {
-        return $tile->getProductEntity()->getPopularIcon();
+        return (bool)$tile->getProductEntity()->getPopularIcon();
     }
 
     public function getValue(\MageSuite\ProductTile\Block\Tile $tile): string
