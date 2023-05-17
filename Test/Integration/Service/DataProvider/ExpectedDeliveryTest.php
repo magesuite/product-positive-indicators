@@ -59,6 +59,16 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testGetNumberOfBusinessDays(): void
+    {
+        $from = new \DateTime('2023-05-17');
+        $to = new \DateTime('2023-05-29');
+
+        $result = $this->expectedDeliveryDataProvider->getNumberOfBusinessDays($from, $to);
+
+        $this->assertEquals(8, $result);
+    }
+
     private function prepareConfiguration($testConfig)
     {
         $config = $this->configuration->getConfig();

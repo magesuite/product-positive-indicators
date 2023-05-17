@@ -22,7 +22,7 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         $this->productHelper = $productHelper;
     }
 
-    public function getDeliveryData($product = null)
+    public function getDeliveryData($product = null): ?\Magento\Framework\DataObject
     {
         if (!$product->isSalable()) {
             return null;
@@ -50,18 +50,19 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         ]);
     }
 
-    protected function getShippingTimeInDays($product)
+    /**
+     * @return int - Shipping time in working days
+     */
+    public function getShippingTimeInDays($product): int
     {
-        $shippingTime = $this->configuration->getDefaultShippingTime();
-
         if ($product->getUseTimeNeededToShipProduct()) {
-            $shippingTime = $product->getTimeNeededToShipProduct() ? $product->getTimeNeededToShipProduct() : $shippingTime;
+            return (int)$product->getTimeNeededToShipProduct();
         }
 
-        return $shippingTime;
+        return (int)$this->configuration->getDefaultShippingTime();
     }
 
-    protected function getShippingDays($currentDay, $shippingTimeInDays)
+    protected function getShippingDays($currentDay, $shippingTimeInDays): \Magento\Framework\DataObject
     {
         $shipDay = null;
 
