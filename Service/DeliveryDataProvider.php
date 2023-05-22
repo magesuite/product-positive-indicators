@@ -15,21 +15,30 @@ class DeliveryDataProvider
         $this->configuration = $configuration;
     }
 
-    protected function isWorkingDay($currentDay)
+    protected function isWorkingDay(\DateTime $currentDay): bool
     {
-        if (in_array($currentDay->format('N'), $this->configuration->getWorkingDays())) {
-            return true;
-        }
-
-        return false;
+        return in_array($currentDay->format('N'), $this->configuration->getWorkingDays());
     }
 
-    protected function isHoliday($currentDay)
+    protected function isHoliday(\DateTime $currentDay): bool
     {
-        if (in_array($currentDay->format('d.m.Y'), $this->configuration->getHolidays())) {
-            return true;
+        return in_array($currentDay->format('d.m.Y'), $this->configuration->getHolidays());
+    }
+
+    public function getNumberOfBusinessDays(\DateTime $from, \DateTime $to): int
+    {
+        $businessDays = 0;
+
+        while ($from < $to) {
+            $from->modify('+1 day');
+
+            $isBusinessDay = $this->isWorkingDay($from) && !$this->isHoliday($from);
+
+            if ($isBusinessDay) {
+                $businessDays++;
+            }
         }
 
-        return false;
+        return $businessDays;
     }
 }
