@@ -48,7 +48,7 @@
                     <overview>Change logic for showing/hiding popular badge</overview>
                     <description>
                         Badge is visible by default in every place excpet category products list (ol.product-items)
-                        Add class 'visible' to badges inside product-items element for badges if there is a match 
+                        Add class 'visible' to badges inside product-items element for badges if there is a match
                         between current category and category in which given product is popular.
                     </description>
                     <ticket_id>LEDS-2301</ticket_id>
