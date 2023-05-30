@@ -43,7 +43,6 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         \Magento\Eav\Setup\EavSetupFactory $eavSetupFactory,
         \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetupInterface,
         \Magento\Eav\Model\Config $eavConfig,
-        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Option\CollectionFactory $attrOptionCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Psr\Log\LoggerInterface $logger
@@ -59,7 +58,6 @@ class UpgradeData implements \Magento\Framework\Setup\UpgradeDataInterface
         $this->eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetupInterface]);
 
         $this->eavConfig = $eavConfig;
-        $this->attrOptionCollectionFactory = $attrOptionCollectionFactory;
         $this->attributeFactory = $attributeFactory;
 
         $this->connection = $resourceConnection->getConnection();
