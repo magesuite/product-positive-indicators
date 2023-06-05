@@ -102,19 +102,10 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
             ]
         );
 
-        try {
-            $topAttributeValue = $this->serializer->unserialize($this->getAttributeObject()->getData('top_attribute_value'));
-        } catch (\Exception $e) {
-            $topAttributeValue = [];
-        }
-
-        try {
-            $topAttributeMinValue = $this->serializer->unserialize($this->getAttributeObject()->getData('top_attribute_min_value'));
-        } catch (\Exception $e) {
-            $topAttributeMinValue = [];
-        }
-
+        $topAttributeValue = $this->getAttributeValue('top_attribute_value');
+        $topAttributeMinValue = $this->getAttributeValue('top_attribute_min_value');
         $stores = $this->getStores();
+
         foreach ($stores as $storeId => $storeName) {
             $labelValue = $storeId == self::DEFAULT_STORE_INDEX ?
                 'Default value' :
@@ -166,7 +157,7 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
      *
      * @return mixed
      */
-    private function getAttributeObject()
+    protected function getAttributeObject()
     {
         return $this->_coreRegistry->registry('entity_attribute');
     }
@@ -189,5 +180,20 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
     {
         $this->getForm()->addValues($this->getAttributeObject()->getData());
         return parent::_initFormValues();
+    }
+
+    protected function getAttributeValue(string $attributeCode): array
+    {
+        $attributeValue = $this->getAttributeObject()->getData($attributeCode);
+
+        if (is_array($attributeValue)) {
+            return $attributeValue;
+        }
+
+        try {
+            return $this->serializer->unserialize($attributeValue);
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 }
