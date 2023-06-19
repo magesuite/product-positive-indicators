@@ -191,7 +191,7 @@ class AddTopAttribute extends \Magento\Backend\Block\Widget\Form\Generic
         }
 
         try {
-            return $this->serializer->unserialize($attributeValue);
+            return (array)$this->serializer->unserialize($attributeValue);
         } catch (\Exception $e) {
             return [];
         }
