@@ -75,4 +75,3 @@ class CalculateTopAttribute
         return $optionValues;
     }
 }
-

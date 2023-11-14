@@ -36,4 +36,3 @@ class DeliveryDataProviderTest extends \PHPUnit\Framework\TestCase
         return $scenarios;
     }
 }
-

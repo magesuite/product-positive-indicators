@@ -26,7 +26,7 @@ class PopularIcon
     public function execute()
     {
         $this->storeManager->setCurrentStore(self::DEFAULT_FRONTEND_STORE_ID);
-        
+
         $this->popularIconProducts->execute();
     }
 }
