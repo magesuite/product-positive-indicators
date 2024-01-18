@@ -4,6 +4,7 @@ namespace MageSuite\ProductPositiveIndicators\Service;
 
 class FreeShipping implements FreeShippingInterface
 {
+    protected ?array $freeShippingValue = null;
 
     /**
      * @var \Magento\Shipping\Model\Config
@@ -71,7 +72,12 @@ class FreeShipping implements FreeShippingInterface
 
     public function isFreeShipped($product)
     {
-        if ($this->getFreeShippingValue() === false) {
+        if (isset($this->freeShippingValue[$product->getId()]) && $this->freeShippingValue[$product->getId()] !== null) {
+            return $this->freeShippingValue[$product->getId()];
+        }
+
+        $this->freeShippingValue[$product->getId()] = $this->getFreeShippingValue();
+        if ($this->freeShippingValue[$product->getId()] === false) {
             return false;
         }
 
