@@ -61,6 +61,13 @@
                     <ticket_id>KRG-2688</ticket_id>
                 </entry>
             </tag>
+            <tag version="3.2.8" date="2024-05-06">
+                <entry>
+                    <type>FIX</type>
+                    <overview>Optimization of free shipping methods</overview>
+                    <ticket_id>P2G-2391</ticket_id>
+                </entry>
+            </tag>
         </changelog>
     </module>
 </config>

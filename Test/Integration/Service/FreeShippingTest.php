@@ -56,8 +56,9 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsFreeShipped()
     {
-        $product = $product = $this->productRepository->getById(604);
+        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
 
+        $product = $product = $this->productRepository->getById(604);
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(true, $value);
     }
@@ -75,6 +76,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsNotFreeShippedByCountry()
     {
+        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
+
         $product = $product = $this->productRepository->getById(604);
 
         $value = $this->freeShippingService->isFreeShipped($product);
@@ -93,6 +96,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsNotFreeShipped()
     {
+        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
+
         $product = $product = $this->productRepository->getById(603);
 
         $value = $this->freeShippingService->isFreeShipped($product);
@@ -113,6 +118,8 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetShippingMethodsWithFreeShipping()
     {
+        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
+
         $value = $this->freeShippingService->getShippingMethodsWithFreeShipping();
 
         $this->assertArrayHasKey('freeshipping', $value);

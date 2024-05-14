@@ -4,38 +4,30 @@ namespace MageSuite\ProductPositiveIndicators\Service;
 
 class FreeShipping implements FreeShippingInterface
 {
+    protected const CACHE_KEY = 'free_shipping_methods';
     protected ?array $freeShippingValue = null;
 
-    /**
-     * @var \Magento\Shipping\Model\Config
-     */
-    protected $shippingConfig;
-
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
-
-    /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $session;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
+    protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected \Magento\Checkout\Model\Session $session;
+    protected \Magento\Framework\App\CacheInterface $cacheManager;
+    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
+    protected \Magento\Framework\Serialize\SerializerInterface $serializer;
+    protected \Magento\Shipping\Model\Config $shippingConfig;
 
     public function __construct(
-        \Magento\Shipping\Model\Config $shippingConfig,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\Checkout\Model\Session $session,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+        \Magento\Framework\App\CacheInterface $cacheManager,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \Magento\Shipping\Model\Config $shippingConfig
     ) {
+        $this->cacheManager = $cacheManager;
+        $this->productRepository = $productRepository;
         $this->scopeConfig = $scopeConfig;
+        $this->serializer = $serializer;
         $this->session = $session;
         $this->shippingConfig = $shippingConfig;
-        $this->productRepository = $productRepository;
     }
 
     public function showInProductTiles()
@@ -94,8 +86,19 @@ class FreeShipping implements FreeShippingInterface
         return $finalPrice >= $this->getFreeShippingValue();
     }
 
-    public function getShippingMethodsWithFreeShipping()
+    public function removeShippingMethodsWithFreeShippingFromCache()
     {
+        $this->cacheManager->remove(self::CACHE_KEY);
+    }
+
+    public function getShippingMethodsWithFreeShipping(bool $force = false)
+    {
+        $cachedMethods = $this->cacheManager->load(self::CACHE_KEY);
+
+        if (!$force && $cachedMethods) {
+            return $this->serializer->unserialize($cachedMethods);
+        }
+
         $activeCarriers = $this->shippingConfig->getActiveCarriers();
         $methods = [];
 
@@ -125,6 +128,9 @@ class FreeShipping implements FreeShippingInterface
                 'value' => $freeShippingSubtotal
             ];
         }
+
+        $serializedMethods = $this->serializer->serialize($methods);
+        $this->cacheManager->save($serializedMethods, self::CACHE_KEY);
 
         return $methods;
     }
