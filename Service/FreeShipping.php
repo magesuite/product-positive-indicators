@@ -194,6 +194,10 @@ class FreeShipping implements FreeShippingInterface
 
     private function getSelectedShippingMethod()
     {
+        if (!$this->session->hasQuote()) {
+            return $this->getDefaultShippingMethod();
+        }
+
         $quote = $this->session->getQuote();
 
         if (!$quote) {
