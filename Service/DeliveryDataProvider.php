@@ -17,7 +17,9 @@ class DeliveryDataProvider
 
     protected function isWorkingDay(\DateTime $currentDay): bool
     {
-        return in_array($currentDay->format('N'), $this->configuration->getWorkingDays());
+        $dayNumber = $currentDay->format('N');
+        $dayNumber = $dayNumber == 7 ? 0 : $dayNumber;
+        return in_array($dayNumber, $this->configuration->getWorkingDays());
     }
 
     protected function isHoliday(\DateTime $currentDay): bool
