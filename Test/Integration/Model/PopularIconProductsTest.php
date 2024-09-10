@@ -34,7 +34,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
@@ -56,7 +56,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
@@ -78,7 +78,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_direction asc
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
@@ -100,7 +100,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_by name
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
@@ -122,7 +122,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadCategories
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 2
      */
@@ -137,19 +137,5 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
         $productIds = $this->popularIconProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
-    }
-
-    public static function loadCategories()
-    {
-        require __DIR__ . '/../_files/categories_with_products.php';
-
-        $indexerRegistry = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
-            ->create(\Magento\Framework\Indexer\IndexerRegistry::class);
-        $indexerRegistry->get(\Magento\CatalogSearch\Model\Indexer\Fulltext::INDEXER_ID)->reindexAll();
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../_files/categories_with_products_rollback.php';
     }
 }
