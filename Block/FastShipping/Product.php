@@ -36,7 +36,7 @@ class Product extends \Magento\Framework\View\Element\Template
             return true;
         }
 
-        return !$product->isSaleable();
+        return $product->isSaleable();
     }
 
     public function getMaxTimeToday()
