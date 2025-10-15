@@ -8,54 +8,35 @@ class Product extends \Magento\Framework\View\Element\Template
 
     protected $_template = 'MageSuite_ProductPositiveIndicators::fastshipping/product.phtml';
 
-    /**
-     * @var \Magento\Framework\App\CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var \Magento\Framework\Serialize\SerializerInterface
-     */
-    protected $serializer;
-
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping
-     */
-    protected $fastShippingDataProvider;
-
     protected $deliveryData = null;
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration,
-        \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping $fastShippingDataProvider,
+        protected \Magento\Framework\App\CacheInterface $cache,
+        protected \Magento\Framework\Serialize\SerializerInterface $serializer,
+        protected \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
+        protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration,
+        protected \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping $fastShippingDataProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
-
-        $this->cache = $cache;
-        $this->serializer = $serializer;
-        $this->storeManager = $storeManager;
-        $this->configuration = $configuration;
-        $this->fastShippingDataProvider = $fastShippingDataProvider;
     }
 
     public function isEnabled()
     {
         return $this->configuration->isEnabled();
+    }
+
+    public function canDisplayFastShippingText()
+    {
+        $product = $this->productHelper->getProduct();
+
+        if ($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
+            return true;
+        }
+
+        return !$product->isSaleable();
     }
 
     public function getMaxTimeToday()

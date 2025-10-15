@@ -68,17 +68,6 @@ class Product extends \Magento\Framework\View\Element\Template
         return empty($deliveryData) ? false : true;
     }
 
-    public function canDisplayExpectedDeliveryText()
-    {
-        $product = $this->productHelper->getProduct();
-
-        if ($product->getTypeId() === \Magento\ConfigurableProduct\Model\Product\Type\Configurable::TYPE_CODE) {
-            return true;
-        }
-
-        return !$product->isSaleable();
-    }
-
     public function getMaxTimeToday()
     {
         return $this->getDeliveryDataByKey('max_today_time');
