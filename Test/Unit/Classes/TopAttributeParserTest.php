@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Unit\Classes;
 
 class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Parser\TopAttribute
-     */
-    private $topAttributeParser;
+    protected ?\MageSuite\ProductPositiveIndicators\Parser\TopAttribute $topAttributeParser;
 
     protected function setUp(): void
     {
@@ -15,20 +14,14 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param $isTrue
-     * @param $productAttributeValue
-     * @param $sign
-     * @param $value
-     * @param $calculatedValue
-     * @param $isMultiselect
      * @dataProvider parseProvider
      */
-    public function testParse($isTrue, $productAttributeValue, $sign, $value, $calculatedValue, $isMultiselect)
+    public function testParse(bool $isTrue, string $productAttributeValue, string $sign, string $value, string $calculatedValue, bool $isMultiselect): void //phpcs:ignore
     {
         $this->assertEquals($isTrue, $this->topAttributeParser->parse($productAttributeValue, $sign, $value, $calculatedValue, $isMultiselect));
     }
 
-    public function parseProvider()
+    public static function parseProvider(): array
     {
         return [
             'true less than' => [true, "60h", "<", "60,5h", "", false],
@@ -50,16 +43,14 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param float $result
-     * @param string $value
      * @dataProvider parseToFloatProvider
      */
-    public function testParseToFloat($result, $value)
+    public function testParseToFloat(float $result, mixed $value): void
     {
         $this->assertEquals($result, $this->topAttributeParser->parseToFloat($value));
     }
 
-    public function parseToFloatProvider()
+    public static function parseToFloatProvider(): array
     {
         return [
             'float' => [1.20, 1.20],
@@ -72,17 +63,14 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param float $result
-     * @param array $percents
-     * @param array $values
      * @dataProvider calculateTopAttributeMinValueProvider
      */
-    public function testCalculateTopAttributeMinValue($result, array $percents, array $values)
+    public function testCalculateTopAttributeMinValue(array $result, array $percents, array $values): void
     {
         $this->assertEquals($result, $this->topAttributeParser->calculateTopAttributeMinValue($percents, $values));
     }
 
-    public function calculateTopAttributeMinValueProvider()
+    public static function calculateTopAttributeMinValueProvider(): array
     {
         return [
             'one store' => [

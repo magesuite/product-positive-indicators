@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Unit\Service;
 
 class OrderQueueLengthUpdaterTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\OrderQueueLengthUpdater
-     */
-    private $orderQueueLengthUpdater;
+    protected ?\MageSuite\ProductPositiveIndicators\Service\OrderQueueLengthUpdater $orderQueueLengthUpdater;
 
     protected function setUp(): void
     {
@@ -17,16 +16,14 @@ class OrderQueueLengthUpdaterTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param boolean $flag
-     * @param string $orderQueueLength
      * @dataProvider dataProvider
      */
-    public function testItOnlyAcceptsIntegerAsQueueLengthValue($flag, $orderQueueLength)
+    public function testItOnlyAcceptsIntegerAsQueueLengthValue(bool $flag, mixed $orderQueueLength): void
     {
         $this->assertEquals($flag, $this->orderQueueLengthUpdater->updateOrderQueueLength($orderQueueLength));
     }
 
-    public function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [true, 10],

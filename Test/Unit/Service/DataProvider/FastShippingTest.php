@@ -1,18 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Unit\Service\DataProvider;
 
 class FastShippingTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping
-     */
-    protected $fastShippingDataProvider;
+    protected ?\MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration;
+    protected ?\MageSuite\ProductPositiveIndicators\Service\DataProvider\FastShipping $fastShippingDataProvider;
 
     protected function setUp(): void
     {
@@ -26,11 +21,9 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @param array $config
-     * @param array $excepted
      * @dataProvider dataProvider
      */
-    public function testItReturnsCorrectData($config, $excepted)
+    public function testItReturnsCorrectData(array $config, array $excepted): void
     {
         $this->prepareConfiguration($config);
 
@@ -42,7 +35,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($excepted['isNextDayTomorrow'], $deliveryData->getIsNextDayTomorrow());
     }
 
-    private function prepareConfiguration($testConfig)
+    protected function prepareConfiguration(array $testConfig): void
     {
         $config = $this->configuration->getConfig();
 
@@ -51,7 +44,7 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function dataProvider()
+    public static function dataProvider(): array
     {
         return [
             [
