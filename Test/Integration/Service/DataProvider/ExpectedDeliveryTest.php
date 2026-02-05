@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Service\DataProvider;
 
 /**
@@ -8,20 +10,9 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Service\DataProvi
  */
 class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery
-     */
-    protected $configuration;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery
-     */
-    protected $expectedDeliveryDataProvider;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery $configuration;
+    protected ?\MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery $expectedDeliveryDataProvider;
 
     protected function setUp(): void
     {
@@ -37,13 +28,13 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
      * @param array $config
      * @param string $sku
      * @param array $excepted
      * @dataProvider dataProvider
      */
-    public function testItReturnsCorrectData($config, $sku, $excepted)
+    public function testItReturnsCorrectData(array $config, string $sku, ?array $excepted): void
     {
         $product = $this->productRepository->get($sku);
 
@@ -69,7 +60,7 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(8, $result);
     }
 
-    private function prepareConfiguration($testConfig)
+    private function prepareConfiguration(array $testConfig): void
     {
         $config = $this->configuration->getConfig();
 
@@ -78,20 +69,89 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function dataProvider()
+    public static function dataProvider(): array
     {
-        include __DIR__ . '/../../_files/expected_delivery_scenarios.php';
-
-        return $scenarios;
-    }
-
-    public static function loadProducts()
-    {
-        require __DIR__ . '/../../_files/expected_delivery_products.php';
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../../_files/expected_delivery_products_rollback.php';
+        return [
+            [
+                [
+                    'working_days' => '1,2,3,4,5',
+                    'holidays' => '14.03.2018
+            19.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521201600,
+                    'utc_offset' => 0
+                ],
+                'simple_product',
+                ['shipDayName' => 'Wednesday', 'nextShipDayName' => 'Thursday']
+            ],
+            [
+                [
+                    'working_days' => '1,2,3,4,5',
+                    'holidays' => '14.03.2018
+            19.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521374400,
+                    'utc_offset' => 0
+                ],
+                'simple_product',
+                ['shipDayName' => 'Wednesday', 'nextShipDayName' => 'Thursday']
+            ],
+            [
+                [
+                    'working_days' => '1,2,3,4,5',
+                    'holidays' => '21.03.2018
+            22.03.2018
+            25.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521374400,
+                    'utc_offset' => 0
+                ],
+                'simple_product',
+                ['shipDayName' => 'Tuesday', 'nextShipDayName' => 'Friday']
+            ],
+            [
+                [
+                    'working_days' => '1,2,3,4,5',
+                    'holidays' => '22.03.2018
+            23.03.2018
+            25.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521374400,
+                    'utc_offset' => 0
+                ],
+                'out_of_stock',
+                null
+            ],
+            [
+                [
+                    'working_days' => '1,2,3,4,5',
+                    'holidays' => '14.03.2018
+            19.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521201600,
+                    'utc_offset' => 0
+                ],
+                'custom_product',
+                ['shipDayName' => 'Friday', 'nextShipDayName' => 'Monday']
+            ],
+            [
+                [
+                    'working_days' => '0,1,2,3,4,5,6',
+                    'holidays' => '14.03.2018
+            19.03.2018',
+                    'delivery_today_time' => '15:00',
+                    'default_shipping_time' => 2,
+                    'timestamp' => 1521201600,
+                    'utc_offset' => 0
+                ],
+                'custom_product',
+                ['shipDayName' => 'Wednesday', 'nextShipDayName' => 'Thursday']
+            ],
+        ];
     }
 }
