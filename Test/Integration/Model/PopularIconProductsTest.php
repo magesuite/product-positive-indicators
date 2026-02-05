@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Model;
 
 /**
@@ -8,20 +10,9 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Model;
  */
 class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Model\PopularIconProducts
-     */
-    protected $popularIconProducts;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\ProductPositiveIndicators\Model\PopularIconProducts $popularIconProducts;
 
     public function setUp(): void
     {
@@ -38,7 +29,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
-    public function testItSetCorrectFlagInProducts()
+    public function testItSetCorrectFlagInProducts(): void
     {
         $this->popularIconProducts->execute();
 
@@ -60,7 +51,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
-    public function testItReturnsCorrectProductIdsForDefaultSorting()
+    public function testItReturnsCorrectProductIdsForDefaultSorting(): void
     {
         $expectedResult = [
             604 => [433],
@@ -83,7 +74,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_direction asc
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
-    public function testItReturnsCorrectProductIdsForSpecificSortingDirection()
+    public function testItReturnsCorrectProductIdsForSpecificSortingDirection(): void
     {
         $expectedResult = [
             601 => [433,434],
@@ -105,7 +96,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store positive_indicators/popular_icon/sort_by name
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
      */
-    public function testItReturnsCorrectProductIdsForSpecificSortBy()
+    public function testItReturnsCorrectProductIdsForSpecificSortBy(): void
     {
         $expectedResult = [
             604 => [433],
@@ -126,7 +117,7 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 2
      */
-    public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts()
+    public function testItReturnsCorrectProductIdsForSpecificNumberOfProducts(): void
     {
         $expectedResult = [
             604 => [433],

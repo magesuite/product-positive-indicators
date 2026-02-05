@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Block\PopularIcon;
 
 /**
@@ -8,25 +10,10 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Block\PopularIcon
  */
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $coreRegistry;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product
-     */
-    protected $productBlock;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Registry $coreRegistry;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\ProductPositiveIndicators\Block\PopularIcon\Product $productBlock;
 
     public function setUp(): void
     {
@@ -40,11 +27,11 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
-    public function testItReturnCorrectFlag($sku, $flag)
+    public function testItReturnCorrectFlag(string $sku, bool $flag): void
     {
         $product = $this->productRepository->get($sku);
         $this->coreRegistry->register('product', $product);
@@ -58,26 +45,15 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
-    public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
+    public function testItReturnsFalseWhenNoCurrentProductIsRegistered(): void
     {
         $this->coreRegistry->register('product', null);
-
         $popularIconFlag = $this->productBlock->getPopularIconFlag();
 
         $this->assertNull($popularIconFlag);
     }
 
-    public static function loadProducts()
-    {
-        require __DIR__ . '/../../_files/products.php';
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../../_files/products_rollback.php';
-    }
-
-    public static function getExpectedData()
+    public static function getExpectedData(): array
     {
         return [
             ['product_qty_100', false],

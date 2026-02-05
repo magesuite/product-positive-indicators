@@ -1,23 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Service;
 
 class FreeShippingTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    private $objectManager;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\FreeShipping
-     */
-    private $freeShippingService;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    private $productRepository;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\MageSuite\ProductPositiveIndicators\Service\FreeShipping $freeShippingService;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
 
     public function setUp(): void
     {
@@ -33,11 +24,11 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      */
-    public function testIsFreeShippedReturnFalse()
+    public function testIsFreeShippedReturnFalse(): void
     {
-        $product = $product = $this->productRepository->getById(603);
+        $product = $this->productRepository->getById(603);
 
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(false, $value);
@@ -46,7 +37,7 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
      * @magentoConfigFixture current_store general/country/default DE
      * @magentoConfigFixture current_store carriers/freeshipping/active 1
@@ -54,11 +45,11 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store carriers/freeshipping/specificcountry DE,US
      * @magentoConfigFixture current_store carriers/freeshipping/free_shipping_subtotal 49
      */
-    public function testIsFreeShipped()
+    public function testIsFreeShipped(): void
     {
         $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
 
-        $product = $product = $this->productRepository->getById(604);
+        $product = $this->productRepository->getById(604);
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(true, $value);
     }
@@ -66,7 +57,7 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
      * @magentoConfigFixture current_store general/country/default PL
      * @magentoConfigFixture current_store carriers/freeshipping/active 1
@@ -74,11 +65,11 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store carriers/freeshipping/specificcountry DE,US
      * @magentoConfigFixture current_store carriers/freeshipping/free_shipping_subtotal 49
      */
-    public function testIsNotFreeShippedByCountry()
+    public function testIsNotFreeShippedByCountry(): void
     {
         $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
 
-        $product = $product = $this->productRepository->getById(604);
+        $product = $this->productRepository->getById(604);
 
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(false, $value);
@@ -87,18 +78,18 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method ups
      * @magentoConfigFixture current_store carriers/ups/active 1
      * @magentoConfigFixture current_store carriers/ups/sallowspecific 0
      * @magentoConfigFixture current_store carriers/ups/free_shipping_enable 1
      * @magentoConfigFixture current_store carriers/ups/free_shipping_subtotal 50
      */
-    public function testIsNotFreeShipped()
+    public function testIsNotFreeShipped(): void
     {
         $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
 
-        $product = $product = $this->productRepository->getById(603);
+        $product = $this->productRepository->getById(603);
 
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(false, $value);
@@ -116,7 +107,7 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      * @magentoConfigFixture current_store carriers/freeshipping/specificcountry DE,US
      * @magentoConfigFixture current_store carriers/freeshipping/free_shipping_subtotal 49
      */
-    public function testGetShippingMethodsWithFreeShipping()
+    public function testGetShippingMethodsWithFreeShipping(): void
     {
         $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
 
@@ -125,15 +116,5 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('freeshipping', $value);
         $this->assertEquals('Free Shipping', $value['freeshipping']['title']);
         $this->assertEquals('49', $value['freeshipping']['value']);
-    }
-
-    public static function loadProducts()
-    {
-        require __DIR__ . '/../_files/products.php';
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../_files/products_rollback.php';
     }
 }

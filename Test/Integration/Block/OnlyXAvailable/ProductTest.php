@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Block\OnlyXAvailable;
 
 /**
@@ -8,32 +10,13 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Block\OnlyXAvaila
  */
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Framework\Registry $coreRegistry;
+    protected ?\Magento\CatalogInventory\Api\StockStateInterface $stockInterface;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product $productBlock;
 
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $coreRegistry;
-
-    /**
-     * @var \Magento\CatalogInventory\Api\StockStateInterface
-     */
-    protected $stockInterface;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Block\OnlyXAvailable\Product
-     */
-    protected $productBlock;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->coreRegistry = $this->objectManager->get(\Magento\Framework\Registry::class);
@@ -46,12 +29,12 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
-    public function testItReturnsCorrectFlag($sku, $flag)
+    public function testItReturnsCorrectFlag(string $sku, bool $flag): void
     {
         $product = $this->productRepository->get($sku);
         $this->coreRegistry->register('product', $product);
@@ -65,12 +48,12 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
-    public function testItReturnsCorrectFlagForQtyParameter($sku, $flag)
+    public function testItReturnsCorrectFlagForQtyParameter(string $sku, bool $flag): void
     {
         $product = $this->productRepository->get($sku);
         $productQty = $this->stockInterface->getStockQty($product->getId());
@@ -83,10 +66,10 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
-    public function testItReturnsFalseIfConfigurationIsNotSet()
+    public function testItReturnsFalseIfConfigurationIsNotSet(): void
     {
         $product = $this->productRepository->get('product_qty_100');
         $this->coreRegistry->register('product', $product);
@@ -100,7 +83,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      */
-    public function testItReturnsFalseWhenNoCurrentProductIsRegistered()
+    public function testItReturnsFalseWhenNoCurrentProductIsRegistered(): void
     {
         $this->coreRegistry->register('product', null);
 
@@ -113,11 +96,11 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
-    public function testItReturnsCorrectFlagForQtyParameterFromProduct()
+    public function testItReturnsCorrectFlagForQtyParameterFromProduct(): void
     {
         $product = $this->productRepository->get('product_qty_available');
         $this->coreRegistry->register('product', $product);
@@ -131,11 +114,11 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 5
      */
-    public function testItReturnsFalseWhenBackordersEnabled()
+    public function testItReturnsFalseWhenBackordersEnabled(): void
     {
         $product = $this->productRepository->get('product_backorders_enabled');
         $this->coreRegistry->register('product', $product);
@@ -149,11 +132,11 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
-    public function testItReturnsCorrectProductQty()
+    public function testItReturnsCorrectProductQty(): void
     {
         $product = $this->productRepository->get('product_qty_100');
         $this->coreRegistry->register('product', $product);
@@ -168,17 +151,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $this->productBlock->getProductQty());
     }
 
-    public static function loadProducts()
-    {
-        require __DIR__ . '/../../_files/products.php';
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../../_files/products_rollback.php';
-    }
-
-    public static function getExpectedData()
+    public static function getExpectedData(): array
     {
         return [
             ['product_qty_100', false],

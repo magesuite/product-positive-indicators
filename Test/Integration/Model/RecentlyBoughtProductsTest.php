@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Model;
 
 /**
@@ -8,20 +10,9 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Model;
  */
 class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Model\RecentlyBoughtProducts
-     */
-    protected $recentlyBoughtProducts;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
+    protected ?\MageSuite\ProductPositiveIndicators\Model\RecentlyBoughtProducts $recentlyBoughtProducts;
 
     public function setUp(): void
     {
@@ -34,12 +25,12 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadOrders
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/orders.php
      * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      * @magentoConfigFixture current_store positive_indicators/recently_bought/minimal 2
      */
-    public function testItSetCorrectFlagInProducts()
+    public function testItSetCorrectFlagInProducts(): void
     {
         $this->recentlyBoughtProducts->execute();
 
@@ -55,12 +46,12 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadOrders
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/orders.php
      * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      * @magentoConfigFixture current_store positive_indicators/recently_bought/minimal 2
      */
-    public function testItReturnsCorrectProductsDataForSpecificSettings()
+    public function testItReturnsCorrectProductsDataForSpecificSettings(): void
     {
         $expectedResult = [
             601 => 3,
@@ -72,15 +63,5 @@ class RecentlyBoughtProductsTest extends \PHPUnit\Framework\TestCase
         $productIds = $this->recentlyBoughtProducts->getProductsData();
 
         $this->assertEquals($expectedResult, $productIds);
-    }
-
-    public static function loadOrders()
-    {
-        require __DIR__ . '/../_files/orders.php';
-    }
-
-    public static function loadOrdersRollback()
-    {
-        require __DIR__ . '/../_files/orders_rollback.php';
     }
 }

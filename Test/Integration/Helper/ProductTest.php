@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Test\Integration\Helper;
 
 /**
@@ -8,17 +10,10 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Helper;
  */
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Magento\TestFramework\ObjectManager
-     */
-    protected $objectManager;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager;
+    protected ?\MageSuite\ProductPositiveIndicators\Helper\Product $productHelper;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Product
-     */
-    protected $productHelper;
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\ObjectManager::getInstance();
         $this->productHelper = $this->objectManager->get(\MageSuite\ProductPositiveIndicators\Helper\Product::class);
@@ -28,11 +23,11 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
-    public function testItReturnsCorrectFlag($productId, $flag)
+    public function testItReturnsCorrectFlag(int $productId, bool $flag): void
     {
         $popularIconFlag = $this->productHelper->getPopularIconFlag($productId);
 
@@ -42,27 +37,17 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     /**
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
-     * @magentoDataFixture loadProducts
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 0
      */
-    public function testItReturnsFalseIfConfigurationIsNotSet()
+    public function testItReturnsFalseIfConfigurationIsNotSet(): void
     {
         $popularIconFlag = $this->productHelper->getPopularIconFlag(601);
 
         $this->assertFalse($popularIconFlag);
     }
 
-    public static function loadProducts()
-    {
-        require __DIR__ . '/../_files/products.php';
-    }
-
-    public static function loadProductsRollback()
-    {
-        require __DIR__ . '/../_files/products_rollback.php';
-    }
-
-    public static function getExpectedData()
+    public static function getExpectedData(): array
     {
         return [
             [600, false],
