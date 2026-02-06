@@ -29,9 +29,6 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
-     * @param array $config
-     * @param string $sku
-     * @param array $excepted
      * @dataProvider dataProvider
      */
     public function testItReturnsCorrectData(array $config, string $sku, ?array $excepted): void
@@ -60,7 +57,7 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(8, $result);
     }
 
-    private function prepareConfiguration(array $testConfig): void
+    protected function prepareConfiguration(array $testConfig): void
     {
         $config = $this->configuration->getConfig();
 
