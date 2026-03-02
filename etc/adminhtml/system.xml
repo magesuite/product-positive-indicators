@@ -38,6 +38,10 @@
                     <label>Number of products</label>
                     <comment>The number of products that will be marked as popular in the category.</comment>
                 </field>
+                <field id="min_value" translate="label" type="text" sortOrder="20" showInDefault="1" >
+                    <label>Minimum value</label>
+                    <comment>The minimum value of the sorting attribute. E.g. if you set min value to 100, only products with values >= 100 will be marked as popular.</comment>
+                </field>
             </group>
             <group id="recently_bought" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Recently bought</label>
