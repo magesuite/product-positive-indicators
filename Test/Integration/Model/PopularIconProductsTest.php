@@ -129,4 +129,30 @@ class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($expectedResult, $productIds);
     }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/categories_with_products.php
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/number_of_products 3
+     * @magentoConfigFixture current_store positive_indicators/popular_icon/min_value 40
+     */
+    public function testItSetCorrectFlagInProductsWithThreshold(): void
+    {
+        $this->popularIconProducts->execute();
+
+        $productPrice10 = $this->productRepository->get('product_price_10');
+        $this->assertFalse((bool)$productPrice10->getPopularIcon());
+
+        $productPrice20 = $this->productRepository->get('product_price_20');
+        $this->assertFalse((bool)$productPrice20->getPopularIcon());
+
+        $productPrice40 = $this->productRepository->get('product_price_40');
+        $this->assertTrue((bool)$productPrice40->getPopularIcon());
+
+        $productPrice50 = $this->productRepository->get('product_price_50');
+        $this->assertTrue((bool)$productPrice50->getPopularIcon());
+    }
 }

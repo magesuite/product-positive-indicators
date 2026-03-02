@@ -1,47 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Model;
 
 class PopularIconProducts
 {
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Action
-     */
-    protected $productResourceAction;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory
-     */
-    protected $productCollectionFactory;
-
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
-     */
-    protected $categoryCollectionFactory;
-
-    /**
-     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
-     */
-    protected $categoryRepository;
-
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
-     */
-    protected $configuration;
-
     public function __construct(
-        \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
-        \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $configuration
+        protected \Magento\Catalog\Model\ResourceModel\Product\Action $productResourceAction,
+        protected \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        protected \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryCollectionFactory,
+        protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $configuration
     ) {
-        $this->productResourceAction = $productResourceAction;
-        $this->productCollectionFactory = $productCollectionFactory;
-        $this->categoryCollectionFactory = $categoryCollectionFactory;
-        $this->configuration = $configuration;
     }
 
-    public function execute($test = false)
+    public function execute(): bool
     {
         if (!$this->configuration->isEnabled()) {
             return false;
@@ -55,9 +28,11 @@ class PopularIconProducts
         }
 
         $this->addPopularIconFlagToProducts($productsData);
+
+        return true;
     }
 
-    public function getProductsData()
+    public function getProductsData(): array
     {
         $categories = $this->getCategories();
         $productsData = [];
@@ -66,6 +41,7 @@ class PopularIconProducts
             return $productsData;
         }
 
+        /** @var \Magento\Catalog\Model\Category $category */
         foreach ($categories as $category) {
             $productCollection = $this->getProductCollectionFromCategory($category);
 
@@ -81,23 +57,31 @@ class PopularIconProducts
         return $productsData;
     }
 
-    protected function getProductCollectionFromCategory($category)
-    {
+    protected function getProductCollectionFromCategory(
+        \Magento\Catalog\Api\Data\CategoryInterface $category
+    ): \Magento\Catalog\Model\ResourceModel\Product\Collection {
         $numberOfProducts = (int)$this->configuration->getNumberOfProducts();
+        $threshold = $this->configuration->getMinValue();
+        $sortBy = $this->configuration->getSortBy();
+
         $collection = $this->initializeCollection($category);
-        $collection->setOrder(
-            $this->configuration->getSortBy(),
-            $this->configuration->getSortDirection()
-        );
+
+        if ($threshold !== null) {
+            $collection->addAttributeToFilter($sortBy, ['gteq' => $threshold]);
+        }
+
+        $collection->setOrder($sortBy, $this->configuration->getSortDirection());
         $collection->setPage(1, $numberOfProducts);
 
         return $collection;
     }
 
-    protected function initializeCollection($category)
-    {
+    protected function initializeCollection(
+        \Magento\Catalog\Api\Data\CategoryInterface $category
+    ): \Magento\Catalog\Model\ResourceModel\Product\Collection {
         /** @see \Magento\Catalog\Model\ResourceModel\Product\Collection::addCategoryFilter */
         $category->setIsAnchor(1);
+        /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $productCollection */
         $productCollection = $category->getProductCollection();
         $productCollection->addAttributeToFilter('visibility', ['neq' => \Magento\Catalog\Model\Product\Visibility::VISIBILITY_NOT_VISIBLE]);
         $productCollection->addAttributeToFilter('status', 1);
@@ -105,7 +89,7 @@ class PopularIconProducts
         return $productCollection;
     }
 
-    protected function addPopularIconFlagToProducts($productIds)
+    protected function addPopularIconFlagToProducts(array $productIds): bool
     {
         $this->productResourceAction->updateAttributes(
             array_keys($productIds),
@@ -120,13 +104,12 @@ class PopularIconProducts
                 ['popular_icon_categories' => $categories],
                 \Magento\Store\Model\Store::DEFAULT_STORE_ID
             );
-
         }
 
         return true;
     }
 
-    protected function removePopularIconFlag()
+    protected function removePopularIconFlag(): bool
     {
         $products = $this->getProductsWithFlag();
 
@@ -151,7 +134,7 @@ class PopularIconProducts
         return true;
     }
 
-    protected function getProductsWithFlag()
+    protected function getProductsWithFlag(): \Magento\Catalog\Model\ResourceModel\Product\Collection
     {
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('popular_icon');
@@ -160,7 +143,7 @@ class PopularIconProducts
         return $collection;
     }
 
-    protected function getCategories()
+    protected function getCategories(): \Magento\Catalog\Model\ResourceModel\Category\Collection
     {
         $collection = $this->categoryCollectionFactory->create();
         $collection

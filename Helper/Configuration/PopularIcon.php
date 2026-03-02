@@ -1,27 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Helper\Configuration;
 
 class PopularIcon extends \MageSuite\ProductPositiveIndicators\Helper\Configuration
 {
-    const XML_PATH_CONFIGURATION_KEY = 'popular_icon';
+    public const string XML_PATH_CONFIGURATION_KEY = 'popular_icon';
 
-    public function getSortBy()
+    public function getSortBy(): string
     {
         return $this->getConfig()->getSortBy();
     }
 
-    public function getSortDirection()
+    public function getSortDirection(): string
     {
         return $this->getConfig()->getSortDirection();
     }
 
-    public function getNumberOfProducts()
+    public function getNumberOfProducts(): int
     {
-        return $this->getConfig()->getNumberOfProducts();
+        return (int)$this->getConfig()->getNumberOfProducts();
     }
 
-    protected function getConfigKey()
+    public function getMinValue(): ?int
+    {
+        $value = $this->getConfig()->getMinValue();
+        return is_numeric($value) ? (int)$value : null;
+    }
+
+    protected function getConfigKey(): string
     {
         return self::XML_PATH_CONFIGURATION_KEY;
     }
