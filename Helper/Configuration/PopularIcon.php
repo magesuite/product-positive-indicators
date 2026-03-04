@@ -6,7 +6,7 @@ namespace MageSuite\ProductPositiveIndicators\Helper\Configuration;
 
 class PopularIcon extends \MageSuite\ProductPositiveIndicators\Helper\Configuration
 {
-    public const string XML_PATH_CONFIGURATION_KEY = 'popular_icon';
+    public const XML_PATH_CONFIGURATION_KEY = 'popular_icon';
 
     public function getSortBy(): string
     {
