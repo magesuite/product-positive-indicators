@@ -10,9 +10,9 @@ namespace MageSuite\ProductPositiveIndicators\Test\Integration\Model;
  */
 class PopularIconProductsTest extends \PHPUnit\Framework\TestCase
 {
-    protected ?\Magento\TestFramework\ObjectManager $objectManager;
-    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
-    protected ?\MageSuite\ProductPositiveIndicators\Model\PopularIconProducts $popularIconProducts;
+    protected ?\Magento\TestFramework\ObjectManager $objectManager = null;
+    protected ?\Magento\Catalog\Api\ProductRepositoryInterface $productRepository = null;
+    protected ?\MageSuite\ProductPositiveIndicators\Model\PopularIconProducts $popularIconProducts = null;
 
     public function setUp(): void
     {
