@@ -22,8 +22,10 @@ class TopAttributeRefresh extends \Symfony\Component\Console\Command\Command
         parent::configure();
     }
 
-    protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
-    {
+    protected function execute(
+        \Symfony\Component\Console\Input\InputInterface $input,
+        \Symfony\Component\Console\Output\OutputInterface $output
+    ): int {
         $stopwatch = new \Symfony\Component\Stopwatch\Stopwatch();
         $stopwatch->start('calculate_top_attribute');
         $returnStatus = \Magento\Framework\Console\Cli::RETURN_SUCCESS;
@@ -41,6 +43,7 @@ class TopAttributeRefresh extends \Symfony\Component\Console\Command\Command
         $event = $stopwatch->stop('calculate_top_attribute');
         $output->writeln('Duration: ' . $event->getDuration(). 'ms');
         $output->writeln('Max memory usage: ' . $event->getMemory()/1024/1024/8 . 'MB');
+       
         return $returnStatus;
     }
 }

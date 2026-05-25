@@ -38,7 +38,7 @@ class PopularIcon extends \Symfony\Component\Console\Command\Command
     protected function execute(
         \Symfony\Component\Console\Input\InputInterface $input,
         \Symfony\Component\Console\Output\OutputInterface $output
-    ) {
+    ): int {
         if ($this->scope->getCurrentScope() !== 'frontend') {
             $this->state->setAreaCode('frontend');
         }
@@ -46,5 +46,7 @@ class PopularIcon extends \Symfony\Component\Console\Command\Command
         $popularIconProducts = $this->popularIconProductsFactory->create();
 
         $popularIconProducts->execute();
+
+        return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
     }
 }
