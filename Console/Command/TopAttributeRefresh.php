@@ -43,7 +43,7 @@ class TopAttributeRefresh extends \Symfony\Component\Console\Command\Command
         $event = $stopwatch->stop('calculate_top_attribute');
         $output->writeln('Duration: ' . $event->getDuration(). 'ms');
         $output->writeln('Max memory usage: ' . $event->getMemory()/1024/1024/8 . 'MB');
-       
+
         return $returnStatus;
     }
 }
