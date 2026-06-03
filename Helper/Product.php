@@ -161,7 +161,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     private function isPopularIconEnabled($product)
     {
-        return (boolean)$product->getPopularIcon();
+        return (bool)$product->getPopularIcon();
     }
 
     private function isEnabledInSpecificCategory($product, $categoryId)
@@ -179,7 +179,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function isFastShippingEnabled()
     {
-        return (boolean)$this->fastShippingConfiguration->isEnabled();
+        return (bool)$this->fastShippingConfiguration->isEnabled();
     }
 
     public function isFreeShipped($product)

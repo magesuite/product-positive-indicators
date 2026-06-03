@@ -40,6 +40,6 @@ class Product extends \Magento\Framework\View\Element\Template
             return null;
         }
 
-        return (boolean)$product->getPopularIcon();
+        return (bool)$product->getPopularIcon();
     }
 }
