@@ -24,9 +24,9 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
-     * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/popular_icon/is_enabled 1
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getExpectedData')]
     public function testItReturnsCorrectFlag(int $productId, bool $flag): void
     {
         $popularIconFlag = $this->productHelper->getPopularIconFlag($productId);

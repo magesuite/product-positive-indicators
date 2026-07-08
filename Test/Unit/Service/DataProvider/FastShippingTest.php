@@ -21,8 +21,8 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
      * @magentoAppArea frontend
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
-     * @dataProvider dataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     public function testItReturnsCorrectData(array $config, array $excepted): void
     {
         $this->prepareConfiguration($config);

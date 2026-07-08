@@ -13,9 +13,7 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
         $this->topAttributeParser = new \MageSuite\ProductPositiveIndicators\Parser\TopAttribute();
     }
 
-    /**
-     * @dataProvider parseProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('parseProvider')]
     public function testParse(bool $isTrue, string $productAttributeValue, string $sign, string $value, string $calculatedValue, bool $isMultiselect): void //phpcs:ignore
     {
         $this->assertEquals($isTrue, $this->topAttributeParser->parse($productAttributeValue, $sign, $value, $calculatedValue, $isMultiselect));
@@ -42,9 +40,7 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider parseToFloatProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('parseToFloatProvider')]
     public function testParseToFloat(float $result, mixed $value): void
     {
         $this->assertEquals($result, $this->topAttributeParser->parseToFloat($value));
@@ -62,9 +58,7 @@ class TopAttributeParserTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider calculateTopAttributeMinValueProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('calculateTopAttributeMinValueProvider')]
     public function testCalculateTopAttributeMinValue(array $result, array $percents, array $values): void
     {
         $this->assertEquals($result, $this->topAttributeParser->calculateTopAttributeMinValue($percents, $values));

@@ -15,9 +15,7 @@ class OrderQueueLengthUpdaterTest extends \PHPUnit\Framework\TestCase
         $this->orderQueueLengthUpdater = $objectManager->getObject(\MageSuite\ProductPositiveIndicators\Service\OrderQueueLengthUpdater::class);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     public function testItOnlyAcceptsIntegerAsQueueLengthValue(bool $flag, mixed $orderQueueLength): void
     {
         $this->assertEquals($flag, $this->orderQueueLengthUpdater->updateOrderQueueLength($orderQueueLength));
