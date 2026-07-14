@@ -29,8 +29,8 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
-     * @dataProvider dataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataProvider')]
     public function testItReturnsCorrectData(array $config, string $sku, ?array $excepted): void
     {
         $product = $this->productRepository->get($sku);

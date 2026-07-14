@@ -30,10 +30,10 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
-     * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getExpectedData')]
     public function testItReturnsCorrectFlag(string $sku, bool $flag): void
     {
         $product = $this->productRepository->get($sku);
@@ -49,10 +49,10 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
-     * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/only_x_available/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/only_x_available/quantity 10
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getExpectedData')]
     public function testItReturnsCorrectFlagForQtyParameter(string $sku, bool $flag): void
     {
         $product = $this->productRepository->get($sku);

@@ -28,10 +28,10 @@ class ProductTest extends \PHPUnit\Framework\TestCase
      * @magentoAppIsolation enabled
      * @magentoDbIsolation enabled
      * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
-     * @dataProvider getExpectedData
      * @magentoConfigFixture current_store positive_indicators/recently_bought/is_enabled 1
      * @magentoConfigFixture current_store positive_indicators/recently_bought/period 7
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getExpectedData')]
     public function testItReturnCorrectFlag(string $sku, array $data): void
     {
         $product = $this->productRepository->get($sku);
