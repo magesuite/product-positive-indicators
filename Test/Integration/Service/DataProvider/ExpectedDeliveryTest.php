@@ -41,10 +41,116 @@ class ExpectedDeliveryTest extends \PHPUnit\Framework\TestCase
 
         if ($excepted === null) {
             $this->assertNull($deliveryData);
-        } else {
-            $this->assertEquals($excepted['shipDayName'], (string)$deliveryData->getShipDayName());
-            $this->assertEquals($excepted['nextShipDayName'], (string)$deliveryData->getNextShipDayName());
+            return;
         }
+
+        $this->assertEquals($excepted['shipDayName'], (string)$deliveryData->getShipDayName());
+        $this->assertEquals($excepted['nextShipDayName'], (string)$deliveryData->getNextShipDayName());
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
+     */
+    public function testItReturnsNoDataForANegativeShippingTime(): void
+    {
+        $product = $this->productRepository->get('custom_product');
+        $product->setUseTimeNeededToShipProduct(1);
+        $product->setTimeNeededToShipProduct(-1);
+
+        $this->prepareConfiguration([
+            'working_days' => '1,2,3,4,5',
+            'holidays' => '',
+            'delivery_today_time' => '15:00',
+            'default_shipping_time' => 2,
+            'timestamp' => 1521201600,
+            'utc_offset' => 0
+        ]);
+
+        $this->assertSame(0, $this->expectedDeliveryDataProvider->getShippingTimeInDays($product));
+        $this->assertNull($this->expectedDeliveryDataProvider->getDeliveryData($product));
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
+     */
+    public function testItReturnsNoDataForAShippingTimeAboveTheSupportedHorizon(): void
+    {
+        $product = $this->productRepository->get('custom_product');
+        $product->setUseTimeNeededToShipProduct(1);
+        $product->setTimeNeededToShipProduct(
+            \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery::MAX_SHIPPING_TIME_IN_DAYS + 1
+        );
+
+        $this->prepareConfiguration([
+            'working_days' => '1,2,3,4,5',
+            'holidays' => '',
+            'delivery_today_time' => '15:00',
+            'default_shipping_time' => 2,
+            'timestamp' => 1521201600,
+            'utc_offset' => 0
+        ]);
+
+        $this->assertSame(0, $this->expectedDeliveryDataProvider->getShippingTimeInDays($product));
+        $this->assertNull($this->expectedDeliveryDataProvider->getDeliveryData($product));
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
+     */
+    public function testItFailsClosedWhenNoWorkingDayIsConfigured(): void
+    {
+        $product = $this->productRepository->get('custom_product');
+
+        $this->prepareConfiguration([
+            'working_days' => '',
+            'holidays' => '',
+            'delivery_today_time' => '15:00',
+            'default_shipping_time' => 2,
+            'timestamp' => 1521201600,
+            'utc_offset' => 0
+        ]);
+
+        $this->assertNull($this->expectedDeliveryDataProvider->getDeliveryData($product));
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/expected_delivery_products.php
+     */
+    public function testItConvergesAtTheMaximumHorizonWithASparseCalendar(): void
+    {
+        // Reaching the maximum accepted shipping time (365 working days) with only one
+        // working day a week needs roughly 2,555 calendar days; a fixed 1,000-iteration
+        // ceiling would wrongly fail closed on this legitimate, validation-permitted value.
+        $product = $this->productRepository->get('custom_product');
+        $product->setUseTimeNeededToShipProduct(1);
+        $product->setTimeNeededToShipProduct(
+            \MageSuite\ProductPositiveIndicators\Service\DataProvider\ExpectedDelivery::MAX_SHIPPING_TIME_IN_DAYS
+        );
+
+        $this->prepareConfiguration([
+            'working_days' => '1',
+            'holidays' => '',
+            'delivery_today_time' => '15:00',
+            'default_shipping_time' => 2,
+            'timestamp' => 1521201600,
+            'utc_offset' => 0
+        ]);
+
+        $deliveryData = $this->expectedDeliveryDataProvider->getDeliveryData($product);
+
+        $this->assertNotNull($deliveryData);
     }
 
     public function testGetNumberOfBusinessDays(): void

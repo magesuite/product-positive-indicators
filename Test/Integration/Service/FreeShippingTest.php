@@ -47,8 +47,24 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsFreeShipped(): void
     {
-        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
+        $product = $this->productRepository->getById(604);
+        $value = $this->freeShippingService->isFreeShipped($product);
+        $this->assertEquals(true, $value);
+    }
 
+    /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
+     * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
+     * @magentoConfigFixture current_store general/country/default DE
+     * @magentoConfigFixture current_store carriers/freeshipping/active 1
+     * @magentoConfigFixture current_store carriers/freeshipping/sallowspecific 1
+     * @magentoConfigFixture current_store carriers/freeshipping/specificcountry DE,US
+     * @magentoConfigFixture current_store carriers/freeshipping/free_shipping_subtotal 0
+     */
+    public function testIsFreeShippedWhenSubtotalThresholdIsZero(): void
+    {
         $product = $this->productRepository->getById(604);
         $value = $this->freeShippingService->isFreeShipped($product);
         $this->assertEquals(true, $value);
@@ -67,11 +83,28 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsNotFreeShippedByCountry(): void
     {
-        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
-
         $product = $this->productRepository->getById(604);
 
         $value = $this->freeShippingService->isFreeShipped($product);
+        $this->assertEquals(false, $value);
+    }
+
+    /**
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     * @magentoDataFixture MageSuite_ProductPositiveIndicators::Test/Integration/_files/products.php
+     * @magentoConfigFixture current_store positive_indicators/free_shipping/free_shipping_method freeshipping
+     * @magentoConfigFixture current_store general/country/default DE
+     * @magentoConfigFixture current_store carriers/freeshipping/active 1
+     * @magentoConfigFixture current_store carriers/freeshipping/sallowspecific 1
+     * @magentoConfigFixture current_store carriers/freeshipping/free_shipping_subtotal 49
+     */
+    public function testIsNotFreeShippedWhenSpecificCountryListIsEmpty(): void
+    {
+        $product = $this->productRepository->getById(604);
+
+        $value = $this->freeShippingService->isFreeShipped($product);
+
         $this->assertEquals(false, $value);
     }
 
@@ -87,8 +120,6 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testIsNotFreeShipped(): void
     {
-        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
-
         $product = $this->productRepository->getById(603);
 
         $value = $this->freeShippingService->isFreeShipped($product);
@@ -109,8 +140,6 @@ class FreeShippingTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetShippingMethodsWithFreeShipping(): void
     {
-        $this->freeShippingService->removeShippingMethodsWithFreeShippingFromCache();
-
         $value = $this->freeShippingService->getShippingMethodsWithFreeShipping();
 
         $this->assertArrayHasKey('freeshipping', $value);
