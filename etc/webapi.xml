@@ -3,7 +3,7 @@
     <route url="/V1/webapi/fastshipping/orderqueuelength/:orderQueueLength" method="GET">
         <service class="MageSuite\ProductPositiveIndicators\Api\OrderQueueLengthUpdaterInterface" method="updateOrderQueueLength"/>
         <resources>
-            <resource ref="Magento_Sales::sales" />
+            <resource ref="MageSuite_ProductPositiveIndicators::order_queue_length_update" />
         </resources>
     </route>
 </routes>

@@ -1,79 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Service;
 
 class FreeShipping implements FreeShippingInterface
 {
-    protected const CACHE_KEY = 'free_shipping_methods';
-    protected ?array $freeShippingValue = null;
-
-    protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
-    protected \Magento\Checkout\Model\Session $session;
-    protected \Magento\Framework\App\CacheInterface $cacheManager;
-    protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
-    protected \Magento\Framework\Serialize\SerializerInterface $serializer;
-    protected \Magento\Shipping\Model\Config $shippingConfig;
+    protected array $freeShippedProducts = [];
+    protected ?array $shippingMethods = null;
 
     public function __construct(
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Checkout\Model\Session $session,
-        \Magento\Framework\App\CacheInterface $cacheManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Magento\Shipping\Model\Config $shippingConfig
-    ) {
-        $this->cacheManager = $cacheManager;
-        $this->productRepository = $productRepository;
-        $this->scopeConfig = $scopeConfig;
-        $this->serializer = $serializer;
-        $this->session = $session;
-        $this->shippingConfig = $shippingConfig;
-    }
+        protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        protected \Magento\Checkout\Model\Session $session,
+        protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\FreeShipping $configuration,
+        protected \Magento\Shipping\Model\Config $shippingConfig
+    ) {}
 
-    public function showInProductTiles()
+    public function isFreeShipped(\Magento\Catalog\Api\Data\ProductInterface $product): bool
     {
-        return $this->scopeConfig->getValue(
-            'positive_indicators/free_shipping/show_in_product_tiles',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
+        $productId = (int)$product->getId();
 
-    public function showTextNoteOnProductsDetailpage()
-    {
-        return $this->scopeConfig->getValue(
-            'positive_indicators/free_shipping/show_text_note_on_products_detailpage',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    public function showBadgeOnProductsDetailpage()
-    {
-        return $this->scopeConfig->getValue(
-            'positive_indicators/free_shipping/show_badge_on_products_detailpage',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    public function showInSearchAutosuggest()
-    {
-        return $this->scopeConfig->getValue(
-            'positive_indicators/free_shipping/show_in_search_autosuggest',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    public function isFreeShipped($product)
-    {
-        if (isset($this->freeShippingValue[$product->getId()]) && $this->freeShippingValue[$product->getId()] !== null) {
-            return $this->freeShippingValue[$product->getId()];
+        if (!array_key_exists($productId, $this->freeShippedProducts)) {
+            $this->freeShippedProducts[$productId] = $this->calculateIsFreeShipped($product);
         }
 
-        $this->freeShippingValue[$product->getId()] = $this->getFreeShippingValue();
-        if ($this->freeShippingValue[$product->getId()] === false) {
-            return false;
-        }
+        return $this->freeShippedProducts[$productId];
+    }
 
-        if (!$product) {
+    public function calculateIsFreeShipped(\Magento\Catalog\Api\Data\ProductInterface $product): bool
+    {
+        $freeShippingValue = $this->getFreeShippingValue();
+
+        if ($freeShippingValue === false) {
             return false;
         }
 
@@ -83,59 +41,33 @@ class FreeShipping implements FreeShippingInterface
             return false;
         }
 
-        return $finalPrice >= $this->getFreeShippingValue();
+        return (float)$finalPrice >= (float)$freeShippingValue;
     }
 
-    public function removeShippingMethodsWithFreeShippingFromCache()
+    public function getShippingMethodsWithFreeShipping(): array
     {
-        $this->cacheManager->remove(self::CACHE_KEY);
-    }
-
-    public function getShippingMethodsWithFreeShipping(bool $force = false)
-    {
-        $cachedMethods = $this->cacheManager->load(self::CACHE_KEY);
-
-        if (!$force && $cachedMethods) {
-            return $this->serializer->unserialize($cachedMethods);
+        if ($this->shippingMethods !== null) {
+            return $this->shippingMethods;
         }
 
         $activeCarriers = $this->shippingConfig->getActiveCarriers();
-        $methods = [];
+        $this->shippingMethods = [];
 
-        foreach ($activeCarriers as $code => $model) {
-            $activeField = $code == 'freeshipping' ? 'active' : 'free_shipping_enable';
-            $isFreeShippingEnabled = $this->scopeConfig->getValue(
-                'carriers/' . $code . '/' . $activeField,
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            );
-
-            if (!$isFreeShippingEnabled) {
+        foreach (array_keys($activeCarriers) as $code) {
+            if (!$this->configuration->isCarrierFreeShippingEnabled($code)) {
                 continue;
             }
 
-            $freeShippingSubtotal = $this->scopeConfig->getValue(
-                'carriers/' . $code . '/free_shipping_subtotal',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            );
-
-            $freeShippingTitle = $this->scopeConfig->getValue(
-                'carriers/' . $code . '/title',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-            );
-
-            $methods[$code] = [
-                'title' => $freeShippingTitle,
-                'value' => $freeShippingSubtotal
+            $this->shippingMethods[$code] = [
+                'title' => $this->configuration->getCarrierTitle($code),
+                'value' => $this->configuration->getCarrierFreeShippingSubtotal($code)
             ];
         }
 
-        $serializedMethods = $this->serializer->serialize($methods);
-        $this->cacheManager->save($serializedMethods, self::CACHE_KEY);
-
-        return $methods;
+        return $this->shippingMethods;
     }
 
-    private function getFreeShippingValue()
+    protected function getFreeShippingValue(): bool|string
     {
         $activeMethods = $this->getShippingMethodsWithFreeShipping();
         $selectedShippingMethod = $this->getSelectedShippingMethod();
@@ -155,35 +87,26 @@ class FreeShipping implements FreeShippingInterface
         return $activeMethods[$selectedShippingMethod]['value'];
     }
 
-    private function getDefaultShippingMethod()
+    private function getDefaultShippingMethod(): string|false
     {
-        $defaultShippingMethod = $this->scopeConfig->getValue(
-            'positive_indicators/free_shipping/free_shipping_method',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $defaultShippingMethod = $this->configuration->getDefaultShippingMethod();
 
         if (!$defaultShippingMethod) {
             return false;
         }
 
-        $isAllAllowedCountries = !$this->scopeConfig->getValue(
-            'carriers/' . $defaultShippingMethod . '/sallowspecific',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $isAllAllowedCountries = !$this->configuration->isCarrierRestrictedToSpecificCountries($defaultShippingMethod);
 
         if ($isAllAllowedCountries) {
             return $defaultShippingMethod;
         }
 
-        $defaultCountry = $this->scopeConfig->getValue(
-            'general/country/default',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        $defaultCountry = $this->configuration->getDefaultCountry();
+        $shipToSpecifCountry = $this->configuration->getCarrierSpecificCountries($defaultShippingMethod);
 
-        $shipToSpecifCountry = $this->scopeConfig->getValue(
-            'carriers/' . $defaultShippingMethod . '/specificcountry',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-        );
+        if (!$defaultCountry || !$shipToSpecifCountry) {
+            return false;
+        }
 
         if (strpos($shipToSpecifCountry, $defaultCountry) !== false) {
             return $defaultShippingMethod;
@@ -192,7 +115,7 @@ class FreeShipping implements FreeShippingInterface
         return false;
     }
 
-    private function getSelectedShippingMethod()
+    protected function getSelectedShippingMethod(): string|false
     {
         if (!$this->session->hasQuote()) {
             return $this->getDefaultShippingMethod();

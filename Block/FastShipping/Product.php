@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Block\FastShipping;
 
 class Product extends \Magento\Framework\View\Element\Template
 {
-    const CACHE_KEY = 'indicator_fast_shipping_%s_%s';
+    /**
+     * @var string
+     */
+    protected $_template = 'MageSuite_ProductPositiveIndicators::fastshipping/product.phtml'; // phpcs:ignore
 
-    protected $_template = 'MageSuite_ProductPositiveIndicators::fastshipping/product.phtml';
+    protected ?\Magento\Framework\DataObject $deliveryData = null;
 
-    protected $deliveryData = null;
+    protected bool $deliveryDataCalculated = false;
 
     public function __construct(
         \Magento\Catalog\Block\Product\Context $context,
-        protected \Magento\Framework\App\CacheInterface $cache,
-        protected \Magento\Framework\Serialize\SerializerInterface $serializer,
         protected \MageSuite\ProductPositiveIndicators\Helper\Product $productHelper,
         protected \Magento\Store\Model\StoreManagerInterface $storeManager,
         protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration,
@@ -23,12 +26,12 @@ class Product extends \Magento\Framework\View\Element\Template
         parent::__construct($context, $data);
     }
 
-    public function isEnabled()
+    public function isEnabled(): bool
     {
-        return $this->configuration->isEnabled();
+        return (bool)$this->configuration->isEnabled();
     }
 
-    public function canDisplayFastShippingText()
+    public function canDisplayFastShippingText(): bool
     {
         $product = $this->productHelper->getProduct();
 
@@ -39,42 +42,42 @@ class Product extends \Magento\Framework\View\Element\Template
         return $product->isSaleable();
     }
 
-    public function getMaxTimeToday()
+    public function getMaxTimeToday(): mixed
     {
         return $this->getDeliveryDataByKey('max_today_time');
     }
 
-    public function getShipDayTime()
+    public function getShipDayTime(): mixed
     {
         return $this->getDeliveryDataByKey('ship_day_time');
     }
 
-    public function getShipDayName()
+    public function getShipDayName(): mixed
     {
         return $this->getDeliveryDataByKey('ship_day_name');
     }
 
-    public function isNextDayTomorrow()
+    public function isNextDayTomorrow(): mixed
     {
         return $this->getDeliveryDataByKey('is_next_day_tomorrow');
     }
 
-    public function getNextShipDayTime()
+    public function getNextShipDayTime(): mixed
     {
         return $this->getDeliveryDataByKey('next_ship_day_time');
     }
 
-    public function getNextShipDayName()
+    public function getNextShipDayName(): mixed
     {
         return $this->getDeliveryDataByKey('next_ship_day_name');
     }
 
-    public function getUtcOffset()
+    public function getUtcOffset(): mixed
     {
         return $this->getDeliveryDataByKey('utc_offset');
     }
 
-    protected function getDeliveryDataByKey($key)
+    protected function getDeliveryDataByKey(string $key): mixed
     {
         $deliveryData = $this->getDeliveryData();
 
@@ -85,41 +88,17 @@ class Product extends \Magento\Framework\View\Element\Template
         return $deliveryData->getData($key);
     }
 
-    protected function getDeliveryData()
+    protected function getDeliveryData(): \Magento\Framework\DataObject|bool|null
     {
         if (!$this->configuration->isEnabled() || !$this->configuration->getDeliveryTodayTime()) {
             return false;
         }
 
-        if ($this->deliveryData === null) {
-            $cacheKey = $this->getCacheKeyForIndicator();
-            $deliveryData = $this->cache->load($cacheKey);
-
-            if ($deliveryData) {
-                $deliveryData = new \Magento\Framework\DataObject(
-                    $this->serializer->unserialize($deliveryData)
-                );
-            } else {
-                $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
-                $this->cache->save(
-                    $this->serializer->serialize($deliveryData->toArray()),
-                    $cacheKey,
-                    [\Magento\Framework\App\Config::CACHE_TAG]
-                );
-            }
-
-            $this->deliveryData = $deliveryData;
+        if (!$this->deliveryDataCalculated) {
+            $this->deliveryData = $this->fastShippingDataProvider->getDeliveryData();
+            $this->deliveryDataCalculated = true;
         }
 
         return $this->deliveryData;
-    }
-
-    protected function getCacheKeyForIndicator()
-    {
-        return sprintf(
-            self::CACHE_KEY,
-            $this->storeManager->getStore()->getId(),
-            date('d')
-        );
     }
 }

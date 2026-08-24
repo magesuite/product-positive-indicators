@@ -35,6 +35,74 @@ class FastShippingTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($excepted['isNextDayTomorrow'], $deliveryData->getIsNextDayTomorrow());
     }
 
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('nonConvergentConfigurationDataProvider')]
+    public function testItFailsClosedInsteadOfLoopingForever(array $config): void
+    {
+        $this->prepareConfiguration($config);
+
+        $this->assertNull($this->fastShippingDataProvider->getDeliveryData());
+    }
+
+    public static function nonConvergentConfigurationDataProvider(): array
+    {
+        return [
+            'zero working hours' => [[
+                'working_days' => '1,2,3,4,5',
+                'holidays' => '',
+                'working_hours' => 0,
+                'order_queue_length' => 4,
+                'delivery_today_time' => '15:00',
+                'timestamp' => 1521201600,
+                'utc_offset' => 0
+            ]],
+            'negative working hours' => [[
+                'working_days' => '1,2,3,4,5',
+                'holidays' => '',
+                'working_hours' => -5,
+                'order_queue_length' => 4,
+                'delivery_today_time' => '15:00',
+                'timestamp' => 1521201600,
+                'utc_offset' => 0
+            ]],
+            'no working days configured' => [[
+                'working_days' => '',
+                'holidays' => '',
+                'working_hours' => 10,
+                'order_queue_length' => 4,
+                'delivery_today_time' => '15:00',
+                'timestamp' => 1521201600,
+                'utc_offset' => 0
+            ]],
+        ];
+    }
+
+    /**
+     * @magentoAppArea frontend
+     * @magentoAppIsolation enabled
+     * @magentoDbIsolation enabled
+     */
+    public function testItConvergesForALegacyOversizedQueueLengthWithASparseCalendar(): void
+    {
+        $this->prepareConfiguration([
+            'working_days' => '1',
+            'holidays' => '',
+            'working_hours' => 1,
+            'order_queue_length' => \MageSuite\ProductPositiveIndicators\Service\OrderQueueLengthUpdater::MAX_ORDER_QUEUE_LENGTH_HOURS,
+            'delivery_today_time' => '15:00',
+            'timestamp' => 1521201600,
+            'utc_offset' => 0
+        ]);
+
+        $deliveryData = $this->fastShippingDataProvider->getDeliveryData();
+
+        $this->assertNotNull($deliveryData);
+    }
+
     protected function prepareConfiguration(array $testConfig): void
     {
         $config = $this->configuration->getConfig();

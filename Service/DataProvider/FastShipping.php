@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
-     */
-    protected $configuration;
+    protected const int ABSOLUTE_MAX_CALENDAR_ITERATIONS = 200000;
 
-    public function __construct(
+    public function __construct( // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $configuration
     ) {
         parent::__construct($configuration);
     }
 
-    public function getDeliveryData()
+    public function getDeliveryData(): ?\Magento\Framework\DataObject
     {
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($this->configuration->getTimestamp());
+        $currentDateTime->setTimestamp((int)$this->configuration->getTimestamp());
 
         $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
 
@@ -32,7 +31,11 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
             $maxTimeToday = new \DateTime($midnight);
         }
 
-        $nextShippingDay = $this->getNextShippingDay($currentDateTime, $timeLeft);
+        $nextShippingDay = $this->getNextShippingDay($currentDateTime, (int)$timeLeft);
+
+        if ($nextShippingDay === null) {
+            return null;
+        }
 
         return new \Magento\Framework\DataObject([
             'max_today_time' => $maxTimeToday->getTimestamp() - $this->configuration->getOrderQueueLength(),
@@ -44,39 +47,51 @@ class FastShipping extends \MageSuite\ProductPositiveIndicators\Service\Delivery
         ]);
     }
 
-    protected function getNextShippingDay($currentTime, $timeLeft)
+    protected function getNextShippingDay(\DateTime $currentTime, int $timeLeft): ?\Magento\Framework\DataObject
     {
-        $dayTime = clone $currentTime;
-        $nextBusinessDay = false;
-        $nextDay = null;
+        $workingHours = (int)$this->configuration->getWorkingHours();
 
-        while (!$nextBusinessDay) {
+        if ($workingHours <= 0) {
+            return null;
+        }
+
+        $dayTime = clone $currentTime;
+        $nextDay = null;
+        $maxIterations = $this->getMaxCalendarIterations($timeLeft, $workingHours);
+
+        for ($iteration = 0; $iteration < $maxIterations; $iteration++) {
             $dayTime->modify('+1 day');
 
-            if (!$nextDay) {
+            if ($nextDay === null) {
                 $nextDay = $dayTime->format('d');
             }
 
-            if (!$this->isWorkingDay($dayTime)) {
+            if (!$this->isWorkingDay($dayTime) || $this->isHoliday($dayTime)) {
                 continue;
             }
 
-            if ($this->isHoliday($dayTime)) {
-                continue;
-            }
-
-            $timeLeft = $timeLeft - $this->configuration->getWorkingHours();
+            $timeLeft -= $workingHours;
 
             if ($timeLeft > 0) {
                 continue;
             }
 
-            $nextBusinessDay = true;
+            return new \Magento\Framework\DataObject([
+                'ship_day' => $dayTime,
+                'is_next_day_tomorrow' => $dayTime->format('d') === $nextDay
+            ]);
         }
 
-        return new \Magento\Framework\DataObject([
-            'ship_day' => $dayTime,
-            'is_next_day_tomorrow' => $dayTime->format('d') == $nextDay ? true : false
-        ]);
+        return null;
+    }
+
+    protected function getMaxCalendarIterations(int $timeLeftInSeconds, int $workingHoursInSeconds): int
+    {
+        $businessDaysNeeded = (int)ceil(max(0, $timeLeftInSeconds) / $workingHoursInSeconds) + 1;
+
+        $workingDaysPerWeek = max(1, count($this->configuration->getWorkingDays()));
+        $calendarDaysNeeded = (int)ceil($businessDaysNeeded / $workingDaysPerWeek * 7);
+
+        return min($calendarDaysNeeded + 366, self::ABSOLUTE_MAX_CALENDAR_ITERATIONS);
     }
 }

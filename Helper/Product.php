@@ -1,53 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Helper;
 
 class Product extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product
-     */
-    protected $productResource;
+    protected \Magento\Catalog\Model\ResourceModel\Product $productResource;
 
-    /**
-     * @var \Magento\Store\Model\StoreManagerInterface
-     */
-    protected $storeManager;
+    protected \Magento\Store\Model\StoreManagerInterface $storeManager;
 
-    /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface $freeShippingService;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Service\FreeShippingInterface
-     */
-    protected $freeShippingService;
+    protected \Magento\Framework\Registry $registry;
 
-    /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $registry;
+    protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository;
 
-    /**
-     * @var \Magento\Catalog\Api\ProductRepositoryInterface
-     */
-    protected $productRepository;
+    protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $popularIconConfiguration;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon
-     */
-    protected $popularIconConfiguration;
+    protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration;
 
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping
-     */
-    protected $fastShippingConfiguration;
+    protected \MageSuite\ProductPositiveIndicators\Helper\Configuration\FreeShipping $freeShippingConfiguration;
 
-    /**
-     * @var \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface
-     */
-    protected $getProductSalableQty;
+    protected \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty;
 
     /**
      * @var \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite
@@ -68,6 +43,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\PopularIcon $popularIconConfiguration,
         \MageSuite\ProductPositiveIndicators\Helper\Configuration\FastShipping $fastShippingConfiguration,
+        \MageSuite\ProductPositiveIndicators\Helper\Configuration\FreeShipping $freeShippingConfiguration,
         \Magento\InventorySalesApi\Api\GetProductSalableQtyInterface $getProductSalableQty,
         \Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite
     ) {
@@ -79,6 +55,7 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         $this->registry = $registry;
         $this->productRepository = $productRepository;
         $this->fastShippingConfiguration = $fastShippingConfiguration;
+        $this->freeShippingConfiguration = $freeShippingConfiguration;
         $this->popularIconConfiguration = $popularIconConfiguration;
         $this->getProductSalableQty = $getProductSalableQty;
         $this->getStockIdForCurrentWebsite = $getStockIdForCurrentWebsite;
@@ -177,33 +154,33 @@ class Product extends \Magento\Framework\App\Helper\AbstractHelper
         return in_array($categoryId, $categories) ? true : false;
     }
 
-    public function isFastShippingEnabled()
+    public function isFastShippingEnabled(): bool
     {
         return (bool)$this->fastShippingConfiguration->isEnabled();
     }
 
-    public function isFreeShipped($product)
+    public function isFreeShipped(\Magento\Catalog\Api\Data\ProductInterface $product): bool
     {
         return $this->freeShippingService->isFreeShipped($product);
     }
 
-    public function showFreeShippingInProductTiles()
+    public function showFreeShippingInProductTiles(): bool
     {
-        return $this->freeShippingService->showInProductTiles();
+        return $this->freeShippingConfiguration->showInProductTiles();
     }
 
-    public function showFreeShippingTextNoteOnProductsDetailpage()
+    public function showFreeShippingTextNoteOnProductsDetailpage(): bool
     {
-        return $this->freeShippingService->showTextNoteOnProductsDetailpage();
+        return $this->freeShippingConfiguration->showTextNoteOnProductsDetailpage();
     }
 
-    public function showFreeShippingBadgeOnProductsDetailpage()
+    public function showFreeShippingBadgeOnProductsDetailpage(): bool
     {
-        return $this->freeShippingService->showBadgeOnProductsDetailpage();
+        return $this->freeShippingConfiguration->showBadgeOnProductsDetailpage();
     }
 
-    public function showFreeShippingInSearchAutosuggest()
+    public function showFreeShippingInSearchAutosuggest(): bool
     {
-        return $this->freeShippingService->showInSearchAutosuggest();
+        return $this->freeShippingConfiguration->showInSearchAutosuggest();
     }
 }

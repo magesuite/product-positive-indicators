@@ -1,18 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Service;
 
 interface FreeShippingInterface
 {
+    public function isFreeShipped(\Magento\Catalog\Api\Data\ProductInterface $product): bool;
 
-    /**
-     * @param $product
-     * @return bool
-     */
-    public function isFreeShipped($product);
-
-    /**
-     * @return array
-     */
-    public function getShippingMethodsWithFreeShipping();
+    public function getShippingMethodsWithFreeShipping(): array;
 }

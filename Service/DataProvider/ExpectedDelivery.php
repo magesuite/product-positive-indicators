@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MageSuite\ProductPositiveIndicators\Service\DataProvider;
 
 class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProvider implements \MageSuite\ProductPositiveIndicators\Service\DeliveryDataProviderInterface
 {
-    /**
-     * @var \MageSuite\ProductPositiveIndicators\Helper\Configuration\ExpectedDelivery
-     */
-    protected $configuration;
+    public const MIN_SHIPPING_TIME_IN_DAYS = 1;
+    public const MAX_SHIPPING_TIME_IN_DAYS = 365;
+
+    protected const ABSOLUTE_MAX_CALENDAR_ITERATIONS = 200000;
 
     /**
      * @var \MageSuite\ProductPositiveIndicators\Helper\Product
@@ -34,11 +36,15 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
         }
 
         $currentDateTime = new \DateTime('now');
-        $currentDateTime->setTimestamp($this->configuration->getTimestamp());
+        $currentDateTime->setTimestamp((int)$this->configuration->getTimestamp());
         $maxTimeToday = new \DateTime($currentDateTime->format('d.m.Y') . ' ' . $this->configuration->getDeliveryTodayTime());
 
         $canShipToday = $this->isWorkingDay($currentDateTime) && !$this->isHoliday($currentDateTime);
         $shippingDays = $this->getShippingDays($currentDateTime, $shippingTimeInDays);
+
+        if ($shippingDays === null) {
+            return null;
+        }
 
         return new \Magento\Framework\DataObject([
             'max_today_time' => $canShipToday ? $maxTimeToday->getTimestamp() : null,
@@ -51,22 +57,47 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
     }
 
     /**
-     * @return int - Shipping time in working days
+     * @return int - Shipping time in working days, or 0 if unset or outside the supported range
      */
-    public function getShippingTimeInDays($product): int
+    public function getShippingTimeInDays(\Magento\Catalog\Api\Data\ProductInterface $product): int
     {
-        if ($product->getUseTimeNeededToShipProduct()) {
-            return (int)$product->getTimeNeededToShipProduct();
+        $shippingTimeInDays = $product->getUseTimeNeededToShipProduct()
+            ? (int)$product->getTimeNeededToShipProduct()
+            : (int)$this->configuration->getDefaultShippingTime();
+
+        if ($shippingTimeInDays < self::MIN_SHIPPING_TIME_IN_DAYS || $shippingTimeInDays > self::MAX_SHIPPING_TIME_IN_DAYS) {
+            return 0;
         }
 
-        return (int)$this->configuration->getDefaultShippingTime();
+        return $shippingTimeInDays;
     }
 
-    protected function getShippingDays($currentDay, $shippingTimeInDays): \Magento\Framework\DataObject
+    protected function getShippingDays(\DateTime $currentDay, int $shippingTimeInDays): ?\Magento\Framework\DataObject
+    {
+        $shipDay = $this->findShipDay($currentDay, $shippingTimeInDays);
+
+        if ($shipDay === null) {
+            return null;
+        }
+
+        $nextShipDay = $this->findNextBusinessDay($shipDay);
+
+        if ($nextShipDay === null) {
+            return null;
+        }
+
+        return new \Magento\Framework\DataObject([
+            'ship_day' => $shipDay,
+            'next_ship_day' => $nextShipDay
+        ]);
+    }
+
+    protected function findShipDay(\DateTime $currentDay, int $shippingTimeInDays): ?\DateTime
     {
         $shipDay = null;
+        $maxIterations = $this->getMaxCalendarIterations($shippingTimeInDays);
 
-        while ($shippingTimeInDays) {
+        for ($iteration = 0; $shippingTimeInDays > 0 && $iteration < $maxIterations; $iteration++) {
             $currentDay->modify('+1 day');
 
             $isBusinessDay = $this->isWorkingDay($currentDay) && !$this->isHoliday($currentDay);
@@ -79,12 +110,16 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
             $shipDay = $currentDay;
         }
 
-        $nextShipDay = null;
+        return $shippingTimeInDays > 0 ? null : $shipDay;
+    }
 
+    protected function findNextBusinessDay(\DateTime $shipDay): ?\DateTime
+    {
         $dateTime = new \DateTime('now');
         $dateTime->setTimestamp($shipDay->getTimestamp());
+        $maxIterations = $this->getMaxCalendarIterations(1);
 
-        while (!$nextShipDay) {
+        for ($iteration = 0; $iteration < $maxIterations; $iteration++) {
             $dateTime->modify('+1 day');
 
             $isBusinessDay = $this->isWorkingDay($dateTime) && !$this->isHoliday($dateTime);
@@ -93,12 +128,17 @@ class ExpectedDelivery extends \MageSuite\ProductPositiveIndicators\Service\Deli
                 continue;
             }
 
-            $nextShipDay = $dateTime;
+            return $dateTime;
         }
 
-        return new \Magento\Framework\DataObject([
-            'ship_day' => $shipDay,
-            'next_ship_day' => $nextShipDay
-        ]);
+        return null;
+    }
+
+    protected function getMaxCalendarIterations(int $businessDaysNeeded): int
+    {
+        $workingDaysPerWeek = max(1, count($this->configuration->getWorkingDays()));
+        $calendarDaysNeeded = (int)ceil($businessDaysNeeded / $workingDaysPerWeek * 7);
+
+        return min($calendarDaysNeeded + 366, self::ABSOLUTE_MAX_CALENDAR_ITERATIONS);
     }
 }
